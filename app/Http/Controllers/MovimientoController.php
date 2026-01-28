@@ -124,12 +124,19 @@ class MovimientoController extends Controller
                     }
                 }
 
-                $producto->proveedores()->attach($data['proveedor_id'], [
+                $pivotData = [
                     'tipo_movimiento' => $data['tipo_movimiento'],
                     'cantidad' => $cantidad,
                     'fecha' => $data['fecha'],
                     'local_id' => Auth::user()->local_id,
-                ]);
+                ];
+
+                // Si se generó una salida/factura, guardamos también el ID en el pivote
+                if ($salida && $data['tipo_movimiento'] === 'salida') {
+                    $pivotData['salida_id'] = $salida->id;
+                }
+
+                $producto->proveedores()->attach($data['proveedor_id'], $pivotData);
                 // Actualizar stock
                 if ($data['tipo_movimiento'] === 'entrada') {
                     $producto->increment('stock_actual', $cantidad);
