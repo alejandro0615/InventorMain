@@ -62,6 +62,11 @@ Route::get('/salidas/{salida}/factura', [SalidaController::class, 'facturaPdf'])
     ->name('salidas.factura')
     ->middleware('auth');
 
+Route::get('/salidas/{salida}/factura/download', [SalidaController::class, 'facturaDownload'])
+    ->name('salidas.factura.download')
+    ->middleware('auth');
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', [PerfilController::class, 'index'])
         ->name('perfil');

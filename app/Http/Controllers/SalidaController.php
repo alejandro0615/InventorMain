@@ -8,15 +8,42 @@ use Illuminate\Http\Request;
 
 class SalidaController extends Controller
 {
+    /**
+     * Generar y mostrar PDF de factura (stream)
+     */
     public function facturaPdf(Salida $salida)
-{
-    $salida->load('detalles.producto'); // detalles con producto e IVA
+    {
+        // Cargar todas las relaciones necesarias
+        $salida->load([
+            'detalles.producto',
+            'cliente',
+            'user.negocio'
+        ]);
 
-    $pdf = Pdf::loadView('facturas.salida', [
-        'salida' => $salida,
-    ])->setPaper('letter'); // o 'a4'
+        $pdf = Pdf::loadView('facturas.salida', [
+            'salida' => $salida,
+        ])->setPaper('letter');
 
-    return $pdf->stream('factura-salida-'.$salida->id.'.pdf');
-    // o ->download(...)
+        return $pdf->stream('factura-' . ($salida->numero_factura ?? $salida->id) . '.pdf');
+    }
+
+    /**
+     * Descargar PDF de factura
+     */
+    public function facturaDownload(Salida $salida)
+    {
+        // Cargar todas las relaciones necesarias
+        $salida->load([
+            'detalles.producto',
+            'cliente',
+            'user.negocio'
+        ]);
+
+        $pdf = Pdf::loadView('facturas.salida', [
+            'salida' => $salida,
+        ])->setPaper('letter');
+
+        return $pdf->download('factura-' . ($salida->numero_factura ?? $salida->id) . '.pdf');
+    }
 }
-}
+
