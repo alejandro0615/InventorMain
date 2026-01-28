@@ -44,11 +44,12 @@
                         {{-- Cantidad actual con color según stock --}}
                         <td class="text-left">
                             <span
-                                @if ($esBajo) style="color:#b91c1c; font-weight:600;"
+                                @if ($esBajo) style="color:#f87171; font-weight:600;"
                                 @else
-                                    style="color:#111827;" @endif>
+                                    style="{{ request()->has('dark_mode') ? 'color:#e5e7eb;' : 'color:#111827;' }}" @endif>
                                 {{ $stock }}
                             </span>
+
                         </td>
 
                         <td class="align-middle text-right">

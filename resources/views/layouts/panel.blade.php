@@ -12,6 +12,7 @@
     @vite('resources/css/app.css')
 
     <style>
+        /* ===== GLOBAL ===== */
         * {
             box-sizing: border-box;
         }
@@ -23,6 +24,32 @@
             color: #1f2937;
         }
 
+        input,
+        select {
+            background: #fff;
+            color: #111827;
+            border: 1px solid #d1d5db;
+            transition: all 0.25s ease;
+        }
+
+        .input-cantidad,
+        .input-precio,
+        .input-iva-linea {
+            transition: all 0.25s ease;
+        }
+
+        /* ===== DARK MODE INPUTS ===== */
+        body.dark input,
+        body.dark select,
+        body.dark .input-cantidad,
+        body.dark .input-precio,
+        body.dark .input-iva-linea {
+            background: rgba(15, 23, 42, 0.6);
+            color: #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* ===== LAYOUT ===== */
         .layout {
             display: grid;
             grid-template-columns: 240px 1fr;
@@ -31,7 +58,7 @@
 
         /* ===== SIDEBAR ===== */
         .sidebar {
-            background: linear-gradient(180deg, #ffffff, #f1f5f9);
+            background: linear-gradient(180deg, #fff, #f1f5f9);
             border-right: 1px solid #e5e7eb;
             padding: 1.8rem 1.2rem;
         }
@@ -95,22 +122,35 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: .6rem;
             font-size: .85rem;
             color: #475569;
         }
 
         /* ===== BUTTONS ===== */
-        .btn-tour {
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            color: #ffffff;
-            font-weight: 600;
+        .btn-tour,
+        .logout-btn,
+        .theme-btn,
+        .btn-pdf,
+        .btn-download,
+        .btn-print,
+        .btn-delete {
             border-radius: .6rem;
             padding: .45rem .9rem;
-            margin-left: .7rem;
-            border: none;
             cursor: pointer;
-            transition: .25s;
+            font-weight: 600;
+            transition: all .25s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            text-decoration: none;
+        }
+
+        .btn-tour {
+            background: linear-gradient(90deg, #60a5fa, #22c55e);
+            color: #fff;
+            margin-left: .7rem;
         }
 
         .btn-tour:hover {
@@ -119,38 +159,77 @@
 
         .logout-btn {
             background: linear-gradient(90deg, #fb7185, #f43f5e);
-            color: #ffffff;
-            border-radius: .6rem;
-            padding: .45rem .9rem;
-            border: none;
-            cursor: pointer;
+            color: #fff;
             margin-left: .6rem;
         }
 
+        .theme-btn {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            padding: .45rem .6rem;
+            font-size: 1rem;
+            margin-left: .6rem;
+        }
+
+        .theme-btn:hover {
+            background: #f1f5f9;
+        }
+
+        /* BUTTONS COLOR VARIANTS */
+        .btn-pdf {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-pdf:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+        }
+
+        .btn-download {
+            background: #10b981;
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+        }
+
+        .btn-delete {
+            background: #f97316;
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+        }
+
+        .btn-pdf i,
+        .btn-download i,
+        .btn-print i,
+        .btn-delete i {
+            font-size: .9rem;
+        }
+
         /* ===== CARDS ===== */
-        .card-subtitle {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #9ab5ed;
-            /* azul degradado si quieres puedes usar gradient text */
-            margin-top: 1rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .section-list {
-            list-style: disc;
-            padding-left: 1.3rem;
-            margin: 0 0 0.8rem 0;
-            line-height: 1.55;
-            font-size: 0.88rem;
-            color: #68b691;
-            /* texto gris oscuro */
-        }
-
         .card {
-            background: #ffffff;
+            background: #fff;
             border-radius: 1rem;
             border: 1px solid #e5e7eb;
             box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
@@ -164,7 +243,33 @@
             color: #1e293b;
         }
 
-        /* ===== TABLE GLOBAL ===== */
+        .card-subtitle {
+            font-size: .85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #9ab5ed;
+            margin-top: 1rem;
+            margin-bottom: .4rem;
+        }
+
+        .section-list {
+            list-style: disc;
+            padding-left: 1.3rem;
+            margin: 0 0 .8rem 0;
+            line-height: 1.55;
+            font-size: .88rem;
+            color: #68b691;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrapper {
+            border-radius: .75rem;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -175,7 +280,6 @@
         th,
         td {
             padding: .55rem .85rem;
-            /* mismo padding para alinear headers y filas */
             vertical-align: middle;
         }
 
@@ -193,7 +297,11 @@
             background: #f0f9ff;
         }
 
-        /* TAGS */
+        tr {
+            height: 48px;
+        }
+
+        /* ===== TAGS ===== */
         .tag {
             padding: .2rem .6rem;
             border-radius: 999px;
@@ -212,140 +320,10 @@
             color: #991b1b;
         }
 
-        /* THEME BUTTON */
-        .theme-btn {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: .6rem;
-            padding: .45rem .6rem;
-            margin-left: .6rem;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all .25s ease;
-        }
-
-        .theme-btn:hover {
-            background: #f1f5f9;
-        }
-
-        /* ===== DARK MODE ===== */
-        body.dark {
-            background: radial-gradient(circle at top, #020617, #020617);
-            color: #e5e7eb;
-        }
-
-        /* Sidebar dark */
-        body.dark .sidebar {
-            background: linear-gradient(180deg, #020617, #020617cc);
-            border-right: 1px solid rgba(56, 189, 248, .18);
-        }
-
-        body.dark .sidebar-title {
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Links dark */
-        body.dark .nav-title {
-            color: #64748b;
-        }
-
-        body.dark .nav-link {
-            color: #c7d2fe;
-        }
-
-        body.dark .nav-link:hover {
-            background: rgba(59, 130, 246, .18);
-            color: #e0f2fe;
-            box-shadow: inset 3px 0 0 #22c55e;
-        }
-
-        /* Main dark */
-        body.dark .main {
-            background: linear-gradient(180deg, #020617, #020617cc);
-        }
-
-        /* Top bar dark */
-        body.dark .top-title {
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        body.dark .user-info {
-            color: #94a3b8;
-        }
-
-        /* Buttons dark */
-        body.dark .btn-tour {
-            background: linear-gradient(90deg, #3b82f6, #22c55e);
-        }
-
-        body.dark .logout-btn {
-            background: linear-gradient(90deg, #fb7185, #f43f5e);
-        }
-
-        body.dark .theme-btn {
-            background: rgba(255, 255, 255, .06);
-            border: 1px solid rgba(255, 255, 255, .12);
-            color: #e5e7eb;
-        }
-
-        /* Cards dark */
-        body.dark .card {
-            background: linear-gradient(180deg,
-                    rgba(15, 23, 42, .92),
-                    rgba(2, 6, 23, .88)) !important;
-            border: 1px solid rgba(59, 130, 246, .22) !important;
-            box-shadow:
-                0 25px 50px rgba(2, 6, 23, .9),
-                inset 0 0 0 1px rgba(34, 197, 94, .08);
-        }
-
-        body.dark .card-title {
-            color: #e0f2fe;
-        }
-
-        /* Tablas dark */
-        body.dark thead {
-            background: rgba(15, 23, 42, .8);
-        }
-
-        body.dark th {
-            color: #93c5fd;
-            border-bottom: 1px solid rgba(59, 130, 246, .18);
-        }
-
-        body.dark td {
-            color: #c7d2fe;
-            border-bottom: 1px solid rgba(255, 255, 255, .08);
-        }
-
-        body.dark tbody tr:hover {
-            background: rgba(59, 130, 246, .12);
-        }
-
-        /* TAGS dark */
-        body.dark .tag {
-            background: rgba(148, 163, 184, .15);
-            color: #c7d2fe;
-        }
-
-        body.dark .tag-green {
-            background: rgba(34, 197, 94, .18);
-            color: #86efac;
-        }
-
-        body.dark .tag-red {
-            background: rgba(248, 113, 113, .18);
-            color: #fecaca;
-        }
-
-        /* ACTIONS */
+        /* ===== ACTIONS ===== */
         .actions {
             display: inline-flex;
-            gap: 0.4rem;
+            gap: .4rem;
             align-items: center;
             white-space: nowrap;
         }
@@ -355,50 +333,20 @@
             margin: 0;
         }
 
-        /* TABLE WRAPPER */
-        .table-wrapper {
-            border-radius: .75rem;
-            overflow: hidden;
-        }
-
-        /* Modo claro */
-        body:not(.dark) .table-wrapper {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-        }
-
-        /* Modo oscuro */
-        body.dark .table-wrapper {
-            background: linear-gradient(180deg,
-                    rgba(15, 23, 42, .85),
-                    rgba(2, 6, 23, .8));
-            border: 1px solid rgba(59, 130, 246, .25);
-        }
-
-        /* Filas */
-        tr {
-            height: 48px;
-        }
-
+        /* ===== USER PILL ===== */
         .user-name-pill {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.25rem 0.7rem;
+            gap: .35rem;
+            padding: .25rem .7rem;
             border-radius: 999px;
             background: #e0f2fe;
             color: #0f172a;
-            font-size: 0.8rem;
+            font-size: .8rem;
             font-weight: 600;
         }
 
-        /* Modo oscuro para el nombre */
-        body.dark .user-name-pill {
-            background: rgba(37, 99, 235, 0.22);
-            color: #e0f2fe;
-            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
-        }
-
+        /* ===== PROFILE GRID ===== */
         .profile-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -407,12 +355,12 @@
 
         .profile-box {
             background: rgba(241, 245, 249, 0.6);
-            border-radius: 0.9rem;
+            border-radius: .9rem;
             padding: 1.2rem;
         }
 
         .profile-title {
-            font-size: 0.8rem;
+            font-size: .8rem;
             text-transform: uppercase;
             letter-spacing: .12em;
             color: #64748b;
@@ -441,7 +389,114 @@
             color: #0f172a;
         }
 
-        /* DARK MODE */
+        /* ===== LOADER ===== */
+        #globalLoader {
+            transition: opacity .3s ease;
+        }
+
+        /* ===== DARK MODE ===== */
+        body.dark {
+            background: radial-gradient(circle at top, #020617, #020617);
+            color: #e5e7eb;
+        }
+
+        body.dark .sidebar {
+            background: linear-gradient(180deg, #020617, #020617cc);
+            border-right: 1px solid rgba(56, 189, 248, .18);
+        }
+
+        body.dark .sidebar-title,
+        body.dark .top-title {
+            background: linear-gradient(90deg, #60a5fa, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.dark .nav-title {
+            color: #64748b;
+        }
+
+        body.dark .nav-link {
+            color: #c7d2fe;
+        }
+
+        body.dark .nav-link:hover {
+            background: rgba(59, 130, 246, .18);
+            color: #e0f2fe;
+            box-shadow: inset 3px 0 0 #22c55e;
+        }
+
+        body.dark .main {
+            background: linear-gradient(180deg, #020617, #020617cc);
+        }
+
+        body.dark .user-info {
+            color: #94a3b8;
+        }
+
+        body.dark .btn-tour {
+            background: linear-gradient(90deg, #3b82f6, #22c55e);
+        }
+
+        body.dark .logout-btn {
+            background: linear-gradient(90deg, #fb7185, #f43f5e);
+        }
+
+        body.dark .theme-btn {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: #e5e7eb;
+        }
+
+        body.dark .card {
+            background: linear-gradient(180deg, rgba(15, 23, 42, .92), rgba(2, 6, 23, .88));
+            border: 1px solid rgba(59, 130, 246, .22);
+            box-shadow: 0 25px 50px rgba(2, 6, 23, .9), inset 0 0 0 1px rgba(34, 197, 94, .08);
+        }
+
+        body.dark .card-title {
+            color: #e0f2fe;
+        }
+
+        body.dark thead {
+            background: rgba(15, 23, 42, .8);
+        }
+
+        body.dark th {
+            color: #93c5fd;
+            border-bottom: 1px solid rgba(59, 130, 246, .18);
+        }
+
+        body.dark td {
+            color: #c7d2fe;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        body.dark tbody tr:hover {
+            background: rgba(59, 130, 246, .12);
+        }
+
+        body.dark .tag {
+            background: rgba(148, 163, 184, .15);
+            color: #c7d2fe;
+        }
+
+        body.dark .tag-green {
+            background: rgba(34, 197, 94, .18);
+            color: #86efac;
+        }
+
+        body.dark .tag-red {
+            background: rgba(248, 113, 113, .18);
+            color: #fecaca;
+        }
+
+        body.dark .user-name-pill {
+            background: rgba(37, 99, 235, .22);
+            color: #e0f2fe;
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, .4);
+        }
+
         body.dark .profile-box {
             background: rgba(15, 23, 42, .55);
         }
@@ -462,88 +517,12 @@
             border-bottom: 1px dashed rgba(255, 255, 255, .12);
         }
 
-        #globalLoader {
-            transition: opacity 0.3s ease;
-        }
-
-        /* Estilo base para todos los botones */
-        .btn-pdf,
-        .btn-download,
-        .btn-print,
-        .btn-delete {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 0.6rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-        }
-
-        /* Botón Ver PDF */
-        .btn-pdf {
-            background: #ef4444;
-            /* rojo */
-            color: #fff;
-        }
-
-        .btn-pdf:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Botón Descargar */
-        .btn-download {
-            background: #10b981;
-            /* verde */
-            color: #fff;
-        }
-
-        .btn-download:hover {
-            background: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Botón Imprimir */
-        .btn-print {
-            background: #3b82f6;
-            /* azul */
-            color: #fff;
-        }
-
-        .btn-print:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Botón Eliminar */
-        .btn-delete {
-            background: #f97316;
-            /* naranja */
-            color: #fff;
-        }
-
-        .btn-delete:hover {
-            background: #ea580c;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Iconos dentro de los botones */
-        .btn-pdf i,
-        .btn-download i,
-        .btn-print i,
-        .btn-delete i {
-            font-size: 0.9rem;
+        body.dark .table-wrapper {
+            background: linear-gradient(180deg, rgba(15, 23, 42, .85), rgba(2, 6, 23, .8));
+            border: 1px solid rgba(59, 130, 246, .25);
         }
     </style>
+
 
     @stack('styles')
 </head>
