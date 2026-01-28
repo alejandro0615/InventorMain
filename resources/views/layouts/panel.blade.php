@@ -77,6 +77,14 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
+        .sidebar {
+            background: linear-gradient(180deg, #fff, #f1f5f9);
+            border-right: 1px solid #e5e7eb;
+            padding: 1.8rem 1.2rem;
+            width: 280px;
+            /* ancho fijo para PC */
+        }
+
         @media (max-width: 768px) {
             .layout {
                 display: block;
