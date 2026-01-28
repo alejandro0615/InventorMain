@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Movimiento;
 use App\Models\Producto;
 use App\Models\Proveedor;
+use App\Models\Salida;
+use App\Models\SalidaDetalle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +61,8 @@ class MovimientoController extends Controller
                 'producto_id.*' => ['required', 'exists:productos,id'],
                 'cantidad' => ['required', 'array'],
                 'cantidad.*' => ['required', 'integer', 'min:1'],
+                // Campo opcional para notas/observaciones de la factura/salida
+                'notas' => ['nullable', 'string'],
             ],
             [
                 'proveedor_id.required' => 'El campo proveedor es obligatorio.',
@@ -80,8 +84,28 @@ class MovimientoController extends Controller
             ]
 
         );
-        DB::transaction(function () use ($data) {
+        // Variable para poder usar la salida creada fuera de la transacción
+        $salida = null;
+
+        DB::transaction(function () use ($data, $request, &$salida) {
             $localId = Auth::user()->local_id;
+
+            // Si el movimiento es de SALIDA, creamos el encabezado de factura/salida
+            if ($data['tipo_movimiento'] === 'salida') {
+                $salida = Salida::create([
+                    'cliente_id' => $data['proveedor_id'], // usamos proveedor como cliente
+                    'user_id' => Auth::id(),
+                    'fecha' => $data['fecha'],
+                    'notas' => $request->input('notas'),
+                    // IVA general opcional, por ahora lo dejamos en 0 y se calcula por detalle
+                    'iva_porcentaje' => 0,
+                    'total' => 0,
+                ]);
+            }
+
+            // Acumuladores para el total de la factura
+            $subtotalGeneral = 0;
+            $ivaGeneral = 0;
 
             // Recorremos cada línea de producto
             foreach ($data['producto_id'] as $index => $productoId) {
@@ -109,12 +133,55 @@ class MovimientoController extends Controller
                 // Actualizar stock
                 if ($data['tipo_movimiento'] === 'entrada') {
                     $producto->increment('stock_actual', $cantidad);
-                } else {
+                } else { // salida
                     $producto->decrement('stock_actual', $cantidad);
+
+                    // Si tenemos una salida (factura), creamos el detalle de la misma
+                    if ($salida) {
+                        // Usamos el precio de venta del producto como precio unitario
+                        $precioUnitario = $producto->precio_venta;
+
+                        // IVA por defecto para cada línea (ajusta el porcentaje según tu necesidad)
+                        $ivaPorcentaje = 0; // Ejemplo: 19 para 19%
+
+                        $subtotalLinea = $cantidad * $precioUnitario;
+                        $ivaLinea = $subtotalLinea * ($ivaPorcentaje / 100);
+
+                        $subtotalGeneral += $subtotalLinea;
+                        $ivaGeneral += $ivaLinea;
+
+                        SalidaDetalle::create([
+                            'salida_id' => $salida->id,
+                            'producto_id' => $productoId,
+                            'cantidad' => $cantidad,
+                            'precio_unitario' => $precioUnitario,
+                            'iva_porcentaje' => $ivaPorcentaje,
+                            // Guardamos el subtotal sin IVA
+                            'subtotal' => $subtotalLinea,
+                        ]);
+                    }
                 }
+            }
+
+            // Actualizamos totales de la salida/factura si se creó
+            if ($salida) {
+                $salida->total = $subtotalGeneral + $ivaGeneral;
+
+                // Generamos un número de factura sencillo y único basado en el ID
+                $salida->numero_factura = 'F' . str_pad($salida->id, 6, '0', STR_PAD_LEFT);
+
+                $salida->save();
             }
         });
 
+        // Si el movimiento fue una salida y se creó la factura, redirigimos al PDF
+        if ($data['tipo_movimiento'] === 'salida' && $salida) {
+            return redirect()
+                ->route('salidas.factura', $salida)
+                ->with('success', 'Movimiento de salida registrado y factura generada correctamente.');
+        }
+
+        // Para entradas seguimos con el flujo normal
         return redirect()
             ->route('movimientos.index')
             ->with('success', 'Movimiento registrado exitosamente y stock actualizado.');
