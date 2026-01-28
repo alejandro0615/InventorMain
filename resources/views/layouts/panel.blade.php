@@ -26,10 +26,38 @@
 
         input,
         select {
-            background: #fff;
-            color: #111827;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.6rem;
             border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #111827;
+            font-size: 0.9rem;
             transition: all 0.25s ease;
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+            /* gris para placeholder */
+        }
+
+        body.dark input::placeholder {
+            color: rgba(229, 231, 235, 0.6);
+        }
+
+        body.dark select {
+            color: #e5e7eb;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='7' viewBox='0 0 12 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23e5e7eb' stroke-width='2'/%3E%3C/svg%3E");
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='7' viewBox='0 0 12 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2364788B' stroke-width='2'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 12px 7px;
         }
 
         .input-cantidad,
@@ -91,6 +119,31 @@
             text-decoration: none;
             transition: all .25s ease;
         }
+
+        /* STOCK NORMAL */
+        .stock-normal {
+            font-weight: 600;
+            color: #111827;
+            /* color default para light mode */
+        }
+
+        body.dark .stock-normal {
+            color: #e5e7eb;
+            /* color para dark mode */
+        }
+
+        /* STOCK BAJO */
+        .stock-bajo {
+            font-weight: 600;
+            color: #f87171;
+            /* rojo para alertas */
+        }
+
+        body.dark .stock-bajo {
+            color: #f87171;
+            /* mismo rojo en dark mode o puedes usar otro si quieres */
+        }
+
 
         .nav-link:hover {
             background: #e0f2fe;
