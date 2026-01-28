@@ -483,20 +483,6 @@
     <div class="layout">
         <aside class="sidebar">
             <div class="sidebar-title" id="tour-logo">
-                <button
-    onclick="event.preventDefault(); loadView('{{ route('principal') }}')"
-    style="
-        background:none;
-        border:none;
-        padding:0;
-        margin:0;
-        width:100%;
-        text-align:center;
-        cursor:pointer;
-        color:inherit;
-        font:inherit;
-    "
->
     <div style="
         display:flex;
         flex-direction:column;
