@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css" />
+    <link rel="icon" href="{{ asset('images/logo.ico') }}" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
     <title>@yield('title', 'PANEL PRINCIPAL · Inventario')</title>
 
@@ -482,8 +483,53 @@
     <div class="layout">
         <aside class="sidebar">
             <div class="sidebar-title" id="tour-logo">
-                Inventario · Panel
+                <button
+    onclick="event.preventDefault(); loadView('{{ route('principal') }}')"
+    style="
+        background:none;
+        border:none;
+        padding:0;
+        margin:0;
+        width:100%;
+        text-align:center;
+        cursor:pointer;
+        color:inherit;
+        font:inherit;
+    "
+>
+    <div style="
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:0.35rem;
+    ">
+        <img
+            src="{{ asset('images/imagen.png') }}"
+            alt="Logo inventario"
+            style="
+                width:100px;
+                height:100px;
+                object-fit:cover;
+                border-radius:1rem;
+                box-shadow:0 0 0 1px rgba(15,23,42,0.5),
+                           0 8px 16px rgba(15,23,42,0.55);
+            "
+        >
+        <span style="
+            font-size:0.9rem;
+            font-weight:600;
+            letter-spacing:0.03em;
+            text-transform:uppercase;
+            color:#e5e7eb;
+            white-space:nowrap;
+        ">
+            Inventario · Panel
+        </span>
+    </div>
+</button>
+
             </div>
+
 
             <div class="nav-section" id="tour-modulos">
                 <div class="nav-title">Módulos</div>
@@ -626,6 +672,14 @@
                         popover: {
                             title: 'Bienvenido al panel',
                             description: 'Este es el panel principal de tu sistema de inventario.',
+                            position: 'right'
+                        }
+                    },
+                    {
+                        element: '#tour-principal',
+                        popover: {
+                            title: 'Ventana principal',
+                            description: 'Desde aquí podrás regresar a la ventana principal.',
                             position: 'right'
                         }
                     },
