@@ -127,18 +127,40 @@
         }
 
         /* ===== CARDS ===== */
+        .card-subtitle {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ab5ed;
+            /* azul degradado si quieres puedes usar gradient text */
+            margin-top: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-list {
+            list-style: disc;
+            padding-left: 1.3rem;
+            margin: 0 0 0.8rem 0;
+            line-height: 1.55;
+            font-size: 0.88rem;
+            color: #68b691;
+            /* texto gris oscuro */
+        }
+
         .card {
             background: #ffffff;
             border-radius: 1rem;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 15px 30px rgba(15, 23, 42, .08);
-            padding: 1.4rem;
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+            padding: 1.8rem;
         }
 
         .card-title {
-            font-size: .95rem;
-            font-weight: 600;
-            color: #1f2937;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e293b;
         }
 
         /* ===== TABLE GLOBAL ===== */
@@ -465,6 +487,12 @@
 
             <div class="nav-section" id="tour-modulos">
                 <div class="nav-title">Módulos</div>
+
+                <a href="{{ route('principal') }}" class="nav-link" id="tour-principal"
+                    @click.prevent="loadView('{{ route('principal') }}')">
+                    Ventana principal
+                </a>
+
                 <a href="{{ route('productos.index') }}" class="nav-link" id="tour-productos"
                     @click.prevent="loadView('{{ route('productos.index') }}')">
                     Productos
@@ -518,7 +546,7 @@
             </div>
 
             <!-- CONTENIDO DINÁMICO -->
-            <div id="dynamic-content" class="transition-opacity duration-300">
+            <div id="dynamic-content">
                 @yield('content')
             </div>
         </main>

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalidaController;
 use App\Http\Controllers\PerfilController;
+use Illuminate\Http\Request;
+
 
 Route::get('/', function () {
     return view('login.login');
@@ -15,7 +17,13 @@ Route::post('/login', [LoginController::class, 'login'])
     ->name('login.store');
 ;
 
-Route::get('/principal', function () {
+Route::get('/principal', function (Request $request) {
+    if ($request->ajax()) {
+        // Para loadView (SPA) devolvemos solo el contenido interno
+        return view('principal._content');
+    }
+
+    // Para carga normal del navegador devolvemos la vista con layout
     return view('principal.principal');
 })->name('principal')->middleware('auth');
 ;
