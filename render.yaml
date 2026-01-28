@@ -5,7 +5,7 @@ services:
     plan: free
     region: oregon
     buildCommand: docker build -t gestion-inventario .
-    startCommand: ./docker/entrypoint.sh # Dockerfile ENTRYPOINT handles this usually, but explicit is fine or omit if relying on image
+    startCommand: ./docker/entrypoint.sh
     envVars:
       - key: APP_KEY
         generateValue: true
@@ -44,4 +44,4 @@ databases:
   - name: gestion-db
     databaseName: gestion
     user: gestion_user
-    plan: free # Note: Free tier has expiry and limitations
+    plan: free
