@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: gestion-inventario
+    env: docker
+    plan: free
+    region: oregon
+    buildCommand: docker build -t gestion-inventario .
+    startCommand: ./docker/entrypoint.sh # Dockerfile ENTRYPOINT handles this usually, but explicit is fine or omit if relying on image
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: gestion-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: gestion-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: gestion-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: gestion-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: gestion-db
+          property: password
+
+databases:
+  - name: gestion-db
+    databaseName: gestion
+    user: gestion_user
+    plan: free # Note: Free tier has expiry and limitations
