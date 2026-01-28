@@ -50,8 +50,14 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Expose port 80
-EXPOSE 80
+# Expose the port Render will use
+ARG PORT=10000
+ENV PORT=${PORT}
+
+# Cambiar Apache para escuchar en PORT
+RUN sed -ri -e "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
+
+EXPOSE ${PORT}
 
 # Set entrypoint
 COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
