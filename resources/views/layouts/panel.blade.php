@@ -77,12 +77,48 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        /* ===== LAYOUT ===== */
-        .layout {
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            min-height: 100vh;
+        @media (max-width: 768px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                display: none;
+                /* oculto por defecto en móvil */
+                width: 80%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 50;
+                background: linear-gradient(180deg, #fff, #f1f5f9);
+                padding: 1.5rem;
+                min-height: 100vh;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease;
+                transform: translateX(-100%);
+                /* fuera de la pantalla */
+            }
+
+            .sidebar.active {
+                display: block;
+                transform: translateX(0);
+                /* entra al presionar botón */
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            .sidebar img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .sidebar-title span {
+                font-size: 0.8rem;
+            }
         }
+
 
         /* ===== SIDEBAR ===== */
         .sidebar {
@@ -651,6 +687,9 @@
 
         <main class="main" id="tour-main">
             <div class="top-bar">
+                <button id="menuToggle" class="theme-btn md:hidden">
+                    ☰
+                </button>
                 <div class="top-title">
                     @yield('page_title', 'Bienvenido al panel principal')
                 </div>
@@ -819,6 +858,12 @@
             window.startTour = function() {
                 driverObj.drive();
             };
+        });
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
         });
     </script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
