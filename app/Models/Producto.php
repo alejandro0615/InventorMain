@@ -11,8 +11,8 @@ class Producto extends Model
     public function proveedores()
     {
         return $this->belongsToMany(Proveedor::class, 'movimientos')
-            ->withPivot('tipo_movimiento', 'fecha', 'cantidad')->withTimestamps();
-        //los pivot son los atributos de seguimiento en una tabla muchos a muchos
+            ->withPivot('tipo_movimiento', 'fecha', 'cantidad', 'salida_id', 'local_id')
+            ->withTimestamps();
     }
     protected $fillable = [
         'codigo',
