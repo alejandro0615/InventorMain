@@ -71,4 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', [PerfilController::class, 'index'])
         ->name('perfil');
 
+    Route::delete('/salidas/{salida}', [SalidaController::class, 'destroy'])
+        ->name('salidas.destroy')
+        ->middleware('auth');
 });

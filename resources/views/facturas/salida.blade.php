@@ -390,8 +390,8 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Este documento es una representación impresa de una factura electrónica</p>
-            <p>Generado el {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}</p>
+            <p>Este documento es una representación de una factura electrónica</p>
+            <p>Generada el {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}</p>
             <p>{{ $salida->user->negocio->nombre ?? 'Mi Empresa' }} - Todos los derechos reservados</p>
         </div>
     </div>

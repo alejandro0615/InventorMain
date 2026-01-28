@@ -61,7 +61,8 @@
                             @endphp
 
                             @if ($salidaId)
-                                <a href="{{ route('salidas.factura', $salidaId) }}" target="_blank" class="btn btn-primary">
+                                <a href="{{ route('salidas.factura', $salidaId) }}" target="_blank"
+                                    class="btn btn-primary">
                                     <i class="fas fa-file-pdf"></i> Ver Factura PDF
                                 </a>
                                 <a href="{{ route('salidas.factura.download', $salidaId) }}" class="btn btn-success">
@@ -70,6 +71,15 @@
                                 <button onclick="imprimirFactura({{ $salidaId }})" class="btn btn-info">
                                     <i class="fas fa-print"></i> Imprimir
                                 </button>
+                                <form action="{{ route('salidas.destroy', $salidaId) }}" method="POST"
+                                    style="display:inline-block;"
+                                    onsubmit="return confirm('¿Seguro que deseas eliminar esta factura?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Eliminar Factura
+                                    </button>
+                                </form>
                             @else
                                 <span style="font-size:0.75rem; color:#9ca3af;">
                                     Sin factura
