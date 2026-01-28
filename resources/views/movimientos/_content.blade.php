@@ -61,13 +61,13 @@
                             @endphp
 
                             @if ($salidaId)
-                                <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn btn-primary">
+                                <a href="{{ route('salidas.factura', $salidaId) }}" target="_blank" class="btn btn-primary">
                                     <i class="fas fa-file-pdf"></i> Ver Factura PDF
                                 </a>
-                                <a href="{{ route('salidas.factura.download', $salida->id) }}" class="btn btn-success">
+                                <a href="{{ route('salidas.factura.download', $salidaId) }}" class="btn btn-success">
                                     <i class="fas fa-download"></i> Descargar PDF
                                 </a>
-                                <button onclick="imprimirFactura({{ $salida->id }})" class="btn btn-info">
+                                <button onclick="imprimirFactura({{ $salidaId }})" class="btn btn-info">
                                     <i class="fas fa-print"></i> Imprimir
                                 </button>
                             @else
@@ -75,6 +75,7 @@
                                     Sin factura
                                 </span>
                             @endif
+
                         </td>
                     </tr>
                 @endforeach

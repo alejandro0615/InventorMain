@@ -474,11 +474,6 @@
     <div id="globalLoader"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden opacity-0"
         style="z-index:99999">
-
-        <div class="text-center text-white">
-            <div class="spinner-border mb-3"></div>
-            <p class="text-sm">Cargando información…</p>
-        </div>
     </div>
     <div class="layout">
         <aside class="sidebar">
