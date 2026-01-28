@@ -61,23 +61,25 @@
                             @endphp
 
                             @if ($salidaId)
-                                <a href="{{ route('salidas.factura', $salidaId) }}" target="_blank"
-                                    class="btn btn-primary">
-                                    <i class="fas fa-file-pdf"></i> Ver Factura PDF
+                                <a href="{{ route('salidas.factura', $salidaId) }}" target="_blank" class="btn-pdf">
+                                    <i class="fas fa-file-pdf"></i> Ver PDF
                                 </a>
-                                <a href="{{ route('salidas.factura.download', $salidaId) }}" class="btn btn-success">
-                                    <i class="fas fa-download"></i> Descargar PDF
+
+                                <a href="{{ route('salidas.factura.download', $salidaId) }}" class="btn-download">
+                                    <i class="fas fa-download"></i> Descargar
                                 </a>
-                                <button onclick="imprimirFactura({{ $salidaId }})" class="btn btn-info">
+
+                                <button onclick="imprimirFactura({{ $salidaId }})" class="btn-print">
                                     <i class="fas fa-print"></i> Imprimir
                                 </button>
+
                                 <form action="{{ route('salidas.destroy', $salidaId) }}" method="POST"
                                     style="display:inline-block;"
                                     onsubmit="return confirm('¿Seguro que deseas eliminar esta factura?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="fas fa-trash"></i> Eliminar Factura
+                                    <button type="submit" class="btn-delete">
+                                        <i class="fas fa-trash"></i> Eliminar
                                     </button>
                                 </form>
                             @else

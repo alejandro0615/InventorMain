@@ -465,6 +465,84 @@
         #globalLoader {
             transition: opacity 0.3s ease;
         }
+
+        /* Estilo base para todos los botones */
+        .btn-pdf,
+        .btn-download,
+        .btn-print,
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        /* Botón Ver PDF */
+        .btn-pdf {
+            background: #ef4444;
+            /* rojo */
+            color: #fff;
+        }
+
+        .btn-pdf:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Botón Descargar */
+        .btn-download {
+            background: #10b981;
+            /* verde */
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Botón Imprimir */
+        .btn-print {
+            background: #3b82f6;
+            /* azul */
+            color: #fff;
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Botón Eliminar */
+        .btn-delete {
+            background: #f97316;
+            /* naranja */
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Iconos dentro de los botones */
+        .btn-pdf i,
+        .btn-download i,
+        .btn-print i,
+        .btn-delete i {
+            font-size: 0.9rem;
+        }
     </style>
 
     @stack('styles')
@@ -478,25 +556,24 @@
     <div class="layout">
         <aside class="sidebar">
             <div class="sidebar-title" id="tour-logo">
-    <div style="
+                <div
+                    style="
         display:flex;
         flex-direction:column;
         align-items:center;
         gap:0.35rem;
     ">
-        <img
-            src="{{ asset('images/imagen.png') }}"
-            alt="Logo inventario"
-            style="
+                    <img src="{{ asset('images/imagen.png') }}" alt="Logo inventario"
+                        style="
                 width:100px;
                 height:100px;
                 object-fit:cover;
                 border-radius:1rem;
                 box-shadow:0 0 0 1px rgba(15,23,42,0.5),
                            0 8px 16px rgba(15,23,42,0.55);
-            "
-        >
-        <span style="
+            ">
+                    <span
+                        style="
             font-size:0.9rem;
             font-weight:600;
             letter-spacing:0.03em;
@@ -504,10 +581,10 @@
             color:#e5e7eb;
             white-space:nowrap;
         ">
-            Inventario · Panel
-        </span>
-    </div>
-</button>
+                        Inventario · Panel
+                    </span>
+                </div>
+                </button>
 
             </div>
 
