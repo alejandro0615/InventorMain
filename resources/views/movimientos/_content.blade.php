@@ -31,9 +31,8 @@
                     <i class="fas fa-download"></i> Descargar
                 </a>
 
-                <form action="{{ route('salidas.destroy', $salida->id) }}" method="POST"
-                      style="display:inline-block;"
-                      onsubmit="return confirm('¿Seguro que deseas eliminar esta factura?')">
+                <form action="{{ route('salidas.destroy', $salida->id) }}" method="POST" style="display:inline-block;"
+                    onsubmit="return confirm('¿Seguro que deseas eliminar esta factura?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn-delete">
