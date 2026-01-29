@@ -182,7 +182,7 @@ class MovimientoController extends Controller
         $query = SalidaDetalle::query()
             ->join('salidas', 'salida_detalles.salida_id', '=', 'salidas.id')
             ->join('productos', 'salida_detalles.producto_id', '=', 'productos.id')
-            ->where('salidas.local_id', $localId);
+            ->where('productos.local_id', $localId);
 
         if ($fecha) {
             $query->whereDate('salidas.fecha', $fecha);
