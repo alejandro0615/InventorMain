@@ -29,7 +29,7 @@
                         {{ $salida->detalles->sum('cantidad') }}
                     </td>
 
-                    <td>{{ $salida->fecha->format('Y-m-d') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($salida->fecha)->format('Y-m-d') }}</td>
 
                     <td class="acciones">
                         <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn btn-pdf">
