@@ -14,6 +14,7 @@
                 <th>Nombre</th>
                 <th>NIT</th>
                 <th>Teléfono</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
