@@ -720,6 +720,9 @@
                     @click.prevent="loadView('{{ route('cotizacion.index') }}')">
                     Cotizaciones
                 </a>
+                <a href="{{ route('historial-ventas') }}" class="nav-link" id="tour-historial"
+                    @click.prevent="loadView('{{ route('historial-ventas') }}')">
+                    Historial de ventas
             </div>
         </aside>
 
@@ -888,6 +891,23 @@
                             title: 'Zona de trabajo',
                             description: 'Aquí verás tablas de productos, movimientos y más.',
                             position: 'top'
+                        }
+                    },
+                    {
+                        element: '#themeToggle',
+                        popover: {
+                            title: 'Modo oscuro',
+                            description: 'Cambia entre modo claro y oscuro para mayor comodidad.',
+                            position: 'left'
+                        }
+                    },
+                    {
+                        element: '#tour-historial',
+                        popover: {
+                            title: 'Historial de ventas',
+                            description: 'Aquí verás el historial de ventas registrados,
+                            podras buscar por fechas ',
+                            position: 'left'
                         }
                     }
                 ]

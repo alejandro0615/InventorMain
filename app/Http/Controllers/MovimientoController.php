@@ -172,4 +172,37 @@ class MovimientoController extends Controller
             ->route('movimientos.index')
             ->with('success', 'Factura anulada y stock restaurado correctamente.');
     }
+    public function historial(Request $request)
+{
+    $localId = Auth::user()->local_id;
+
+    $fecha = $request->input('fecha');
+
+    $query = SalidaDetalle::query()
+        ->join('salidas', 'salida_detalles.salida_id', '=', 'salidas.id')
+        ->join('productos', 'salida_detalles.producto_id', '=', 'productos.id')
+        ->where('productos.local_id', $localId);
+
+    if ($fecha) {
+        $query->whereDate('salidas.fecha', $fecha);
+    }
+
+    $historial = $query
+        ->selectRaw('
+            productos.nombre AS producto,
+            SUM(salida_detalles.cantidad) AS total_cantidad,
+            SUM(salida_detalles.subtotal) AS total_vendido
+        ')
+        ->groupBy('productos.nombre')
+        ->orderBy('productos.nombre')
+        ->get();
+
+    $totalDia = $historial->sum('total_vendido');
+
+    return view('movimientos.historial', compact(
+        'historial',
+        'fecha',
+        'totalDia'
+    ));
+}
 }

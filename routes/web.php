@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\SalidaController;
 use App\Http\Controllers\PerfilController;
+
 use Illuminate\Http\Request;
 
 
@@ -74,4 +76,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/salidas/{salida}', [SalidaController::class, 'destroy'])
         ->name('salidas.destroy')
         ->middleware('auth');
+
+    // routes/web.php
+    Route::get('/historial-ventas', [MovimientoController::class, 'historial'])
+        ->name('movimientos.historial');
 });
