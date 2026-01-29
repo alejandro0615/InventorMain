@@ -77,61 +77,56 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        .sidebar {
-            background: linear-gradient(180deg, #fff, #f1f5f9);
-            border-right: 1px solid #e5e7eb;
-            padding: 1.8rem 1.2rem;
-            width: 280px;
-            /* ancho fijo para PC */
-        }
-
         @media (max-width: 768px) {
             .layout {
                 display: block;
-                /* flexible en móvil */
+                /* una columna: sidebar sobre main, pero la haremos off-canvas */
             }
 
             .sidebar {
-                position: absolute;
+                position: fixed;
                 top: 0;
                 left: -100%;
-                /* fuera de pantalla */
-                width: 80%;
-                /* ancho flexible */
+                width: 75%;
+                max-width: 280px;
+                height: 100vh;
                 padding: 1.5rem;
-                min-height: 100vh;
-                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-                transition: transform 0.3s ease;
-                transform: translateX(0);
+                background: #0f172a;
+                /* o tu gradiente */
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+                transition: left 0.3s ease;
                 z-index: 50;
             }
 
             .sidebar.active {
                 left: 0;
-                /* entra al presionar el botón */
             }
 
             .main {
                 padding: 1rem;
-                /* menos padding en móvil */
             }
 
-            .sidebar img {
-                width: 70px;
-                height: 70px;
-            }
-
-            .sidebar-title span {
-                font-size: 0.8rem;
+            .top-bar {
+                align-items: center;
             }
         }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
 
         /* ===== SIDEBAR ===== */
         .sidebar {
             background: linear-gradient(180deg, #fff, #f1f5f9);
             border-right: 1px solid #e5e7eb;
             padding: 1.8rem 1.2rem;
+            width: 260px;
+            /* ancho fijo escritorio */
+            flex-shrink: 0;
         }
+
 
         .sidebar-title {
             font-size: 1.2rem;
@@ -195,8 +190,8 @@
 
         /* ===== MAIN ===== */
         .main {
+            flex: 1;
             padding: 2rem;
-            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
         }
 
         .top-bar {
@@ -615,6 +610,12 @@
         body.dark .table-wrapper {
             background: linear-gradient(180deg, rgba(15, 23, 42, .85), rgba(2, 6, 23, .8));
             border: 1px solid rgba(59, 130, 246, .25);
+        }
+
+        @media (min-width: 768px) {
+            .md\:hidden {
+                display: none;
+            }
         }
     </style>
 
