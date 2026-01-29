@@ -617,6 +617,23 @@
                 display: none;
             }
         }
+
+        @media (max-width: 768px) {
+            .sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 40;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+
+            .sidebar-overlay.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
     </style>
 
 
@@ -629,6 +646,7 @@
         style="z-index:99999">
     </div>
     <div class="layout">
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
         <aside class="sidebar">
             <div class="sidebar-title" id="tour-logo">
                 <div
@@ -871,18 +889,47 @@
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const navLinks = document.querySelectorAll('.nav-link');
 
-            if (menuToggle && sidebar) {
-                menuToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('active');
-                });
+            if (!menuToggle || !sidebar) return;
 
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.addEventListener('click', () => {
-                        sidebar.classList.remove('active');
-                    });
+            const isMobile = () => window.innerWidth <= 768;
+
+            const openSidebar = () => {
+                if (!isMobile()) return;
+                sidebar.classList.add('active');
+                if (overlay) overlay.classList.add('active');
+            };
+
+            const closeSidebar = () => {
+                sidebar.classList.remove('active');
+                if (overlay) overlay.classList.remove('active');
+            };
+
+            menuToggle.addEventListener('click', () => {
+                if (sidebar.classList.contains('active')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (isMobile()) closeSidebar();
                 });
+            });
+
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
             }
+
+            window.addEventListener('resize', () => {
+                if (!isMobile()) {
+                    closeSidebar();
+                }
+            });
         });
     </script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
