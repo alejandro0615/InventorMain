@@ -20,18 +20,22 @@ class ProductoController extends Controller
         if ($request->get('filtro') === 'stock_bajo') {
             $query->where('stock_actual', '<=', 5);
         }
-
-        $productos = $query->get();
-
-        if ($request->ajax()) {
-            return view('productos._content', compact('productos'));
+        // Búsqueda por código o nombre
+        if ($search = $request->get('q')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('codigo', 'like', "%{$search}%")
+                    ->orWhere('nombre', 'like', "%{$search}%");
+            });
         }
 
-        return view('productos.index', compact('productos'));
+        $productos = $query->paginate(10)->withQueryString();
+
+        if ($request->ajax()) {
+            return view('productos._content', compact('productos', 'search'));
+        }
+
+        return view('productos.index', compact('productos', 'search'));
     }
-
-
-
 
     /**
      * Show the form for creating a new resource.

@@ -634,6 +634,19 @@
                 pointer-events: auto;
             }
         }
+
+        .filter-pill {
+            border-radius: 999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .filter-pill--active {
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+        }
     </style>
 
 
