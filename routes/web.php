@@ -79,5 +79,5 @@ Route::middleware(['auth'])->group(function () {
 
     // routes/web.php
     Route::get('/historial-ventas', [MovimientoController::class, 'historial'])
-        ->name('movimientos.historial');
+        ->name('historial.index');
 });

@@ -720,8 +720,8 @@
                     @click.prevent="loadView('{{ route('cotizacion.index') }}')">
                     Cotizaciones
                 </a>
-                <a href="{{ route('historial-ventas') }}" class="nav-link" id="tour-historial"
-                    @click.prevent="loadView('{{ route('historial-ventas') }}')">
+                <a href="{{ route('historial.index') }}" class="nav-link" id="tour-historial"
+                    @click.prevent="loadView('{{ route('historial.index') }}')"></a>
                     Historial de ventas
             </div>
         </aside>

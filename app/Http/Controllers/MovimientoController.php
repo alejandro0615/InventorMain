@@ -14,9 +14,9 @@ class MovimientoController extends Controller
 {
     public function index(Request $request)
     {
-        $localId     = Auth::user()->local_id;
+        $localId = Auth::user()->local_id;
         $proveedorId = $request->input('proveedor_id');
-        $fecha       = $request->input('fecha');
+        $fecha = $request->input('fecha');
 
         $proveedores = Proveedor::where('local_id', $localId)
             ->orderBy('nombre')
@@ -37,8 +37,8 @@ class MovimientoController extends Controller
 
     public function create()
     {
-        $localId    = Auth::user()->local_id;
-        $productos  = Producto::where('local_id', $localId)->get();
+        $localId = Auth::user()->local_id;
+        $productos = Producto::where('local_id', $localId)->get();
         $proveedores = Proveedor::where('local_id', $localId)->get();
 
         return view('movimientos.create', compact('productos', 'proveedores'));
@@ -50,18 +50,18 @@ class MovimientoController extends Controller
 
         $data = $request->validate(
             [
-                'proveedor_id'    => ['required', 'exists:proveedores,id'],
-                'fecha'           => ['required', 'date'],
+                'proveedor_id' => ['required', 'exists:proveedores,id'],
+                'fecha' => ['required', 'date'],
                 'tipo_movimiento' => ['required', 'in:' . implode(',', $tipo_movimiento)],
-                'producto_id'     => ['required', 'array'],
-                'producto_id.*'   => ['required', 'exists:productos,id'],
-                'cantidad'        => ['required', 'array'],
-                'cantidad.*'      => ['required', 'integer', 'min:1'],
-                'precio'          => ['required', 'array'],
-                'precio.*'        => ['required', 'numeric', 'min:0'],
-                'iva_porcentaje'  => ['nullable', 'array'],
-                'iva_porcentaje.*'=> ['nullable', 'numeric', 'min:0', 'max:100'],
-                'notas'           => ['nullable', 'string'],
+                'producto_id' => ['required', 'array'],
+                'producto_id.*' => ['required', 'exists:productos,id'],
+                'cantidad' => ['required', 'array'],
+                'cantidad.*' => ['required', 'integer', 'min:1'],
+                'precio' => ['required', 'array'],
+                'precio.*' => ['required', 'numeric', 'min:0'],
+                'iva_porcentaje' => ['nullable', 'array'],
+                'iva_porcentaje.*' => ['nullable', 'numeric', 'min:0', 'max:100'],
+                'notas' => ['nullable', 'string'],
             ]
         );
 
@@ -72,17 +72,17 @@ class MovimientoController extends Controller
 
             if ($data['tipo_movimiento'] === 'salida') {
                 $salida = Salida::create([
-                    'cliente_id'    => $data['proveedor_id'],
-                    'user_id'       => Auth::id(),
-                    'fecha'         => $data['fecha'],
-                    'notas'         => $request->input('notas'),
-                    'iva_porcentaje'=> 0,
-                    'total'         => 0,
+                    'cliente_id' => $data['proveedor_id'],
+                    'user_id' => Auth::id(),
+                    'fecha' => $data['fecha'],
+                    'notas' => $request->input('notas'),
+                    'iva_porcentaje' => 0,
+                    'total' => 0,
                 ]);
             }
 
             $subtotalGeneral = 0;
-            $ivaGeneral      = 0;
+            $ivaGeneral = 0;
 
             foreach ($data['producto_id'] as $index => $productoId) {
                 $cantidad = (int) $data['cantidad'][$index];
@@ -97,7 +97,7 @@ class MovimientoController extends Controller
                 }
 
                 $precioUnitario = (float) $data['precio'][$index];
-                $ivaPorcentaje  = isset($data['iva_porcentaje'][$index])
+                $ivaPorcentaje = isset($data['iva_porcentaje'][$index])
                     ? (float) $data['iva_porcentaje'][$index]
                     : 0;
 
@@ -108,18 +108,18 @@ class MovimientoController extends Controller
 
                     if ($salida) {
                         $subtotalLinea = $cantidad * $precioUnitario;
-                        $ivaLinea      = $subtotalLinea * ($ivaPorcentaje / 100);
+                        $ivaLinea = $subtotalLinea * ($ivaPorcentaje / 100);
 
                         $subtotalGeneral += $subtotalLinea;
-                        $ivaGeneral      += $ivaLinea;
+                        $ivaGeneral += $ivaLinea;
 
                         SalidaDetalle::create([
-                            'salida_id'       => $salida->id,
-                            'producto_id'     => $productoId,
-                            'cantidad'        => $cantidad,
+                            'salida_id' => $salida->id,
+                            'producto_id' => $productoId,
+                            'cantidad' => $cantidad,
                             'precio_unitario' => $precioUnitario,
-                            'iva_porcentaje'  => $ivaPorcentaje,
-                            'subtotal'        => $subtotalLinea,
+                            'iva_porcentaje' => $ivaPorcentaje,
+                            'subtotal' => $subtotalLinea,
                         ]);
                     }
                 }
@@ -153,7 +153,9 @@ class MovimientoController extends Controller
         // Aquí seguimos borrando la Salida (factura) y sus detalles,
         // como en tu versión inicial
         $salida = Salida::with('detalles.producto')
-            ->whereHas('cliente', fn($q) =>
+            ->whereHas(
+                'cliente',
+                fn($q) =>
                 $q->where('local_id', Auth::user()->local_id)
             )
             ->findOrFail($id);
@@ -173,36 +175,36 @@ class MovimientoController extends Controller
             ->with('success', 'Factura anulada y stock restaurado correctamente.');
     }
     public function historial(Request $request)
-{
-    $localId = Auth::user()->local_id;
+    {
+        $localId = Auth::user()->local_id;
+        $fecha = $request->input('fecha');
 
-    $fecha = $request->input('fecha');
+        $query = SalidaDetalle::query()
+            ->join('salidas', 'salida_detalles.salida_id', '=', 'salidas.id')
+            ->join('productos', 'salida_detalles.producto_id', '=', 'productos.id')
+            ->where('salidas.local_id', $localId);
 
-    $query = SalidaDetalle::query()
-        ->join('salidas', 'salida_detalles.salida_id', '=', 'salidas.id')
-        ->join('productos', 'salida_detalles.producto_id', '=', 'productos.id')
-        ->where('productos.local_id', $localId);
+        if ($fecha) {
+            $query->whereDate('salidas.fecha', $fecha);
+        }
 
-    if ($fecha) {
-        $query->whereDate('salidas.fecha', $fecha);
-    }
-
-    $historial = $query
-        ->selectRaw('
+        $historial = $query
+            ->selectRaw('
+            productos.id AS producto_id,
             productos.nombre AS producto,
             SUM(salida_detalles.cantidad) AS total_cantidad,
             SUM(salida_detalles.subtotal) AS total_vendido
         ')
-        ->groupBy('productos.nombre')
-        ->orderBy('productos.nombre')
-        ->get();
+            ->groupBy('productos.id', 'productos.nombre')
+            ->orderBy('producto')
+            ->get();
 
-    $totalDia = $historial->sum('total_vendido');
+        $totalDia = $historial->sum('total_vendido');
 
-    return view('movimientos.historial', compact(
-        'historial',
-        'fecha',
-        'totalDia'
-    ));
-}
+        return view('movimientos.historial', compact(
+            'historial',
+            'fecha',
+            'totalDia'
+        ));
+    }
 }
