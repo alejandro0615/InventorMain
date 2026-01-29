@@ -195,8 +195,8 @@
             <div class="form-group">
                 <label for="nit">NIT <span style="color: #dc2626;">*</span></label>
                 <input type="text" id="nit" name="nit" value="{{ old('nit') }}" required maxlength="12"
-                    minlength="12" placeholder="900123456-1">
-                <div class="info-text">Ej: 900123456-1 (12 caracteres exactos)</div>
+                    minlength="10" placeholder="900123456-1">
+                <div class="info-text">Ej: 900123456-1 (entre 9 y 12 caracteres)</div>
                 @error('nit')
                     <span class="error-message">{{ $message }}</span>
                 @enderror

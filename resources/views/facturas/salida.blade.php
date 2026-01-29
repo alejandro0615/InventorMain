@@ -246,16 +246,89 @@
             margin-bottom: 3px;
         }
 
-        /* Print styles */
         @media print {
+
+            /* Forzar que se impriman los colores */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Reemplazar gradientes por colores sólidos */
+            .invoice-badge,
+            thead,
+            .totals-row.total {
+                background: #1e40af !important;
+                color: #ffffff !important;
+            }
+
+            /* Fondos suaves para no perder texto */
+            .info-box,
+            tbody tr:nth-child(even),
+            .notes-section {
+                background: #f3f4f6 !important;
+            }
+
+            /* Bordes más visibles */
+            table,
+            th,
+            td {
+                border: 1px solid #9ca3af !important;
+            }
+
             body {
-                margin: 0;
-                padding: 0;
+                color: #000 !important;
+            }
+        }
+
+        @media print and (max-width: 80mm) {
+
+            body {
+                 font-size: 11px;
             }
 
             .container {
-                max-width: 100%;
-                padding: 10px;
+                max-width: 80mm;
+                padding: 5px;
+            }
+
+            .header-top,
+            .info-section {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            table thead {
+                display: none;
+            }
+
+            table,
+            tbody,
+            tr,
+            td {
+                display: block;
+                width: 100%;
+            }
+
+            tbody tr {
+                border-bottom: 1px dashed #000;
+                margin-bottom: 5px;
+            }
+
+            tbody td {
+                text-align: left !important;
+                padding: 3px 0;
+            }
+
+            .totals-section table {
+                width: 100%;
+                font-size: 12px;
+            }
+
+            .invoice-badge {
+                text-align: center;
+                padding: 6px;
+                font-size: 12px;
             }
         }
     </style>

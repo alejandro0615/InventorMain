@@ -16,25 +16,30 @@ class MovimientoController extends Controller
     public function index(Request $request)
     {
         $localId = Auth::user()->local_id;
-        $search = $request->input('q');
 
-        $movimientos = Producto::with(['proveedores'])
-            ->where('local_id', $localId)
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('nombre', 'like', "%{$search}%")
-                        ->orWhereHas('proveedores', function ($sub) use ($search) {
-                            $sub->where('nombre', 'like', "%{$search}%");
-                        });
-                });
+        $proveedorId = $request->input('proveedor_id');
+        $fecha = $request->input('fecha');
+
+        $movimientos = Salida::with(['detalles.producto', 'cliente'])
+            ->whereHas('cliente', function ($q) use ($localId) {
+                $q->where('local_id', $localId);
             })
+            ->when(
+                $proveedorId,
+                fn($q) =>
+                $q->where('cliente_id', $proveedorId)
+            )
+            ->when(
+                $fecha,
+                fn($q) =>
+                $q->whereDate('fecha', $fecha)
+            )
+            ->orderBy('fecha', 'desc')
             ->get();
-        if ($request->ajax()) {
-            return view('movimientos._content', compact('movimientos', 'search'));
-        }
 
-        return view('movimientos.index', compact('movimientos', 'search'));
+        return view('movimientos.index', compact('movimientos', 'proveedorId', 'fecha'));
     }
+
 
     public function create()
     {
