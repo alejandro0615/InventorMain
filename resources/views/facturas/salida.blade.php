@@ -271,7 +271,7 @@
                         {{ $salida->user->negocio->nombre ?? 'Mi Empresa' }}
                     </div>
                     <div class="company-details">
-                        @if($salida->user && $salida->user->negocio)
+                        @if ($salida->user && $salida->user->negocio)
                             <p><strong>NIT:</strong> {{ $salida->user->nit ?? 'N/A' }}</p>
                             <p><strong>Dirección:</strong> {{ $salida->user->negocio->direccion ?? 'N/A' }}</p>
                             <p><strong>Teléfono:</strong> {{ $salida->user->telefono ?? 'N/A' }}</p>
@@ -291,7 +291,7 @@
             <!-- Cliente -->
             <div class="info-box">
                 <h3>Información del Cliente</h3>
-                @if($salida->cliente)
+                @if ($salida->cliente)
                     <p><strong>Nombre:</strong> {{ $salida->cliente->nombre }}</p>
                     <p><strong>NIT:</strong> {{ $salida->cliente->nit ?? 'N/A' }}</p>
                     <p><strong>Dirección:</strong> {{ $salida->cliente->direccion ?? 'N/A' }}</p>
@@ -305,10 +305,10 @@
             <!-- Vendedor -->
             <div class="info-box">
                 <h3>Información del Vendedor</h3>
-                @if($salida->user)
+                @if ($salida->user)
                     <p><strong>Nombre:</strong> {{ $salida->user->name }}</p>
                     <p><strong>Email:</strong> {{ $salida->user->email }}</p>
-                    @if($salida->user->razon_social)
+                    @if ($salida->user->razon_social)
                         <p><strong>Razón Social:</strong> {{ $salida->user->razon_social }}</p>
                     @endif
                 @else
@@ -364,24 +364,88 @@
 
         <!-- Totals -->
         <div class="totals-section">
-            <div class="totals-box">
-                <div class="totals-row subtotal">
-                    <span class="totals-label">Subtotal:</span>
-                    <span class="totals-value">${{ number_format($subtotalGeneral, 2, ',', '.') }}</span>
-                </div>
-                <div class="totals-row iva">
-                    <span class="totals-label">IVA:</span>
-                    <span class="totals-value">${{ number_format($ivaGeneral, 2, ',', '.') }}</span>
-                </div>
-                <div class="totals-row total">
-                    <span class="totals-label">TOTAL:</span>
-                    <span class="totals-value">${{ number_format($subtotalGeneral + $ivaGeneral, 2, ',', '.') }}</span>
-                </div>
-            </div>
+            <table style="width: 320px; border-collapse: collapse; font-size: 11px;">
+                <thead>
+                    <tr>
+                        <th style="border:1px solid #e5e7eb; padding:6px; text-align:left; background:#f3f4f6;">
+                            Concepto
+                        </th>
+                        <th style="border:1px solid #e5e7eb; padding:6px; text-align:right; background:#f3f4f6;">
+                            Valor
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border:1px solid #e5e7eb; padding:6px;">Subtotal sin IVA</td>
+                        <td style="border:1px solid #e5e7eb; padding:6px; text-align:right;">
+                            ${{ number_format($subtotalGeneral, 2, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #e5e7eb; padding:6px;">Total IVA</td>
+                        <td style="border:1px solid #e5e7eb; padding:6px; text-align:right;">
+                            ${{ number_format($ivaGeneral, 2, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #e5e7eb; padding:6px; font-weight:bold; background:#e0ecff;">
+                            TOTAL A PAGAR
+                        </td>
+                        <td
+                            style="border:1px solid #e5e7eb; padding:6px; text-align:right; font-weight:bold; background:#e0ecff;">
+                            ${{ number_format($subtotalGeneral + $ivaGeneral, 2, ',', '.') }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
+        @php
+            $ivaPorGrupo = [];
+            foreach ($salida->detalles as $detalle) {
+                $base = $detalle->cantidad * $detalle->precio_unitario;
+                $pct = $detalle->iva_porcentaje ?? 0;
+                $ivaV = $base * ($pct / 100);
+                if (!isset($ivaPorGrupo[$pct])) {
+                    $ivaPorGrupo[$pct] = ['base' => 0, 'iva' => 0];
+                }
+                $ivaPorGrupo[$pct]['base'] += $base;
+                $ivaPorGrupo[$pct]['iva'] += $ivaV;
+            }
+        @endphp
+
+        @if (count($ivaPorGrupo))
+            <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+                <table style="width: 320px; border-collapse: collapse; font-size: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #e5e7eb; padding:4px; background:#f9fafb;">IVA %</th>
+                            <th style="border:1px solid #e5e7eb; padding:4px; background:#f9fafb;">Base</th>
+                            <th style="border:1px solid #e5e7eb; padding:4px; background:#f9fafb;">IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($ivaPorGrupo as $pct => $grupo)
+                            <tr>
+                                <td style="border:1px solid #e5e7eb; padding:4px; text-align:center;">
+                                    {{ $pct }}%
+                                </td>
+                                <td style="border:1px solid #e5e7eb; padding:4px; text-align:right;">
+                                    ${{ number_format($grupo['base'], 2, ',', '.') }}
+                                </td>
+                                <td style="border:1px solid #e5e7eb; padding:4px; text-align:right;">
+                                    ${{ number_format($grupo['iva'], 2, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
         <!-- Notes -->
-        @if($salida->notas)
+        @if ($salida->notas)
             <div class="notes-section">
                 <h3>Notas / Observaciones</h3>
                 <p>{{ $salida->notas }}</p>
