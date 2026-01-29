@@ -16,35 +16,29 @@ class MovimientoController extends Controller
     public function index(Request $request)
     {
         $localId = Auth::user()->local_id;
-
         $proveedorId = $request->input('proveedor_id');
         $fecha = $request->input('fecha');
 
-        // 👉 ESTO FALTABA
-        $proveedores = Proveedor::where('local_id', $localId)
-            ->orderBy('nombre')
-            ->get();
+        $proveedores = Proveedor::where('local_id', $localId)->orderBy('nombre')->get();
 
-        $movimientos = Salida::with(['detalles.producto', 'cliente'])
-            ->whereHas('cliente', function ($q) use ($localId) {
-                $q->where('local_id', $localId);
-            })
-            ->when(
-                $proveedorId,
-                fn($q) => $q->where('cliente_id', $proveedorId)
-            )
-            ->when(
-                $fecha,
-                fn($q) => $q->whereDate('fecha', $fecha)
-            )
-            ->orderBy('fecha', 'desc')
-            ->get();
+        // 👇 CAMBIO: Queryar la pivot directamente para TODOS los movimientos
+        $movimientos = DB::table('proveedor_producto as pp')
+            ->join('productos as p', 'pp.producto_id', '=', 'p.id')
+            ->join('proveedores as prov', 'pp.proveedor_id', '=', 'prov.id')
+            ->where('pp.local_id', $localId)
+            ->where('prov.local_id', $localId)
+            ->select('pp.*', 'p.nombre as producto_nombre', 'prov.nombre as proveedor_nombre')
+            ->when($proveedorId, fn($q) => $q->where('pp.proveedor_id', $proveedorId))
+            ->when($fecha, fn($q) => $q->whereDate('pp.fecha', $fecha))
+            ->orderBy('pp.fecha', 'desc')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->proveedor_id . '_' . $item->fecha; // Agrupar por proveedor+fecha
+            });
 
-        return view(
-            'movimientos.index',
-            compact('movimientos', 'proveedores', 'proveedorId', 'fecha')
-        );
+        return view('movimientos.index', compact('movimientos', 'proveedores', 'proveedorId', 'fecha'));
     }
+
 
 
 
@@ -135,6 +129,14 @@ class MovimientoController extends Controller
                         ]);
                     }
                 }
+                // Tomar precio e IVA desde el formulario, con fallback
+                $precioUnitario = isset($data['precio'][$index])
+                    ? (float) $data['precio'][$index]
+                    : (float) $producto->precio_venta;
+
+                $ivaPorcentaje = isset($data['iva_porcentaje'][$index])
+                    ? (float) $data['iva_porcentaje'][$index]
+                    : 0;
 
                 $pivotData = [
                     'tipo_movimiento' => $data['tipo_movimiento'],
@@ -206,75 +208,36 @@ class MovimientoController extends Controller
             ->with('success', 'Movimiento registrado exitosamente y stock actualizado.');
     }
 
-    public function show($id)
+    public function update()
     {
-        $producto = Producto::with('proveedores')
-            ->where('local_id', Auth::user()->local_id)
-            ->findOrFail($id);
-
-        return view('movimientos.show', compact('producto'));
+        abort(403, 'No se pueden editar movimientos.');
     }
 
-    public function edit($id)
-    {
-        $producto = Producto::with('proveedores')
-            ->where('local_id', Auth::user()->local_id)
-            ->findOrFail($id);
-        $proveedores = Proveedor::all();
-        $movimientos_asociados = $producto->proveedores->pluck('id')->toArray();
-        return view('movimientos.edit', compact('producto', 'movimientos_asociados'));
-    }
-
-    public function update(Request $request, $id)
-    {
-
-        $producto = Producto::where('local_id', Auth::user()->local_id)
-            ->findOrFail($id);
-
-
-        $data = $request->validate([
-            'proveedor_id' => ['required', 'exists:proveedores,id'],
-            'cantidad' => ['required', 'integer', 'min:1'],
-            'fecha' => ['required', 'date'],
-            'tipo_movimiento' => ['required', 'in:entrada,salida'],
-        ]);
-
-
-        if ($tipo_movimiento = 'salida') {
-            if ($producto->stock == 0 || $producto->stock < $data['cantidad']) {
-                return redirect()->back()->withErrors([
-                    'cantidad' => 'No hay suficiente stock para realizar 
-                la salida. Stock actual: ' . $producto->stock
-                ])->withInput();
-            }
-        }
-
-        $producto->proveedores()->updateExistingPivot($data['proveedor_id'], [
-            'stock_actual' => $data['stock_actual'],
-            'fecha' => $data['fecha'],
-            'tipo_movimiento' => $data['tipo_movimiento'],
-            'local_id' => Auth::user()->local_id,
-        ]);
-
-
-        if ($data['tipo_movimiento'] == 'entrada') {
-            $producto->increment('stock_actual', $data['stock_actual']);
-        } else {
-            $producto->decrement('stock_actual', $data['stock_actual']);
-        }
-
-        $producto->save();
-
-        return redirect()->route('movimientos.index')->with('success', 'Movimiento actualizado exitosamente.');
-
-    }
 
     public function destroy($id)
     {
-        $producto = Producto::where('local_id', Auth::user()->local_id)
-            ->findOrFail($id);
+        $movimiento = DB::table('proveedor_producto')
+            ->where('id', $id)
+            ->where('local_id', Auth::user()->local_id)
+            ->firstOrFail();
 
-        $producto->proveedores()->detach();
-        return redirect()->route('movimientos.index')->with('success', 'Movimiento eliminado exitosamente.');
+        DB::transaction(function () use ($movimiento) {
+            $producto = Producto::findOrFail($movimiento->producto_id);
+            // Restaurar stock
+            if ($movimiento->tipo_movimiento === 'salida') {
+                $producto->increment('stock_actual', $movimiento->cantidad);
+            } else { // entrada
+                $producto->decrement('stock_actual', $movimiento->cantidad);
+            }
+            if ($movimiento->tipo_movimiento === 'salida' && $movimiento->salida_id) {
+                SalidaDetalle::where('salida_id', $movimiento->salida_id)->delete();
+                Salida::where('id', $movimiento->salida_id)->delete();
+            }
+            DB::table('proveedor_producto')->where('id', $movimiento->id)->delete();
+        });
+
+        return redirect()->route('movimientos.index')->with('success', 'Movimiento eliminado.');
     }
+
+
 }
