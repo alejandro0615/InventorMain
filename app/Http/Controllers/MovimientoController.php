@@ -20,25 +20,32 @@ class MovimientoController extends Controller
         $proveedorId = $request->input('proveedor_id');
         $fecha = $request->input('fecha');
 
+        // 👉 ESTO FALTABA
+        $proveedores = Proveedor::where('local_id', $localId)
+            ->orderBy('nombre')
+            ->get();
+
         $movimientos = Salida::with(['detalles.producto', 'cliente'])
             ->whereHas('cliente', function ($q) use ($localId) {
                 $q->where('local_id', $localId);
             })
             ->when(
                 $proveedorId,
-                fn($q) =>
-                $q->where('cliente_id', $proveedorId)
+                fn($q) => $q->where('cliente_id', $proveedorId)
             )
             ->when(
                 $fecha,
-                fn($q) =>
-                $q->whereDate('fecha', $fecha)
+                fn($q) => $q->whereDate('fecha', $fecha)
             )
             ->orderBy('fecha', 'desc')
             ->get();
 
-        return view('movimientos.index', compact('movimientos', 'proveedorId', 'fecha'));
+        return view(
+            'movimientos.index',
+            compact('movimientos', 'proveedores', 'proveedorId', 'fecha')
+        );
     }
+
 
 
     public function create()
