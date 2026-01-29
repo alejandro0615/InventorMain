@@ -8,7 +8,7 @@
         <input type="date" name="fecha" value="{{ $fecha }}">
         <button class="btn btn-print">Buscar</button>
 
-        <a href="{{ route('movimientos.historial') }}" class="btn btn-delete">
+        <a href="{{ route('historial.index') }}" class="btn btn-delete"></a>
             Limpiar
         </a>
     </form>
