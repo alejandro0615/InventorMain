@@ -1,4 +1,18 @@
 <div class="table-responsive">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 class="card-title">Movimientos de inventario</h2>
+
+        <a href="{{ route('movimientos.create') }}" class="btn btn-print">
+            + Nuevo movimiento
+        </a>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <h2 class="card-title">Movimientos de inventario</h2>
+
+    <a href="{{ route('movimientos.create') }}" class="btn btn-print">
+        + Nuevo movimiento
+    </a>
+</div>
     <table class="tabla-movimientos">
         <thead>
             <tr>
@@ -33,19 +47,18 @@
 
                     <td class="acciones">
                         <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn btn-pdf">
-                            PDF
+                            VER PDF
                         </a>
 
                         <a href="{{ route('salidas.factura.download', $salida->id) }}" class="btn btn-download">
-                            ↓
+                            DESCARGAR
                         </a>
 
                         <form action="{{ route('salidas.destroy', $salida->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-delete"
-                                onclick="return confirm('¿Eliminar factura?')">
-                                ✕
+                            <button class="btn btn-delete" onclick="return confirm('¿Eliminar factura?')">
+                                ELIMINAR
                             </button>
                         </form>
                     </td>
