@@ -338,24 +338,52 @@
                         $subtotalGeneral = 0;
                         $ivaGeneral = 0;
                     @endphp
-                    @forelse($salida->detalles as $detalle)
+
+                    @forelse ($salida->detalles as $detalle)
                         @php
+                            $producto = $detalle->producto;
                             $subtotal = $detalle->cantidad * $detalle->precio_unitario;
                             $iva = $subtotal * ($detalle->iva_porcentaje / 100);
                             $subtotalGeneral += $subtotal;
                             $ivaGeneral += $iva;
                         @endphp
+
                         <tr>
-                            <td>{{ $detalle->producto->id ?? 'N/A' }}</td>
-                            <td>{{ $detalle->producto->nombre ?? 'Producto no encontrado' }}</td>
-                            <td class="text-center">{{ $detalle->cantidad }}</td>
-                            <td class="text-right">${{ number_format($detalle->precio_unitario, 2, ',', '.') }}</td>
-                            <td class="text-center">{{ $detalle->iva_porcentaje }}%</td>
-                            <td class="text-right">${{ number_format($subtotal, 2, ',', '.') }}</td>
+                            {{-- CÓDIGO --}}
+                            <td class="text-center">
+                                {{ $producto->codigo ?? ($producto->id ?? ($detalle->producto_id ?? 'N/A')) }}
+                            </td>
+
+                            {{-- NOMBRE PRODUCTO --}}
+                            <td>
+                                {{ $producto->nombre ?? 'Producto no encontrado' }}
+                            </td>
+
+                            {{-- CANTIDAD --}}
+                            <td class="text-center">
+                                {{ $detalle->cantidad }}
+                            </td>
+
+                            {{-- PRECIO UNITARIO --}}
+                            <td class="text-right">
+                                ${{ number_format($detalle->precio_unitario, 2, ',', '.') }}
+                            </td>
+
+                            {{-- IVA % --}}
+                            <td class="text-center">
+                                {{ $detalle->iva_porcentaje }}%
+                            </td>
+
+                            {{-- SUBTOTAL --}}
+                            <td class="text-right">
+                                ${{ number_format($subtotal, 2, ',', '.') }}
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">No hay productos en esta salida</td>
+                            <td colspan="6" class="text-center">
+                                No hay productos en esta salida
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -420,9 +448,9 @@
                 <table style="width: 320px; border-collapse: collapse; font-size: 10px;">
                     <thead>
                         <tr>
-                            <th style="border:1px solid #e5e7eb; padding:4px; background:#f9fafb;">IVA %</th>
-                            <th style="border:1px solid #e5e7eb; padding:4px; background:#f9fafb;">Base</th>
-                            <th style="border:1px solid #e5e7eb; padding:4px; background:#f9fafb;">IVA</th>
+                            <th style="border:1px solid #515c71; padding:4px; background:#f9fafb;">IVA %</th>
+                            <th style="border:1px solid #515c71; padding:4px; background:#f9fafb;">Base</th>
+                            <th style="border:1px solid #515c71; padding:4px; background:#f9fafb;">IVA</th>
                         </tr>
                     </thead>
                     <tbody>
