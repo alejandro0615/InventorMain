@@ -14,7 +14,14 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $localId = Auth::user()->local_id;
-        $productos = Producto::where('local_id', $localId)->get();
+
+        $query = Producto::where('local_id', $localId);
+
+        if ($request->get('filtro') === 'stock_bajo') {
+            $query->where('stock_actual', '<=', 5);
+        }
+
+        $productos = $query->get();
 
         if ($request->ajax()) {
             return view('productos._content', compact('productos'));
@@ -22,6 +29,7 @@ class ProductoController extends Controller
 
         return view('productos.index', compact('productos'));
     }
+
 
 
 

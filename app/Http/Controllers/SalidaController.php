@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Producto;
 use App\Models\Salida;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SalidaController extends Controller
@@ -57,5 +59,73 @@ class SalidaController extends Controller
 
         return redirect()->route('movimientos.index')
             ->with('success', 'Factura y movimientos eliminados correctamente.');
+    }
+   public function store(Request $request)
+    {
+        $request->validate([
+            'cliente_id'                  => ['nullable', 'exists:proveedores,id'],
+            'fecha'                       => ['required', 'date'],
+            'notas'                       => ['nullable', 'string'],
+            'numero_factura'              => ['nullable', 'string', 'max:50'],
+            'total'                       => ['required', 'numeric', 'min:0'],
+            'iva_porcentaje'             => ['required', 'numeric', 'min:0'],
+
+            'productos'                   => ['required', 'array'],
+            'productos.*.producto_id'     => ['required', 'exists:productos,id'],
+            'productos.*.cantidad'        => ['required', 'integer', 'min:1'],
+            'productos.*.precio_unitario' => ['required', 'numeric', 'min:0'],
+            'productos.*.iva_porcentaje'  => ['required', 'numeric', 'min:0'],
+        ]); 
+
+        DB::beginTransaction();
+
+        try {
+            // 1) Crear la salida
+            $salida = Salida::create([
+                'cliente_id'     => $request->cliente_id,
+                'user_id'        => Auth::id(),
+                'numero_factura' => $request->numero_factura,   // o genera tú el consecutivo
+                'fecha'          => $request->fecha,
+                'notas'          => $request->notas,
+                'total'          => $request->total,
+                'iva_porcentaje' => $request->iva_porcentaje,
+            ]);
+
+            // 2) Crear detalles, actualizar stock y registrar movimientos
+            foreach ($request->productos as $item) {
+                $producto = Producto::findOrFail($item['producto_id']);
+
+                $salida->detalles()->create([
+                    'producto_id'    => $producto->id,
+                    'cantidad'       => $item['cantidad'],
+                    'precio_unitario'=> $item['precio_unitario'],
+                    'iva_porcentaje' => $item['iva_porcentaje'],
+                ]);
+
+                // Descontar stock del producto
+                $producto->decrement('stock_actual', $item['cantidad']);
+
+                // Registrar movimiento (si usas esta tabla)
+                DB::table('movimientos')->insert([
+                    'producto_id' => $producto->id,
+                    'salida_id'   => $salida->id,
+                    'tipo'        => 'salida',
+                    'cantidad'    => $item['cantidad'],
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('movimientos.index')
+                ->with('success', 'Movimiento creado correctamente.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return back()
+                ->withErrors('Error al crear el movimiento: ' . $e->getMessage());
+        }
     }
 }
