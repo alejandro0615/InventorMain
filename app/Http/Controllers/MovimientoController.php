@@ -201,7 +201,7 @@ class MovimientoController extends Controller
 
         $totalDia = $historial->sum('total_vendido');
 
-        return view('movimientos.historial', compact(
+        return view('historial.index', compact(
             'historial',
             'fecha',
             'totalDia'
