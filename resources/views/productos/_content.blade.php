@@ -2,11 +2,20 @@
     <div class="flex items-center justify-between mb-4">
         <h2 class="card-title">Productos</h2>
         <div class="flex items-center gap-2">
+            {{-- Botón TODOS --}}
             <a href="{{ route('productos.index') }}"
                 class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium
                   {{ request('filtro') ? 'bg-gray-200 text-gray-700' : 'bg-blue-600 text-white' }}">
                 Todos
             </a>
+            {{-- Botón STOCK BAJO --}}
+            <a href="{{ route('productos.index', ['filtro' => 'stock_bajo']) }}"
+                class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium
+                      {{ request('filtro') === 'stock_bajo' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+                Stock bajo (≤ 5)
+            </a>
+
+            {{-- Botón NUEVO PRODUCTO --}}
 
             <a href="{{ route('productos.create') }}"
                 class="inline-flex items-center px-4 py-2 rounded-md shadow text-sm font-medium"
@@ -15,12 +24,14 @@
             </a>
         </div>
 
+        {{-- session('success') --}}
         @if (session('success'))
             <div class="mb-4 px-4 py-2 text-sm text-green-800 bg-green-100 border border-green-200 rounded-md">
                 {{ session('success') }}
             </div>
         @endif
 
+        {{-- Tabla --}}
         <div class="overflow-x-auto table-wrapper">
             <table class="min-w-full table-auto text-sm">
                 <thead class="border-b border-gray-200">
@@ -32,6 +43,7 @@
                         <th class="text-right font-semibold">Acciones</th>
                     </tr>
                 </thead>
+                
                 <tbody>
                     @forelse ($productos as $producto)
                         @php
