@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movimiento;
 use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\Salida;
@@ -15,194 +14,130 @@ class MovimientoController extends Controller
 {
     public function index(Request $request)
     {
-        $localId = Auth::user()->local_id;
+        $localId     = Auth::user()->local_id;
         $proveedorId = $request->input('proveedor_id');
-        $fecha = $request->input('fecha');
+        $fecha       = $request->input('fecha');
 
-        $proveedores = Proveedor::where('local_id', $localId)->orderBy('nombre')->get();
+        $proveedores = Proveedor::where('local_id', $localId)
+            ->orderBy('nombre')
+            ->get();
 
-        // 👇 CAMBIO: Queryar la pivot directamente para TODOS los movimientos
-        $movimientos = DB::table('proveedor_producto as pp')
-            ->join('productos as p', 'pp.producto_id', '=', 'p.id')
-            ->join('proveedores as prov', 'pp.proveedor_id', '=', 'prov.id')
-            ->where('pp.local_id', $localId)
-            ->where('prov.local_id', $localId)
-            ->select('pp.*', 'p.nombre as producto_nombre', 'prov.nombre as proveedor_nombre')
-            ->when($proveedorId, fn($q) => $q->where('pp.proveedor_id', $proveedorId))
-            ->when($fecha, fn($q) => $q->whereDate('pp.fecha', $fecha))
-            ->orderBy('pp.fecha', 'desc')
-            ->get()
-            ->groupBy(function ($item) {
-                return $item->proveedor_id . '_' . $item->fecha; // Agrupar por proveedor+fecha
-            });
+        // Volvemos a Salida (solo salidas, no entradas)
+        $movimientos = Salida::with(['detalles.producto', 'cliente'])
+            ->whereHas('cliente', function ($q) use ($localId) {
+                $q->where('local_id', $localId);
+            })
+            ->when($proveedorId, fn($q) => $q->where('cliente_id', $proveedorId))
+            ->when($fecha, fn($q) => $q->whereDate('fecha', $fecha))
+            ->orderBy('fecha', 'desc')
+            ->get();
 
         return view('movimientos.index', compact('movimientos', 'proveedores', 'proveedorId', 'fecha'));
     }
 
-
-
-
     public function create()
     {
-
-        $localId = Auth::user()->local_id;
-        $productos = Producto::where('local_id', $localId)->get();
+        $localId    = Auth::user()->local_id;
+        $productos  = Producto::where('local_id', $localId)->get();
         $proveedores = Proveedor::where('local_id', $localId)->get();
-        // Mostrar formulario para crear un nuevo movimiento
+
         return view('movimientos.create', compact('productos', 'proveedores'));
     }
 
     public function store(Request $request)
     {
-
         $tipo_movimiento = ['entrada', 'salida'];
-
 
         $data = $request->validate(
             [
-                'proveedor_id' => ['required', 'exists:proveedores,id'],
-                'fecha' => ['required', 'date'],
+                'proveedor_id'    => ['required', 'exists:proveedores,id'],
+                'fecha'           => ['required', 'date'],
                 'tipo_movimiento' => ['required', 'in:' . implode(',', $tipo_movimiento)],
-                'producto_id' => ['required', 'array'],
-                'producto_id.*' => ['required', 'exists:productos,id'],
-                'cantidad' => ['required', 'array'],
-                'cantidad.*' => ['required', 'integer', 'min:1'],
-                // Campo opcional para notas/observaciones de la factura/salida
-                'notas' => ['nullable', 'string'],
-            ],
-            [
-                'proveedor_id.required' => 'El campo proveedor es obligatorio.',
-                'proveedor_id.exists' => 'El proveedor seleccionado no es válido.',
-                'fecha.required' => 'El campo fecha es obligatorio.',
-                'fecha.date' => 'El campo fecha debe ser una fecha válida.',
-                'tipo_movimiento.required' => 'El tipo de movimiento es obligatorio.',
-                'tipo_movimiento.in' => 'El tipo de movimiento debe ser "entrada" o "salida".',
-
-                'producto_id.required' => 'Debes agregar al menos un producto.',
-                'producto_id.array' => 'Los productos deben enviarse como lista.',
-                'producto_id.*.exists' => 'Algún producto seleccionado no es válido.',
-
-                'cantidad.required' => 'Debes indicar cantidades.',
-                'cantidad.array' => 'Las cantidades deben enviarse como lista.',
-                'cantidad.*.required' => 'Todas las cantidades son obligatorias.',
-                'cantidad.*.integer' => 'Cada cantidad debe ser un número entero.',
-                'cantidad.*.min' => 'Cada cantidad debe ser al menos 1.',
+                'producto_id'     => ['required', 'array'],
+                'producto_id.*'   => ['required', 'exists:productos,id'],
+                'cantidad'        => ['required', 'array'],
+                'cantidad.*'      => ['required', 'integer', 'min:1'],
+                'precio'          => ['required', 'array'],
+                'precio.*'        => ['required', 'numeric', 'min:0'],
+                'iva_porcentaje'  => ['nullable', 'array'],
+                'iva_porcentaje.*'=> ['nullable', 'numeric', 'min:0', 'max:100'],
+                'notas'           => ['nullable', 'string'],
             ]
-
         );
-        // Variable para poder usar la salida creada fuera de la transacción
+
         $salida = null;
 
         DB::transaction(function () use ($data, $request, &$salida) {
             $localId = Auth::user()->local_id;
 
-            // Si el movimiento es de SALIDA, creamos el encabezado de factura/salida
             if ($data['tipo_movimiento'] === 'salida') {
                 $salida = Salida::create([
-                    'cliente_id' => $data['proveedor_id'], // usamos proveedor como cliente
-                    'user_id' => Auth::id(),
-                    'fecha' => $data['fecha'],
-                    'notas' => $request->input('notas'),
-                    // IVA general opcional, por ahora lo dejamos en 0 y se calcula por detalle
-                    'iva_porcentaje' => 0,
-                    'total' => 0,
+                    'cliente_id'    => $data['proveedor_id'],
+                    'user_id'       => Auth::id(),
+                    'fecha'         => $data['fecha'],
+                    'notas'         => $request->input('notas'),
+                    'iva_porcentaje'=> 0,
+                    'total'         => 0,
                 ]);
             }
 
-            // Acumuladores para el total de la factura
             $subtotalGeneral = 0;
-            $ivaGeneral = 0;
+            $ivaGeneral      = 0;
 
-            // Recorremos cada línea de producto
             foreach ($data['producto_id'] as $index => $productoId) {
                 $cantidad = (int) $data['cantidad'][$index];
 
-                $producto = Producto::where('local_id', $localId)
-                    ->findOrFail($productoId);
+                $producto = Producto::where('local_id', $localId)->findOrFail($productoId);
 
-                // Validar stock para salidas
-                if ($data['tipo_movimiento'] === 'salida') {
-                    if ($producto->stock_actual == 0 || $producto->stock_actual < $cantidad) {
-                        throw \Illuminate\Validation\ValidationException::withMessages([
-                            'cantidad.' . $index => 'No hay suficiente stock para ' .
-                                $producto->nombre . '. Stock actual: ' . $producto->stock_actual,
-                        ]);
-                    }
+                if ($data['tipo_movimiento'] === 'salida' && $producto->stock_actual < $cantidad) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'cantidad.' . $index => 'No hay suficiente stock para ' .
+                            $producto->nombre . '. Stock actual: ' . $producto->stock_actual,
+                    ]);
                 }
-                // Tomar precio e IVA desde el formulario, con fallback
-                $precioUnitario = isset($data['precio'][$index])
-                    ? (float) $data['precio'][$index]
-                    : (float) $producto->precio_venta;
 
-                $ivaPorcentaje = isset($data['iva_porcentaje'][$index])
+                $precioUnitario = (float) $data['precio'][$index];
+                $ivaPorcentaje  = isset($data['iva_porcentaje'][$index])
                     ? (float) $data['iva_porcentaje'][$index]
                     : 0;
 
-                $pivotData = [
-                    'tipo_movimiento' => $data['tipo_movimiento'],
-                    'cantidad' => $cantidad,
-                    'fecha' => $data['fecha'],
-                    'local_id' => Auth::user()->local_id,
-                ];
-
-                // Si se generó una salida/factura, guardamos también el ID en el pivote
-                if ($salida && $data['tipo_movimiento'] === 'salida') {
-                    $pivotData['salida_id'] = $salida->id;
-                }
-
-                $producto->proveedores()->attach($data['proveedor_id'], $pivotData);
-                // Actualizar stock
                 if ($data['tipo_movimiento'] === 'entrada') {
                     $producto->increment('stock_actual', $cantidad);
-                } else { // salida
+                } else {
                     $producto->decrement('stock_actual', $cantidad);
 
-                    // Si tenemos una salida (factura), creamos el detalle de la misma
                     if ($salida) {
-                        // Usamos el precio de venta del producto como precio unitario
-                        $precioUnitario = $producto->precio_venta;
-
-                        // IVA por defecto para cada línea (ajusta el porcentaje según tu necesidad)
-                        $ivaPorcentaje = 0; // Ejemplo: 19 para 19%
-
                         $subtotalLinea = $cantidad * $precioUnitario;
-                        $ivaLinea = $subtotalLinea * ($ivaPorcentaje / 100);
+                        $ivaLinea      = $subtotalLinea * ($ivaPorcentaje / 100);
 
                         $subtotalGeneral += $subtotalLinea;
-                        $ivaGeneral += $ivaLinea;
+                        $ivaGeneral      += $ivaLinea;
 
                         SalidaDetalle::create([
-                            'salida_id' => $salida->id,
-                            'producto_id' => $productoId,
-                            'cantidad' => $cantidad,
+                            'salida_id'       => $salida->id,
+                            'producto_id'     => $productoId,
+                            'cantidad'        => $cantidad,
                             'precio_unitario' => $precioUnitario,
-                            'iva_porcentaje' => $ivaPorcentaje,
-                            // Guardamos el subtotal sin IVA
-                            'subtotal' => $subtotalLinea,
+                            'iva_porcentaje'  => $ivaPorcentaje,
+                            'subtotal'        => $subtotalLinea,
                         ]);
                     }
                 }
             }
 
-            // Actualizamos totales de la salida/factura si se creó
             if ($salida) {
                 $salida->total = $subtotalGeneral + $ivaGeneral;
-
-                // Generamos un número de factura sencillo y único basado en el ID
                 $salida->numero_factura = 'F' . str_pad($salida->id, 6, '0', STR_PAD_LEFT);
-
                 $salida->save();
             }
         });
 
-        // Si el movimiento fue una salida y se creó la factura, redirigimos al PDF
         if ($data['tipo_movimiento'] === 'salida' && $salida) {
             return redirect()
                 ->route('salidas.factura', $salida)
                 ->with('success', 'Movimiento de salida registrado y factura generada correctamente.');
         }
 
-        // Para entradas seguimos con el flujo normal
         return redirect()
             ->route('movimientos.index')
             ->with('success', 'Movimiento registrado exitosamente y stock actualizado.');
@@ -213,31 +148,28 @@ class MovimientoController extends Controller
         abort(403, 'No se pueden editar movimientos.');
     }
 
-
     public function destroy($id)
     {
-        $movimiento = DB::table('proveedor_producto')
-            ->where('id', $id)
-            ->where('local_id', Auth::user()->local_id)
-            ->firstOrFail();
+        // Aquí seguimos borrando la Salida (factura) y sus detalles,
+        // como en tu versión inicial
+        $salida = Salida::with('detalles.producto')
+            ->whereHas('cliente', fn($q) =>
+                $q->where('local_id', Auth::user()->local_id)
+            )
+            ->findOrFail($id);
 
-        DB::transaction(function () use ($movimiento) {
-            $producto = Producto::findOrFail($movimiento->producto_id);
-            // Restaurar stock
-            if ($movimiento->tipo_movimiento === 'salida') {
-                $producto->increment('stock_actual', $movimiento->cantidad);
-            } else { // entrada
-                $producto->decrement('stock_actual', $movimiento->cantidad);
+        DB::transaction(function () use ($salida) {
+            foreach ($salida->detalles as $detalle) {
+                // Devolver stock
+                $detalle->producto->increment('stock_actual', $detalle->cantidad);
+                $detalle->delete();
             }
-            if ($movimiento->tipo_movimiento === 'salida' && $movimiento->salida_id) {
-                SalidaDetalle::where('salida_id', $movimiento->salida_id)->delete();
-                Salida::where('id', $movimiento->salida_id)->delete();
-            }
-            DB::table('proveedor_producto')->where('id', $movimiento->id)->delete();
+
+            $salida->delete();
         });
 
-        return redirect()->route('movimientos.index')->with('success', 'Movimiento eliminado.');
+        return redirect()
+            ->route('movimientos.index')
+            ->with('success', 'Factura anulada y stock restaurado correctamente.');
     }
-
-
 }
