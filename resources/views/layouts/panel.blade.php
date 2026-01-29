@@ -88,33 +88,32 @@
         @media (max-width: 768px) {
             .layout {
                 display: block;
+                /* flexible en móvil */
             }
 
             .sidebar {
-                display: none;
-                /* oculto por defecto en móvil */
-                width: 80%;
                 position: absolute;
                 top: 0;
-                left: 0;
-                z-index: 50;
-                background: linear-gradient(180deg, #fff, #f1f5f9);
+                left: -100%;
+                /* fuera de pantalla */
+                width: 80%;
+                /* ancho flexible */
                 padding: 1.5rem;
                 min-height: 100vh;
                 box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
                 transition: transform 0.3s ease;
-                transform: translateX(-100%);
-                /* fuera de la pantalla */
+                transform: translateX(0);
+                z-index: 50;
             }
 
             .sidebar.active {
-                display: block;
-                transform: translateX(0);
-                /* entra al presionar botón */
+                left: 0;
+                /* entra al presionar el botón */
             }
 
             .main {
                 padding: 1rem;
+                /* menos padding en móvil */
             }
 
             .sidebar img {
@@ -126,7 +125,6 @@
                 font-size: 0.8rem;
             }
         }
-
 
         /* ===== SIDEBAR ===== */
         .sidebar {
@@ -867,11 +865,23 @@
                 driverObj.drive();
             };
         });
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('.sidebar');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.querySelector('.sidebar');
 
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        sidebar.classList.remove('active');
+                    });
+                });
+            }
         });
     </script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
