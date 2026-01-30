@@ -162,6 +162,22 @@
             text-align: center;
         }
 
+        .tabla-productos {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* 👈 clave para alineación */
+        }
+
+        .tabla-productos th,
+        .tabla-productos td {
+            border: 1px solid #e5e7eb;
+            padding: 6px;
+            font-size: 10px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
         /* Totals */
         .totals-section {
             display: flex;
@@ -284,7 +300,7 @@
         @media print and (max-width: 80mm) {
 
             body {
-                 font-size: 11px;
+                font-size: 11px;
             }
 
             .container {
@@ -395,15 +411,15 @@
 
         <!-- Products Table -->
         <div class="table-container">
-            <table>
+            <table class="tabla-productos">
                 <thead>
                     <tr>
-                        <th style="width: 10%;">Código</th>
-                        <th style="width: 35%;">Producto</th>
-                        <th style="width: 10%;" class="text-center">Cantidad</th>
-                        <th style="width: 15%;" class="text-right">Precio Unit.</th>
-                        <th style="width: 10%;" class="text-center">IVA %</th>
-                        <th style="width: 20%;" class="text-right">Subtotal</th>
+                        <th style="width:12%; text-align:center;">CÓDIGO</th>
+                        <th style="width:38%; text-align:left;">PRODUCTO</th>
+                        <th style="width:8%; text-align:center;">CANT</th>
+                        <th style="width:14%; text-align:right;">PRECIO U</th>
+                        <th style="width:8%; text-align:center;">IVA %</th>
+                        <th style="width:20%; text-align:right;">SUBTOTAL</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -412,56 +428,44 @@
                         $ivaGeneral = 0;
                     @endphp
 
-                    @forelse ($salida->detalles as $detalle)
+                    @foreach ($salida->detalles as $detalle)
                         @php
                             $producto = $detalle->producto;
-                            $subtotal = $detalle->cantidad * $detalle->precio_unitario;
-                            $iva = $subtotal * ($detalle->iva_porcentaje / 100);
-                            $subtotalGeneral += $subtotal;
+                            $base = $detalle->cantidad * $detalle->precio_unitario;
+                            $iva = $base * ($detalle->iva_porcentaje / 100);
+                            $subtotalGeneral += $base;
                             $ivaGeneral += $iva;
                         @endphp
-
                         <tr>
-                            {{-- CÓDIGO --}}
-                            <td class="text-center">
-                                {{ $producto->codigo ?? ($producto->id ?? ($detalle->producto_id ?? 'N/A')) }}
+                            <td style="text-align:center;">
+                                {{ $producto->codigo ?? '—' }}
                             </td>
 
-                            {{-- NOMBRE PRODUCTO --}}
                             <td>
                                 {{ $producto->nombre ?? 'Producto no encontrado' }}
                             </td>
 
-                            {{-- CANTIDAD --}}
-                            <td class="text-center">
+                            <td style="text-align:center;">
                                 {{ $detalle->cantidad }}
                             </td>
 
-                            {{-- PRECIO UNITARIO --}}
-                            <td class="text-right">
+                            <td style="text-align:right;">
                                 ${{ number_format($detalle->precio_unitario, 2, ',', '.') }}
                             </td>
 
-                            {{-- IVA % --}}
-                            <td class="text-center">
+                            <td style="text-align:center;">
                                 {{ $detalle->iva_porcentaje }}%
                             </td>
 
-                            {{-- SUBTOTAL --}}
-                            <td class="text-right">
-                                ${{ number_format($subtotal, 2, ',', '.') }}
+                            <td style="text-align:right;">
+                                ${{ number_format($base, 2, ',', '.') }}
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">
-                                No hay productos en esta salida
-                            </td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
+
 
         <!-- Totals -->
         <div class="totals-section">
