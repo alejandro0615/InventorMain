@@ -197,12 +197,11 @@
                     NIT <span style="color:#dc2626;">*</span>
                 </label>
 
-                <input type="text" id="nit" name="nit" value="{{ old('nit') }}" required maxlength="12"
-                required minlength="9"
-                    placeholder="900123456-1" pattern="^[0-9]{9,10}-[0-9]$" title="Formato válido: 900123456-1">
+                <input type="text" id="nit" name="nit" value="{{ old('nit') }}" required  minlength="9" maxlength="12"
+                    placeholder="900123456-1" pattern="^[0-9]{8,10}-[0-9]$" title="Formato válido: 900123456-1">
 
                 <div class="info-text">
-                    Ej: 900123456-1 (9–10 números, guion y dígito verificador)
+                    Ej: 90123456-1 (8–10 números, guion y dígito verificador)
                 </div>
 
                 @error('nit')
