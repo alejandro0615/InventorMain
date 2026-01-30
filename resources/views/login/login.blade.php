@@ -147,7 +147,7 @@
                 <div style="position: relative;">
                     <input type="password" name="password" id="password" required style="padding-right: 40px;">
 
-                    <button type="button" onclick="togglePassword()"
+                    <button type="button" onclick="togglePassword('password', this)"
                         style="
                 position: absolute;
                 right: 8px;
@@ -156,8 +156,7 @@
                 background: none;
                 border: none;
                 cursor: pointer;
-                font-size: 18px;
-            "
+                font-size: 18px;"
                         aria-label="Mostrar contraseña">
                         👁️
                     </button>
