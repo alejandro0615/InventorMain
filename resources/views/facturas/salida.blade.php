@@ -125,7 +125,6 @@
 
         thead {
             background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            color: white;
         }
 
         thead th {
@@ -275,7 +274,7 @@
             thead,
             .totals-row.total {
                 background: #1e40af !important;
-                color: #ffffff !important;
+                color: #0e0e0e !important;
             }
 
             /* Fondos suaves para no perder texto */

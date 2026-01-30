@@ -1,16 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Factura #{{ $salida->id }}</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 4px; }
-        th { background: #f3f4f6; }
-        .text-right { text-align: right; }
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            color: #1f2937;
+            /* gris oscuro legible */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: #111827;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #111827;
+        }
+
+        th {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            font-weight: bold;
+            padding: 6px;
+            border: 1px solid #d1d5db;
+            text-align: left;
+        }
+
+        td {
+            padding: 6px;
+            border: 1px solid #e5e7eb;
+            color: #111827;
+        }
     </style>
+
 </head>
+
 <body>
     <h2>Factura de salida #{{ $salida->id }}</h2>
     <p>Fecha: {{ $salida->fecha->format('d/m/Y') }}</p>
@@ -32,7 +65,7 @@
                 $subtotal = 0;
                 $totalIva = 0;
             @endphp
-            @foreach($salida->detalles as $detalle)
+            @foreach ($salida->detalles as $detalle)
                 @php
                     $base = $detalle->cantidad * $detalle->precio_unitario;
                     $ivaPct = $detalle->iva_porcentaje ?? 0;
@@ -66,4 +99,5 @@
         </tfoot>
     </table>
 </body>
+
 </html>
