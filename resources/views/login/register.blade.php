@@ -193,10 +193,17 @@
             </div>
 
             <div class="form-group">
-                <label for="nit">NIT <span style="color: #dc2626;">*</span></label>
+                <label for="nit">
+                    NIT <span style="color:#dc2626;">*</span>
+                </label>
+
                 <input type="text" id="nit" name="nit" value="{{ old('nit') }}" required maxlength="12"
-                    minlength="10" placeholder="900123456-1">
-                <div class="info-text">Ej: 900123456-1 (entre 9 y 12 caracteres)</div>
+                    placeholder="900123456-1" pattern="^[0-9]{9,10}-[0-9]$" title="Formato válido: 900123456-1">
+
+                <div class="info-text">
+                    Ej: 900123456-1 (9–10 números, guion y dígito verificador)
+                </div>
+
                 @error('nit')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
@@ -226,16 +233,35 @@
             </div>
 
             <div class="form-group">
-                <label for="password">Contraseña <span style="color: #dc2626;">*</span></label>
-                <input type="password" id="password" name="password" required minlength="8">
+                <label for="password">
+                    Contraseña <span style="color:#dc2626;">*</span>
+                </label>
+
+                <div style="position:relative;">
+                    <input type="password" id="password" name="password" required minlength="8"
+                        style="padding-right:40px;">
+
+                    <button type="button" class="toggle-btn" onclick="togglePassword('password', this)">👁️</button>
+                </div>
+
                 @error('password')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
+
             <div class="form-group">
-                <label for="password_confirmation">Confirmar contraseña <span style="color: #dc2626;">*</span></label>
-                <input type="password" id="password_confirmation" name="password_confirmation" required
-                    minlength="8" placeholder="Repite tu contraseña">
+                <label for="password_confirmation">
+                    Confirmar contraseña <span style="color:#dc2626;">*</span>
+                </label>
+
+                <div style="position:relative;">
+                    <input type="password" id="password_confirmation" name="password_confirmation" required
+                        minlength="8" placeholder="Repite tu contraseña" style="padding-right:40px;">
+
+                    <button type="button" class="toggle-btn"
+                        onclick="togglePassword('password_confirmation', this)">👁️</button>
+                </div>
+
                 @error('password_confirmation')
                     <span class="error-message">{{ $message }}</span>
                 @enderror

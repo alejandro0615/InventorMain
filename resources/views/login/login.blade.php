@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,8 +35,15 @@
         }
 
         @keyframes float {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
         .login-title {
@@ -101,50 +109,75 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="login-container">
+    <div class="login-container">
 
-    <!-- 🧸 MUÑEQUITO SVG -->
-    <svg class="mascot" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="90" fill="#93c5fd"/>
-        <circle cx="70" cy="90" r="10" fill="#1e3a8a"/>
-        <circle cx="130" cy="90" r="10" fill="#1e3a8a"/>
-        <path d="M70 125 Q100 145 130 125" stroke="#1e3a8a" stroke-width="6" fill="none"/>
-        <circle cx="65" cy="90" r="4" fill="#fff"/>
-        <circle cx="125" cy="90" r="4" fill="#fff"/>
-    </svg>
+        <!-- 🧸 MUÑEQUITO SVG -->
+        <svg class="mascot" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="90" fill="#93c5fd" />
+            <circle cx="70" cy="90" r="10" fill="#1e3a8a" />
+            <circle cx="130" cy="90" r="10" fill="#1e3a8a" />
+            <path d="M70 125 Q100 145 130 125" stroke="#1e3a8a" stroke-width="6" fill="none" />
+            <circle cx="65" cy="90" r="4" fill="#fff" />
+            <circle cx="125" cy="90" r="4" fill="#fff" />
+        </svg>
 
-    <h1 class="login-title">¡Bienvenido!</h1>
+        <h1 class="login-title">¡Bienvenido!</h1>
 
-    @if(session('error'))
-        <div class="error">{{ session('error') }}</div>
-    @endif
+        @if (session('error'))
+            <div class="error">{{ session('error') }}</div>
+        @endif
 
-    <form method="POST" action="{{ route('login.store') }}">
-        @csrf
+        <form method="POST" action="{{ route('login.store') }}">
+            @csrf
 
-        <div class="form-group">
-            <label for="email">Correo</label>
-            <input type="email" name="email" value="{{ old('email') }}" required>
-            @error('email') <div class="error">{{ $message }}</div> @enderror
-        </div>
+            <div class="form-group">
+                <label for="email">Correo</label>
+                <input type="email" name="email" value="{{ old('email') }}" required>
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
 
-        <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input type="password" name="password" required>
-            @error('password') <div class="error">{{ $message }}</div> @enderror
-        </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
 
-        <button type="submit" class="btn-primary">
-            Entrar 🚀
-        </button>
-    </form>
+                <div style="position: relative;">
+                    <input type="password" name="password" id="password" required style="padding-right: 40px;">
 
-    <p class="footer-text">
-        Sistema de inventario · Acceso seguro
-    </p>
-</div>
+                    <button type="button" onclick="togglePassword()"
+                        style="
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 18px;
+            "
+                        aria-label="Mostrar contraseña">
+                        👁️
+                    </button>
+                </div>
+
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Entrar 🚀
+            </button>
+        </form>
+
+        <p class="footer-text">
+            Sistema de inventario · Acceso seguro
+        </p>
+    </div>
 
 </body>
+
 </html>

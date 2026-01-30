@@ -22,7 +22,7 @@ class LoginController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'razon_social' => ['required', 'string', 'max:255'],
-            'nit' => ['required', 'string', 'size:12', 'unique:users,nit'],
+            'nit' => ['required', 'string', 'min:9', 'max:12', 'unique:users,nit'],
             'rut' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
             'telefono' => ['required', 'string', 'min:10', 'max:15'],
             'nombre_local' => ['required', 'string', 'max:255'], // CAMPO DEL FORMULARIO
