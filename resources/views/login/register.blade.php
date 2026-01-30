@@ -198,6 +198,7 @@
                 </label>
 
                 <input type="text" id="nit" name="nit" value="{{ old('nit') }}" required maxlength="12"
+                required minlength="9"
                     placeholder="900123456-1" pattern="^[0-9]{9,10}-[0-9]$" title="Formato válido: 900123456-1">
 
                 <div class="info-text">
