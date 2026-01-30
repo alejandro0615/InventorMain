@@ -134,8 +134,9 @@ class MovimientoController extends Controller
 
         if ($data['tipo_movimiento'] === 'salida' && $salida) {
             return redirect()
-                ->route('salidas.factura', $salida)
-                ->with('success', 'Movimiento de salida registrado y factura generada correctamente.');
+                ->route('movimientos.index')
+                ->with('success', 'Movimiento de salida registrado y factura generada correctamente.')
+                ->with('open_pdf', route('salidas.factura', $salida->id));
         }
 
         return redirect()

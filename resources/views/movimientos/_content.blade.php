@@ -97,4 +97,9 @@
         @endforelse
     </tbody>
 </table>
+@if (session('open_pdf'))
+    <script>
+        window.open("{{ session('open_pdf') }}", "_blank");
+    </script>
+@endif
 </div>
