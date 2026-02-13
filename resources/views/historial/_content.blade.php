@@ -7,19 +7,16 @@
     <form method="GET" style="margin:1rem 0; display:flex; gap:1rem;">
         <input type="date" name="fecha" value="{{ $fecha }}">
         <button class="btn btn-print">Buscar</button>
-
-        <a href="{{ route('historial.index') }}" class="btn btn-delete"></a>
-            Limpiar
+        <a href="{{ route('historial.index') }}" class="btn btn-delete">Limpiar</a>
         </a>
     </form>
-
     <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
                     <th>Producto</th>
-                    <th class="text-right">Cantidad vendida</th>
-                    <th class="text-right">Total vendido</th>
+                    <th class="text-right">Cantidad vendida: </th>
+                    <th class="text-right">Total vendido: </th>
                 </tr>
             </thead>
 

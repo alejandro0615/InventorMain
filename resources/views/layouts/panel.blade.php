@@ -830,9 +830,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const driver = window.driver?.js?.driver;
-            if (!driver) return;
-
+            // Para el bundle IIFE del CDN, la ruta correcta es esta
+            const driverFactory = window.driver && window.driver.js && window.driver.js.driver;
+            if (!driverFactory) {
+                console.error('Driver.js no está disponible en window.driver.js.driver');
+                return;
+            }
             const driverObj = driver({
                 showProgress: true,
                 nextBtnText: 'Siguiente',
