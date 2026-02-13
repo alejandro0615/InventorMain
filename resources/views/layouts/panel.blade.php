@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +37,6 @@
 
         input::placeholder {
             color: #9ca3af;
-            /* gris para placeholder */
         }
 
         body.dark input::placeholder {
@@ -80,7 +78,6 @@
         @media (max-width: 768px) {
             .layout {
                 display: block;
-                /* una columna: sidebar sobre main, pero la haremos off-canvas */
             }
 
             .sidebar {
@@ -92,7 +89,6 @@
                 height: 100vh;
                 padding: 1.5rem;
                 background: #0f172a;
-                /* o tu gradiente */
                 box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
                 transition: left 0.3s ease;
                 z-index: 50;
@@ -116,17 +112,14 @@
             min-height: 100vh;
         }
 
-
         /* ===== SIDEBAR ===== */
         .sidebar {
             background: linear-gradient(180deg, #fff, #f1f5f9);
             border-right: 1px solid #e5e7eb;
             padding: 1.8rem 1.2rem;
             width: 260px;
-            /* ancho fijo escritorio */
             flex-shrink: 0;
         }
-
 
         .sidebar-title {
             font-size: 1.2rem;
@@ -161,26 +154,21 @@
         .stock-normal {
             font-weight: 600;
             color: #111827;
-            /* color default para light mode */
         }
 
         body.dark .stock-normal {
             color: #e5e7eb;
-            /* color para dark mode */
         }
 
         /* STOCK BAJO */
         .stock-bajo {
             font-weight: 600;
             color: #f87171;
-            /* rojo para alertas */
         }
 
         body.dark .stock-bajo {
             color: #f87171;
-            /* mismo rojo en dark mode o puedes usar otro si quieres */
         }
-
 
         .nav-link:hover {
             background: #e0f2fe;
@@ -649,79 +637,80 @@
         }
     </style>
 
-
     @stack('styles')
 </head>
 
 <body>
     <div id="globalLoader"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden opacity-0"
-        style="z-index:99999">
+         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden opacity-0"
+         style="z-index:99999">
     </div>
+
     <div class="layout">
         <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
         <aside class="sidebar">
             <div class="sidebar-title" id="tour-logo">
                 <div
                     style="
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:0.35rem;
-    ">
+                        display:flex;
+                        flex-direction:column;
+                        align-items:center;
+                        gap:0.35rem;
+                    ">
                     <img src="{{ asset('images/imagen.png') }}" alt="Logo inventario"
-                        style="
-                width:100px;
-                height:100px;
-                object-fit:cover;
-                border-radius:1rem;
-                box-shadow:0 0 0 1px rgba(15,23,42,0.5),
-                           0 8px 16px rgba(15,23,42,0.55);
-            ">
+                         style="
+                            width:100px;
+                            height:100px;
+                            object-fit:cover;
+                            border-radius:1rem;
+                            box-shadow:0 0 0 1px rgba(15,23,42,0.5),
+                                       0 8px 16px rgba(15,23,42,0.55);
+                        ">
                     <span
                         style="
-            font-size:0.9rem;
-            font-weight:600;
-            letter-spacing:0.03em;
-            text-transform:uppercase;
-            color:#e5e7eb;
-            white-space:nowrap;
-        ">
+                            font-size:0.9rem;
+                            font-weight:600;
+                            letter-spacing:0.03em;
+                            text-transform:uppercase;
+                            color:#e5e7eb;
+                            white-space:nowrap;
+                        ">
                         Inventario · Panel
                     </span>
                 </div>
-                </button>
-
             </div>
-
 
             <div class="nav-section" id="tour-modulos">
                 <div class="nav-title">Módulos</div>
 
                 <a href="{{ route('principal') }}" class="nav-link" id="tour-principal"
-                    @click.prevent="loadView('{{ route('principal') }}')">
+                   @click.prevent="loadView('{{ route('principal') }}')">
                     Ventana principal
                 </a>
 
                 <a href="{{ route('productos.index') }}" class="nav-link" id="tour-productos"
-                    @click.prevent="loadView('{{ route('productos.index') }}')">
+                   @click.prevent="loadView('{{ route('productos.index') }}')">
                     Productos
                 </a>
 
                 <a href="{{ route('proveedores.index') }}" class="nav-link" id="tour-proveedores"
-                    @click.prevent="loadView('{{ route('proveedores.index') }}')">
+                   @click.prevent="loadView('{{ route('proveedores.index') }}')">
                     Proveedores o persona Natural
                 </a>
+
                 <a href="{{ route('movimientos.index') }}" class="nav-link" id="tour-movimientos"
-                    @click.prevent="loadView('{{ route('movimientos.index') }}')">
+                   @click.prevent="loadView('{{ route('movimientos.index') }}')">
                     Movimientos
                 </a>
+
                 <a href="{{ route('cotizacion.index') }}" class="nav-link" id="tour-cotizaciones"
-                    @click.prevent="loadView('{{ route('cotizacion.index') }}')">
+                   @click.prevent="loadView('{{ route('cotizacion.index') }}')">
                     Cotizaciones
                 </a>
+
                 <a href="{{ route('historial.index') }}" class="nav-link" id="tour-historial"
-                    @click.prevent="loadView('{{ route('historial.index') }}')">
+                   @click.prevent="loadView('{{ route('historial.index') }}')">
                     Historial de ventas
                 </a>
             </div>
@@ -732,14 +721,14 @@
                 <button id="menuToggle" class="theme-btn md:hidden">
                     ☰
                 </button>
+
                 <div class="top-title">
                     @yield('page_title', 'Bienvenido al panel principal')
                 </div>
 
                 <div class="user-info">
-
                     <a href="{{ route('perfil') }}" class="user-name-pill"
-                        @click.prevent="loadView('{{ route('perfil') }}')">
+                       @click.prevent="loadView('{{ route('perfil') }}')">
                         👤 {{ auth()->user()->email ?? 'Usuario' }}
                     </a>
 
@@ -757,9 +746,7 @@
                             Cerrar sesión
                         </button>
                     </form>
-
                 </div>
-
             </div>
 
             <!-- CONTENIDO DINÁMICO -->
@@ -770,7 +757,7 @@
     </div>
 
     <script>
-        window.loadView = async function(url, push = true) {
+        window.loadView = async function (url, push = true) {
             const loader = document.getElementById('globalLoader');
             const content = document.getElementById('dynamic-content');
 
@@ -786,12 +773,9 @@
                 const html = await res.text();
                 await new Promise(r => setTimeout(r, 1200));
 
-                // 🔑 Solo reemplaza el contenido, NO el título ni nada más
                 content.innerHTML = html;
 
-                if (push) history.pushState({
-                    url
-                }, '', url);
+                if (push) history.pushState({url}, '', url);
             } catch (e) {
                 console.error(e);
                 content.innerHTML = '<div class="card p-4 text-red-500">Error cargando vista</div>';
@@ -806,7 +790,6 @@
         const toggleBtn = document.getElementById('themeToggle');
         const body = document.body;
 
-        // Cargar tema guardado
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark');
             toggleBtn.textContent = '☀️';
@@ -820,28 +803,32 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
     </script>
+
     <script>
         window.addEventListener('popstate', (e) => {
             if (e.state?.url) {
-                window.loadView(e.state.url, false)
+                window.loadView(e.state.url, false);
             }
-        })
+        });
     </script>
 
+    <!-- DRIVER.JS CONFIG CORREGIDA -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Para el bundle IIFE del CDN, la ruta correcta es esta
             const driverFactory = window.driver && window.driver.js && window.driver.js.driver;
             if (!driverFactory) {
                 console.error('Driver.js no está disponible en window.driver.js.driver');
                 return;
             }
-            const driverObj = driver({
+
+            const driverObj = driverFactory({
                 showProgress: true,
                 nextBtnText: 'Siguiente',
                 prevBtnText: 'Atrás',
                 doneBtnText: 'Terminar',
-                steps: [{
+                steps: [
+                    {
                         element: '#tour-logo',
                         popover: {
                             title: 'Bienvenido al panel',
@@ -909,19 +896,20 @@
                         element: '#tour-historial',
                         popover: {
                             title: 'Historial de ventas',
-                            description: 'Aquí verás el historial de ventas registrados,
-                            podras buscar por fechas ',
+                            description: 'Aquí verás el historial de ventas registrados, podrás buscar por fechas.',
                             position: 'left'
                         }
                     }
                 ]
             });
 
-            window.startTour = function() {
+            // Exponemos la función para el botón
+            window.startTour = function () {
                 driverObj.drive();
             };
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.getElementById('menuToggle');
@@ -969,11 +957,9 @@
             });
         });
     </script>
+
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     @stack('scripts')
-    </div>
-
 </body>
-
 </html>
