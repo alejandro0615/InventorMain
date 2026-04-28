@@ -33,7 +33,7 @@ Route::get('/crear-admin', function () {
         'razon_social' => 'Admin S.A.S',
         'nit' => '000000000',
         'telefono' => '0000000000',
-        'estado' => true,
+        'estado' => 'activo',
         'role' => 'admin'
     ]);
 });
