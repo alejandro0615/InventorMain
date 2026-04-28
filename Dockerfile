@@ -53,9 +53,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage \
     && chmod -R 775 bootstrap/cache
 
-# 🔥 7. Limpiar caches Laravel
-RUN php artisan optimize:clear
-
 # Configure Apache DocumentRoot to point to public directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
