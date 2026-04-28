@@ -39,6 +39,9 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader --no-script
 
 COPY . .
 
+RUN rm -rf app/services || true
+RUN rm -rf bootstrap/cache/*
+
 RUN cp .env.example .env || true
 
 # 🔥 Forzar autoload actualizado (CLAVE)
