@@ -5,7 +5,7 @@
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
-        <div class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid var(--primary);">
+        <div id="tour-productos" class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid var(--primary);">
             <div style="font-size: 1.5rem;">📦</div>
             <div>
                 <div class="text-muted" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Productos</div>
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <div class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #ef4444;">
+        <div id="tour-stock-bajo" class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #ef4444;">
             <div style="font-size: 1.5rem;">⚠️</div>
             <div>
                 <div class="text-muted" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Bajo Stock</div>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #10b981;">
+        <div id="tour-ventas" class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #10b981;">
             <div style="font-size: 1.5rem;">💰</div>
             <div>
                 <div class="text-muted" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Ventas Mes</div>
@@ -31,7 +31,7 @@
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div class="card">
+        <div id="tour-movimientos" class="card">
             <h3 class="card-title" style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1.25rem; display:flex; align-items:center; gap:0.5rem;">
                 <span>📊</span> Últimos Movimientos
             </h3>
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div id="tour-cotizaciones" class="card">
             <h3 class="card-title" style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1.25rem; display:flex; align-items:center; gap:0.5rem;">
                 <span>📝</span> Cotizaciones Recientes
             </h3>

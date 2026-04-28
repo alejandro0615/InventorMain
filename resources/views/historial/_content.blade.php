@@ -1,15 +1,15 @@
-<div class="card">
+<div id="tourt-historial" class="card">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2 class="card-title">Historial de ventas</h2>
     </div>
 
     {{-- FILTRO POR FECHA --}}
-    <form method="GET" style="margin:1rem 0; display:flex; gap:1rem;">
+    <form id="tourt-filtros" method="GET" style="margin:1rem 0; display:flex; gap:1rem;">
         <input type="date" name="fecha" value="{{ $fecha }}">
         <button class="btn btn-print">Buscar</button>
         <a href="{{ route('historial.index') }}" class="btn btn-delete">Limpiar</a>
     </form>
-    <div class="table-wrapper">
+    <div id="tourt-tablaH" class="table-wrapper">
         <table>
             <thead>
                 <tr>

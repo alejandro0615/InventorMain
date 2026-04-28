@@ -80,8 +80,8 @@
         }
     </style>
     
-    <div class="page-header">
-        <h2 class="card-title" style="font-size: 1.6rem; margin: 0; text-transform: uppercase;">Registro de Salidas</h2>
+    <div id="tourt-M"class="page-header">
+        <h2 class="card-title" style="font-size: 1.6rem; margin: 0; text-transform: uppercase;">Registro de Movimientos</h2>
         <p class="text-muted" style="font-size: 0.85rem;">Historial de movimientos y facturación electrónica.</p>
         
         <div class="page-actions">
@@ -92,7 +92,7 @@
     </div>
 
     {{-- CONTENEDOR DE FILTROS CON MEJOR CONTRASTE --}}
-    <form method="GET" action="{{ route('movimientos.index') }}" class="filter-container">
+    <form id="tour-filtros-movimientos" method="GET" action="{{ route('movimientos.index') }}" class="filter-container">
         <div class="filter-group" style="flex: 2; min-width: 220px;">
             <label>Filtrar por Cliente</label>
             <select name="proveedor_id" class="filter-input">
@@ -104,7 +104,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="filter-group" style="flex: 1; min-width: 150px;">
+        <div id ="tourt-fecha"class="filter-group" style="flex: 1; min-width: 150px;">
             <label>Fecha de Registro</label>
             <input type="date" name="fecha" value="{{ $fecha }}" class="filter-input">
         </div>
@@ -114,51 +114,88 @@
         </div>
     </form>
 
-    <div class="table-wrapper">
+    <div id="tour-tablaM" class="table-wrapper">
         <table class="min-w-full">
             <thead>
                 <tr>
-                    <th>Resumen</th>
-                    <th>Cliente</th>
-                    <th>Estado</th>
+                    <th>Tipo</th>
+                    <th>Producto / Resumen</th>
+                    <th>Cliente / Proveedor</th>
+                    <th>Estado DIAN</th>
                     <th class="text-right">Total</th>
                     <th>Fecha</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($movimientos as $salida)
+                @forelse ($movimientos as $mov)
+                    @php 
+                        $esSalida = $mov->tipo_movimiento === 'salida';
+                        $salida = $mov->salida;
+                    @endphp
                     <tr>
-                        <td class="bold">{{ $salida->detalles->count() }} ítems</td>
-                        <td>{{ $salida->cliente->nombre }}</td>
                         <td>
-                            @if ($salida->estado_dian === 'validada')
-                                <span class="movimientos-status-pill" style="background:rgba(16, 185, 129, 0.15); color:#10b981;">VALIDADA</span>
-                            @elseif ($salida->estado_dian === 'pendiente')
-                                <span class="movimientos-status-pill" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;">PROCESO</span>
+                            @if($esSalida)
+                                <span class="movimientos-status-pill" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;">SALIDA</span>
                             @else
-                                <span class="movimientos-status-pill" style="background:rgba(239, 68, 68, 0.15); color:#ef4444;">ERROR</span>
+                                <span class="movimientos-status-pill" style="background:rgba(59, 130, 246, 0.15); color:#3b82f6;">ENTRADA</span>
                             @endif
                         </td>
-                        <td class="text-right bold" style="color: var(--primary); font-size: 1.1rem;">$ {{ number_format($salida->total, 0, ',', '.') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($salida->fecha)->format('d/m/Y') }}</td>
+                        <td class="bold">
+                            {{ $mov->producto->nombre }}
+                            <div style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">
+                                Cantidad: {{ $mov->cantidad }} UND
+                            </div>
+                        </td>
+                        <td>{{ $mov->proveedor->nombre }}</td>
+                        <td>
+                            @if ($esSalida && $salida)
+                                @if ($salida->estado_dian === 'validada')
+                                    <span class="movimientos-status-pill" style="background:rgba(16, 185, 129, 0.15); color:#10b981;">VALIDADA</span>
+                                @elseif ($salida->estado_dian === 'pendiente')
+                                    <span class="movimientos-status-pill" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;">PROCESO</span>
+                                @else
+                                    <span class="movimientos-status-pill" style="background:rgba(239, 68, 68, 0.15); color:#ef4444;">ERROR</span>
+                                @endif
+                            @else
+                                <span class="text-muted" style="font-size: 0.75rem;">—</span>
+                            @endif
+                        </td>
+                        <td class="text-right bold" style="color: var(--primary); font-size: 1rem;">
+                            @if($esSalida && $salida)
+                                $ {{ number_format($salida->total, 0, ',', '.') }}
+                            @else
+                                {{-- Para entrada podríamos mostrar el valor de compra si lo tuviéramos, 
+                                     por ahora mostramos el subtotal calculado o N/A --}}
+                                <span class="text-muted" style="font-size: 0.8rem;">Stock: +{{ $mov->cantidad }}</span>
+                            @endif
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($mov->fecha)->format('d/m/Y') }}</td>
                         <td style="width: 1%;">
                             <div class="movimientos-actions">
-                                @if ($salida->url_factus)
-                                    <a href="{{ $salida->url_factus }}" target="_blank" class="btn-compact btn-factus" title="Ver en Factus">DIAN</a>
+                                @if ($esSalida && $salida)
+                                    @if ($salida->url_factus)
+                                        <a href="{{ $salida->url_factus }}" target="_blank" class="btn-compact btn-factus" title="Ver en Factus">DIAN</a>
+                                    @endif
+                                    <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn-compact btn-pdf-c" title="Ver PDF">PDF</a>
+                                    <a href="{{ route('salidas.factura.download', $salida->id) }}" class="btn-compact btn-download-c" title="Descargar">DESC</a>
+                                    <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn-compact btn-print-c" title="Imprimir">IMP</a>
+                                    <form action="{{ route('salidas.destroy', $salida->id) }}" method="POST">
+                                        @csrf @method('DELETE')
+                                        <button class="btn-compact btn-delete-c" onclick="return confirm('¿Confirmar?')">X</button>
+                                    </form>
+                                @else
+                                    {{-- Acciones simples para entrada --}}
+                                    <form action="{{ route('movimientos.destroy', $mov->id) }}" method="POST">
+                                        @csrf @method('DELETE')
+                                        <button class="btn-compact btn-delete-c" onclick="return confirm('¿Confirmar eliminación del movimiento?')">X</button>
+                                    </form>
                                 @endif
-                                <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn-compact btn-pdf-c" title="Ver PDF">PDF</a>
-                                <a href="{{ route('salidas.factura.download', $salida->id) }}" class="btn-compact btn-download-c" title="Descargar">DESC</a>
-                                <a href="{{ route('salidas.factura', $salida->id) }}" target="_blank" class="btn-compact btn-print-c" title="Imprimir">IMP</a>
-                                <form action="{{ route('salidas.destroy', $salida->id) }}" method="POST">
-                                    @csrf @method('DELETE')
-                                    <button class="btn-compact btn-delete-c" onclick="return confirm('¿Confirmar?')">X</button>
-                                </form>
                             </div>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="text-center text-muted">Sin registros encontrados.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted">Sin registros encontrados.</td></tr>
                 @endforelse
             </tbody>
         </table>

@@ -30,18 +30,28 @@
     </style>
 
     {{-- Encabezado estándar --}}
-    <div class="page-header">
+    <div id= "tourt-directorio"class="page-header">
         <h2 class="card-title" style="font-size: 1.5rem; margin: 0; text-transform: uppercase;">Directorio de Proveedores</h2>
         <p class="text-muted" style="font-size: 0.8rem;">Administración de contactos y entidades comerciales.</p>
-        
-        <div class="page-actions">
+    </div>
+
+    {{-- BARRA DE BÚSQUEDA --}}
+    <div id="tour-search-proveedores" style="margin-bottom: 1.5rem;">
+        <form method="GET" action="{{ route('proveedores.index') }}">
+            <input type="text" name="q" placeholder="Buscar por nombre, NIT o razón social..." value="{{ $search ?? '' }}"
+                   style="width: 100%; padding: 0.8rem 1.2rem; border-radius: 0.75rem; border: 2px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-size: 0.95rem;">
+        </form>
+    </div>
+
+    <div class="page-actions" style="margin-bottom: 1.5rem; margin-top: 0;">
+        <div id="tour-nuevo-proveedor">
             <a href="{{ route('proveedores.create') }}" class="btn-primary-action">
                 Nuevo Proveedor
             </a>
         </div>
     </div>
 
-    <div class="table-wrapper">
+    <div id="tourt-tableProve" class="table-wrapper">
         <table>
             <thead>
                 <tr>

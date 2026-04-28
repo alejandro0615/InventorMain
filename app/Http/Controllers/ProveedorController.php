@@ -17,14 +17,23 @@ class ProveedorController extends Controller
     public function index(Request $request)
     {
         $localId = Auth::user()->local_id;
+        $search = $request->input('q');
 
-        $proveedores = Proveedor::where('local_id', $localId)->get();
+        $proveedores = Proveedor::where('local_id', $localId)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nombre', 'like', "%{$search}%")
+                      ->orWhere('nit', 'like', "%{$search}%")
+                      ->orWhere('razon_social', 'like', "%{$search}%");
+                });
+            })
+            ->get();
 
         if ($request->ajax()) {
-            return view('proveedores._content', compact('proveedores'));
+            return view('proveedores._content', compact('proveedores', 'search'));
         }
 
-        return view('proveedores.index', compact('proveedores'));
+        return view('proveedores.index', compact('proveedores', 'search'));
     }
 
     /**

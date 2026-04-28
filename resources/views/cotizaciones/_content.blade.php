@@ -103,7 +103,7 @@
         }
     </style>
 
-    <div class="page-header">
+    <div id="tourt-cotizaciones" class="page-header">
         <h2 class="card-title" style="font-size: 1.6rem; margin: 0; text-transform: uppercase;">Nueva Cotización Comercial</h2>
         <p class="text-muted" style="font-size: 0.85rem;">Cree presupuestos profesionales de manera rápida.</p>
     </div>
@@ -112,14 +112,20 @@
         @csrf
 
         {{-- CONFIGURACIÓN DE CLIENTE Y FECHA --}}
-        <div class="quote-config-box">
+        <div id="tour-config-cotizacion" class="quote-config-box">
             <div>
                 <label for="cliente_id" class="form-label">Cliente Destinatario</label>
+                {{-- BUSCADOR DE CLIENTE --}}
+                <div style="position: relative; margin-bottom: 0.5rem;">
+                    <input type="text" id="buscador_cliente" placeholder="Filtrar cliente por nombre o NIT..." 
+                           style="width: 100%; padding: 0.5rem 0.8rem; font-size: 0.85rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
+                </div>
                 <select id="cliente_id" name="cliente_id" required class="quote-input">
                     <option value="">Seleccione el cliente...</option>
                     @foreach ($proveedores as $proveedor)
-                        <option value="{{ $proveedor->id }}" @selected(old('cliente_id') == $proveedor->id)>
-                            {{ $proveedor->nombre }}
+                        <option value="{{ $proveedor->id }}" @selected(old('cliente_id') == $proveedor->id) 
+                                data-search="{{ strtolower($proveedor->nombre . ' ' . $proveedor->nit) }}">
+                            {{ $proveedor->nombre }} {{ $proveedor->nit ? '- ' . $proveedor->nit : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -131,7 +137,7 @@
         </div>
 
         {{-- BÚSQUEDA DE PRODUCTOS GRANDE --}}
-        <div class="search-wrapper">
+        <div id="tour-buscador-cotizacion" class="search-wrapper">
             <label class="form-label">Añadir Productos al Listado</label>
             <input type="text" id="buscador_producto" class="search-main-input" placeholder="Escriba el nombre o código del producto...">
             <div id="resultados_productos" class="results-dropdown">
@@ -139,7 +145,7 @@
         </div>
 
         {{-- TABLA DE ÍTEMS --}}
-        <div class="table-wrapper" style="margin-bottom: 2rem;">
+        <div id="tourt-tablaC" class="table-wrapper" style="margin-bottom: 2rem;">
             <table>
                 <thead>
                     <tr>
@@ -156,7 +162,7 @@
         </div>
 
         {{-- TOTALES --}}
-        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center;">
+        <div id="tourt-finC" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center;">
             <div class="summary-card">
                 <div style="display:flex; justify-content:space-between; margin-bottom: 0.6rem; font-size: 0.95rem;">
                     <span class="text-muted">Subtotal:</span>
@@ -179,7 +185,7 @@
 
 <section class="card" style="margin-top: 2rem;">
     <h3 class="card-title" style="font-size: 0.9rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem;">Historial Reciente</h3>
-    <div class="table-wrapper">
+    <div id="tablaHistorial" class="table-wrapper">
         <table>
             <thead>
                 <tr>
@@ -252,6 +258,16 @@
             recalcularTotales();
         }
 
+        inputBuscar.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstResult = resultadosDiv.querySelector('.result-item');
+                if (firstResult) {
+                    firstResult.click();
+                }
+            }
+        });
+
         inputBuscar.addEventListener('input', function() {
             const q = this.value.toLowerCase().trim();
             if (!q) { resultadosDiv.style.display = 'none'; return; }
@@ -289,6 +305,46 @@
             if (e.target.classList.contains('btn-quitar')) {
                 items.splice(parseInt(e.target.dataset.index), 1);
                 renderTabla();
+            }
+        });
+
+        // Lógica para el buscador de cliente
+        const inputBuscadorCliente = document.getElementById('buscador_cliente');
+        const selectCliente = document.getElementById('cliente_id');
+        const optionsCliente = Array.from(selectCliente.options).slice(1); // Omitir el placeholder
+
+        inputBuscadorCliente.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                // Opcional: seleccionar el primer resultado visible si hay uno
+                const firstVisible = optionsCliente.find(opt => opt.style.display !== 'none');
+                if (firstVisible) {
+                    selectCliente.value = firstVisible.value;
+                    // Opcional: limpiar el buscador tras seleccionar
+                    this.value = '';
+                    optionsCliente.forEach(opt => { opt.style.display = ''; opt.disabled = false; });
+                }
+            }
+        });
+
+        inputBuscadorCliente.addEventListener('input', function() {
+            const q = this.value.toLowerCase().trim();
+            
+            optionsCliente.forEach(opt => {
+                const searchData = opt.getAttribute('data-search') || '';
+                if (searchData.includes(q)) {
+                    opt.style.display = '';
+                    opt.disabled = false;
+                } else {
+                    opt.style.display = 'none';
+                    opt.disabled = true;
+                }
+            });
+
+            // Si el valor actual del select ya no es visible, resetearlo
+            const selectedOpt = selectCliente.options[selectCliente.selectedIndex];
+            if (selectedOpt && selectedOpt.style.display === 'none') {
+                selectCliente.value = '';
             }
         });
     });

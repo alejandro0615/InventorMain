@@ -56,6 +56,17 @@ class MovementService
                 $precioUnitario = (float) $data['precio'][$index];
                 $ivaPorcentaje = (float) ($data['iva_porcentaje'][$index] ?? 0);
 
+                // REGISTRAR EN TABLA MOVIMIENTOS
+                \App\Models\Movimiento::create([
+                    'local_id' => $localId,
+                    'producto_id' => $productoId,
+                    'proveedor_id' => $data['proveedor_id'],
+                    'tipo_movimiento' => $data['tipo_movimiento'],
+                    'fecha' => $data['fecha'],
+                    'cantidad' => $cantidad,
+                    'salida_id' => $salida ? $salida->id : null,
+                ]);
+
                 if ($data['tipo_movimiento'] === 'entrada') {
                     // Incrementar stock en entrada
                     $producto->increment('stock_actual', $cantidad);
@@ -96,22 +107,50 @@ class MovementService
     }
 
     /**
-     * Anula una salida, restaura el stock y elimina los registros.
+     * Anula un movimiento (Entrada o Salida), restaura el stock y elimina los registros.
      */
-    public function cancelSalida(int $salidaId): void
+    public function cancelMovement(int $id): void
     {
-        $salida = Salida::with('detalles.producto')->findOrFail($salidaId);
+        // Intentar encontrar en tabla movimientos primero
+        $movimiento = \App\Models\Movimiento::find($id);
 
-        DB::transaction(function () use ($salida) {
-            foreach ($salida->detalles as $detalle) {
-                // Restaurar el stock al inventario
-                $detalle->producto->increment('stock_actual', $detalle->cantidad);
-                $detalle->delete();
-            }
+        if ($movimiento) {
+            DB::transaction(function () use ($movimiento) {
+                $producto = $movimiento->producto;
+                
+                if ($movimiento->tipo_movimiento === 'entrada') {
+                    // Si era entrada, al borrarla restamos el stock
+                    $producto->decrement('stock_actual', $movimiento->cantidad);
+                } else {
+                    // Si era salida, al borrarla sumamos el stock
+                    $producto->increment('stock_actual', $movimiento->cantidad);
+                }
 
-            DB::table('movimientos')->where('salida_id', $salida->id)->delete();
+                // Si tiene factura asociada, borrarla (opcional, depende de la lógica de negocio)
+                if ($movimiento->salida_id) {
+                    $salida = Salida::with('detalles')->find($movimiento->salida_id);
+                    if ($salida) {
+                        $salida->detalles()->delete();
+                        $salida->delete();
+                    }
+                }
 
-            $salida->delete();
-        });
+                $movimiento->delete();
+            });
+            return;
+        }
+
+        // Caso de respaldo: anulación por ID de Salida (antigua lógica)
+        $salida = Salida::with('detalles.producto')->find($id);
+        if ($salida) {
+            DB::transaction(function () use ($salida) {
+                foreach ($salida->detalles as $detalle) {
+                    $detalle->producto->increment('stock_actual', $detalle->cantidad);
+                    $detalle->delete();
+                }
+                \App\Models\Movimiento::where('salida_id', $salida->id)->delete();
+                $salida->delete();
+            });
+        }
     }
 }

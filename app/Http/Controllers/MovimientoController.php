@@ -39,14 +39,15 @@ class MovimientoController extends Controller
             ->orderBy('nombre')
             ->get();
             
-        // Consulta de movimientos filtrados
-        $movimientos = Salida::with(['detalles.producto', 'cliente'])
-            ->whereHas('cliente', function ($q) use ($localId) {
+        // Consulta de movimientos (Entradas y Salidas)
+        $movimientos = \App\Models\Movimiento::with(['producto', 'proveedor', 'salida.detalles'])
+            ->whereHas('producto', function ($q) use ($localId) {
                 $q->where('local_id', $localId);
             })
-            ->when($proveedorId, fn($q) => $q->where('cliente_id', $proveedorId))
+            ->when($proveedorId, fn($q) => $q->where('proveedor_id', $proveedorId))
             ->when($fecha, fn($q) => $q->whereDate('fecha', $fecha))
             ->orderBy('fecha', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
 
         return view('movimientos.index', compact('movimientos', 'proveedores', 'proveedorId', 'fecha'));
@@ -104,11 +105,11 @@ class MovimientoController extends Controller
      */
     public function destroy($id)
     {
-        $this->movementService->cancelSalida($id);
+        $this->movementService->cancelMovement($id);
 
         return redirect()
             ->route('movimientos.index')
-            ->with('success', 'Factura anulada y stock restaurado correctamente.');
+            ->with('success', 'Movimiento anulado y stock actualizado correctamente.');
     }
 
     /**

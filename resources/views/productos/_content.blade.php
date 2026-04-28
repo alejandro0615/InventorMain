@@ -75,13 +75,13 @@
     </style>
 
     {{-- 1. TÍTULO --}}
-    <div class="page-header">
+    <div id ="tourt-titulo" class="page-header">
         <h2 class="card-title" style="font-size: 1.5rem; margin: 0; text-transform: uppercase;">Inventario de Productos</h2>
         <p class="text-muted" style="font-size: 0.8rem;">Administración de existencias y precios.</p>
     </div>
 
     {{-- 2. BARRA DE BÚSQUEDA GRANDE --}}
-    <div class="search-container">
+    <div id="tour-search" class="search-container">
         <form method="GET" action="{{ route('productos.index') }}">
             <input type="text" name="q" placeholder="Escribe el nombre o código del producto para buscar..." value="{{ $search ?? '' }}">
             @if(request('filtro'))
@@ -91,7 +91,7 @@
     </div>
 
     {{-- 3. STOCK BAJO (FILTROS) --}}
-    <div class="filter-section">
+    <div id="tour-filters" class="filter-section">
         <a href="{{ route('productos.index', array_filter(['q' => $search ?? null])) }}" 
            class="filter-pill {{ !request('filtro') ? 'active' : '' }}">Todos los productos</a>
         <a href="{{ route('productos.index', array_filter(['filtro' => 'stock_bajo', 'q' => $search ?? null])) }}" 
@@ -99,14 +99,14 @@
     </div>
 
     {{-- 4. BOTONES DE ACCIÓN (DEBAJO DE TODO) --}}
-    <div class="action-section">
+    <div id = "tourt-newProduct" class="action-section">
         <a href="{{ route('productos.create') }}" class="btn-primary-action">
             Nuevo Producto
         </a>
     </div>
 
     {{-- TABLA --}}
-    <div class="table-wrapper">
+    <div id ="tourt-table" class="table-wrapper">
         <table>
             <thead>
                 <tr>
