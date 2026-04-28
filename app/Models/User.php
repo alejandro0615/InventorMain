@@ -6,20 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Modelo que representa a un Usuario del sistema.
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     /**
-     * Relación con el LOCAL/Negocio
-     */
-    public function negocio()
-    {
-        return $this->belongsTo(Local::class, 'local_id');
-    }
-
-    /**
-     * Campos permitidos para MASS ASSIGNMENT (registro/controlador)
+     * Atributos asignables de forma masiva.
      */
     protected $fillable = [
         'name',
@@ -34,7 +29,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Campos ocultos en respuestas JSON/API
+     * Atributos ocultos para la serialización.
      */
     protected $hidden = [
         'password',
@@ -42,19 +37,27 @@ class User extends Authenticatable
     ];
 
     /**
-     * Casts automáticos de tipos
+     * Casts de atributos.
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'estado' => 'string', // enum como string
+            'password'          => 'hashed',
+            'estado'            => 'string',
         ];
     }
 
     /**
-     * Scope para usuarios activos solamente
+     * Relación con el Local al que pertenece el usuario.
+     */
+    public function negocio()
+    {
+        return $this->belongsTo(Local::class, 'local_id');
+    }
+
+    /**
+     * Scope para filtrar solo usuarios activos.
      */
     public function scopeActivos($query)
     {
@@ -62,7 +65,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Accesor para mostrar razón social o nombre
+     * Accessor para obtener el nombre completo o la razón social.
      */
     public function getNombreCompletoAttribute()
     {
@@ -70,7 +73,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Verificar si usuario está activo
+     * Verifica si el usuario tiene estado activo.
      */
     public function getIsActivoAttribute()
     {

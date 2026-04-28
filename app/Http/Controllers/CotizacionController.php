@@ -3,129 +3,141 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cotizacion;
-use App\Models\Cotizacion_detalle;
+use App\Models\CotizacionDetalle;
+use App\Models\Proveedor;
 use App\Models\Producto;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Controlador para gestionar las cotizaciones de productos a clientes.
+ */
 class CotizacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el panel de cotizaciones con productos y clientes disponibles.
      */
     public function index(Request $request)
     {
-        $productos = Producto::where('local_id', Auth::user()->local_id)->get();
+        $localId = Auth::user()->local_id;
+        $productos = Producto::where('local_id', $localId)->get();
+        $proveedores = Proveedor::where('local_id', $localId)
+            ->orderBy('nombre')
+            ->get();
+            
+        // Obtenemos las últimas 5 cotizaciones para poder descargarlas
+        $ultimasCotizaciones = Cotizacion::where('local_id', $localId)
+            ->with('cliente')
+            ->latest()
+            ->take(5)
+            ->get();
 
         if ($request->ajax()) {
-            return view('cotizacion._content', compact('productos'));
+            return view('cotizaciones._content', compact('productos', 'proveedores', 'ultimasCotizaciones'));
         }
 
-        return view('cotizacion.index', compact('productos'));
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('cotizaciones.index', compact('productos', 'proveedores', 'ultimasCotizaciones'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crea y almacena una nueva cotización.
      */
     public function store(Request $request)
     {
         $data = $request->validate([
-            'fecha' => ['required', 'date'],
-            'producto_id' => ['required', 'array'],
+            'cliente_id'    => ['required', 'exists:proveedores,id'],
+            'fecha'         => ['required', 'date'],
+            'producto_id'   => ['required', 'array'],
             'producto_id.*' => ['required', 'exists:productos,id'],
-            'cantidad' => ['required', 'array'],
-            'cantidad.*' => ['required', 'integer', 'min:1'],
+            'cantidad'      => ['required', 'array'],
+            'cantidad.*'    => ['required', 'integer', 'min:1'],
         ], [
+            'cliente_id.required'  => 'Debes seleccionar un cliente.',
             'producto_id.required' => 'Debes agregar al menos un producto.',
-            'producto_id.*.exists' => 'Algún producto seleccionado no es válido.',
-            'cantidad.*.integer' => 'Cada cantidad debe ser un número entero.',
-            'cantidad.*.min' => 'Cada cantidad debe ser al menos 1.',
         ]);
 
-        DB::transaction(function () use ($data) {
-            $subtotal = 0;
+        $cotizacionId = null;
+
+        DB::transaction(function () use ($data, &$cotizacionId) {
+            $subtotalGeneral = 0;
             $localId = Auth::user()->local_id;
 
+            $cliente = Proveedor::where('local_id', $localId)->findOrFail($data['cliente_id']);
+
             $cotizacion = Cotizacion::create([
-                'cliente_id' => null,
-                'fecha' => $data['fecha'],
-                'subtotal' => 0,
-                'impuestos' => 0,
-                'total' => 0,
-                'local_id' => $localId,
+                'cliente_id' => $cliente->id,
+                'fecha'      => $data['fecha'],
+                'subtotal'   => 0,
+                'impuestos'  => 0,
+                'total'      => 0,
+                'local_id'   => $localId,
             ]);
+
+            $cotizacionId = $cotizacion->id;
 
             foreach ($data['producto_id'] as $i => $productoId) {
                 $cantidad = (int) $data['cantidad'][$i];
+                $producto = Producto::where('local_id', $localId)->findOrFail($productoId);
 
-                $producto = Producto::where('local_id', $localId)
-                    ->findOrFail($productoId);
+                $precioVenta = $producto->precio_venta;
+                $subtotalLinea = $cantidad * $precioVenta;
+                $subtotalGeneral += $subtotalLinea;
 
-                $precio = $producto->precio_venta; // o el campo de precio que tengas
-                $sub = $cantidad * $precio;
-                $subtotal += $sub;
-
-                Cotizacion_detalle::create([
-                    'cotizacion_id' => $cotizacion->id,
-                    'producto_id' => $producto->id,
-                    'cantidad' => $cantidad,
-                    'precio_unitario' => $precio,
-                    'subtotal' => $sub,
+                CotizacionDetalle::create([
+                    'cotizacion_id'   => $cotizacion->id,
+                    'producto_id'     => $producto->id,
+                    'cantidad'        => $cantidad,
+                    'precio_unitario' => $precioVenta,
+                    'subtotal'        => $subtotalLinea,
                 ]);
             }
 
             $cotizacion->update([
-                'subtotal' => $subtotal,
-                'impuestos' => 0,
-                'total' => $subtotal,
+                'subtotal'  => $subtotalGeneral,
+                'total'     => $subtotalGeneral,
             ]);
         });
 
         return redirect()
-            ->route('cotizacion.index')
-            ->with('status', 'Cotización creada correctamente.');
+            ->route('cotizaciones.index')
+            ->with('success', 'Cotización #' . $cotizacionId . ' creada correctamente.')
+            ->with('open_pdf', route('cotizaciones.pdf', $cotizacionId));
     }
 
-
     /**
-     * Display the specified resource.
+     * Genera el PDF de la cotización.
      */
-    public function show(Cotizacion $cotizacion)
+    public function descargarPdf(Cotizacion $cotizacion)
     {
-        //
+        if ($cotizacion->local_id !== Auth::user()->local_id) {
+            abort(403);
+        }
+
+        $cotizacion->load(['detalles.producto', 'cliente']);
+        $user = Auth::user();
+
+        $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion', 'user'))
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->stream('cotizacion-' . $cotizacion->id . '.pdf');
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cotizacion $cotizacion)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Cotizacion $cotizacion)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
+     * Elimina una cotización.
      */
     public function destroy(Cotizacion $cotizacion)
     {
-        //
+        if ($cotizacion->local_id !== Auth::user()->local_id) {
+            abort(403);
+        }
+
+        $cotizacion->detalles()->delete();
+        $cotizacion->delete();
+
+        return redirect()
+            ->route('cotizaciones.index')
+            ->with('success', 'Cotización eliminada correctamente.');
     }
 }

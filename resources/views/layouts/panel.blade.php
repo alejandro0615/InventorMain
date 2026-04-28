@@ -11,955 +11,244 @@
     @vite('resources/css/app.css')
 
     <style>
-        /* ===== GLOBAL ===== */
-        * {
-            box-sizing: border-box;
+        /* ===== SISTEMA DE DISEÑO EQUILIBRADO Y LEGIBLE ===== */
+        :root {
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.2);
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-sidebar: #0f172a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        body.dark {
+            --bg-body: #020617;
+            --bg-card: #0f172a;
+            --bg-sidebar: #000000;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.5);
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.3);
+        }
+
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
             font-family: 'Inter', system-ui, sans-serif;
-            background: radial-gradient(circle at top, #e0f2fe, #f8fafc);
-            color: #1f2937;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+            font-size: 0.95rem; /* Un poco más grande para legibilidad general */
         }
 
-        input,
-        select {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.6rem;
-            border: 1px solid #d1d5db;
-            background: #ffffff;
-            color: #111827;
-            font-size: 0.9rem;
-            transition: all 0.25s ease;
-        }
+        .app-container { display: flex; width: 100vw; min-height: 100vh; }
 
-        input::placeholder {
-            color: #9ca3af;
-        }
-
-        body.dark input::placeholder {
-            color: rgba(229, 231, 235, 0.6);
-        }
-
-        body.dark select {
-            color: #e5e7eb;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='7' viewBox='0 0 12 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23e5e7eb' stroke-width='2'/%3E%3C/svg%3E");
-        }
-
-        select {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='7' viewBox='0 0 12 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2364788B' stroke-width='2'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 12px 7px;
-        }
-
-        .input-cantidad,
-        .input-precio,
-        .input-iva-linea {
-            transition: all 0.25s ease;
-        }
-
-        /* ===== DARK MODE INPUTS ===== */
-        body.dark input,
-        body.dark select,
-        body.dark .input-cantidad,
-        body.dark .input-precio,
-        body.dark .input-iva-linea {
-            background: rgba(15, 23, 42, 0.6);
-            color: #e5e7eb;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-
-        @media (max-width: 768px) {
-            .layout {
-                display: block;
-            }
-
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                width: 75%;
-                max-width: 280px;
-                height: 100vh;
-                padding: 1.5rem;
-                background: #0f172a;
-                box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-                transition: left 0.3s ease;
-                z-index: 50;
-            }
-
-            .sidebar.active {
-                left: 0;
-            }
-
-            .main {
-                padding: 1rem;
-            }
-
-            .top-bar {
-                align-items: center;
-            }
-        }
-
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* ===== SIDEBAR ===== */
+        /* SIDEBAR */
         .sidebar {
-            background: linear-gradient(180deg, #fff, #f1f5f9);
-            border-right: 1px solid #e5e7eb;
-            padding: 1.8rem 1.2rem;
-            width: 260px;
+            background-color: var(--bg-sidebar);
+            width: 240px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 2rem 1rem;
+            color: white;
             flex-shrink: 0;
+            z-index: 100;
         }
 
-        .sidebar-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            background: linear-gradient(90deg, #3b82f6, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .main-content {
+            flex-grow: 1;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            width: calc(100vw - 240px);
         }
 
-        .nav-title {
-            font-size: .7rem;
+        .top-bar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .top-title { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+        }
+
+        /* TABLAS CON FUENTE MEJORADA */
+        .table-wrapper {
+            background-color: var(--bg-card);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        th {
+            background-color: rgba(148, 163, 184, 0.05);
+            color: var(--text-muted);
+            font-size: 0.75rem; /* Subido de 0.65rem */
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: .15em;
-            color: #94a3b8;
-            margin-bottom: .6rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
         }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem; /* Subido de 0.8rem para mayor claridad */
+        }
+
+        tr:hover td { background-color: rgba(148, 163, 184, 0.03); }
+
+        /* BOTONES */
+        .btn-primary-action, .btn-print, .btn-download, .btn-delete, .logout-btn {
+            padding: 0.6rem 1.3rem;
+            border-radius: 0.4rem;
+            font-weight: 800;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary-action, .btn-print { background: var(--primary); box-shadow: 0 4px 12px var(--primary-glow); }
+        .btn-primary-action:hover { transform: translateY(-1px); filter: brightness(1.1); }
+        .btn-download { background: #10b981; }
+        .btn-delete { background: #ef4444; }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: .6rem;
-            padding: .55rem .8rem;
-            border-radius: .6rem;
-            font-size: .9rem;
-            color: #334155;
-            text-decoration: none;
-            transition: all .25s ease;
-        }
-
-        /* STOCK NORMAL */
-        .stock-normal {
-            font-weight: 600;
-            color: #111827;
-        }
-
-        body.dark .stock-normal {
-            color: #e5e7eb;
-        }
-
-        /* STOCK BAJO */
-        .stock-bajo {
-            font-weight: 600;
-            color: #f87171;
-        }
-
-        body.dark .stock-bajo {
-            color: #f87171;
-        }
-
-        .nav-link:hover {
-            background: #e0f2fe;
-            color: #1d4ed8;
-            transform: translateX(3px);
-        }
-
-        /* ===== MAIN ===== */
-        .main {
-            flex: 1;
-            padding: 2rem;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .top-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #2563eb, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            font-size: .85rem;
-            color: #475569;
-        }
-
-        /* ===== BUTTONS ===== */
-        .btn-tour,
-        .logout-btn,
-        .theme-btn,
-        .btn-pdf,
-        .btn-download,
-        .btn-print,
-        .btn-delete {
-            border-radius: .6rem;
-            padding: .45rem .9rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all .25s ease;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: .4rem;
-            text-decoration: none;
-        }
-
-        .btn-tour {
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            color: #fff;
-            margin-left: .7rem;
-        }
-
-        .btn-tour:hover {
-            filter: brightness(1.08);
-        }
-
-        .logout-btn {
-            background: linear-gradient(90deg, #fb7185, #f43f5e);
-            color: #fff;
-            margin-left: .6rem;
-        }
-
-        .theme-btn {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            padding: .45rem .6rem;
-            font-size: 1rem;
-            margin-left: .6rem;
-        }
-
-        .theme-btn:hover {
-            background: #f1f5f9;
-        }
-
-        /* BUTTONS COLOR VARIANTS */
-        .btn-pdf {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .btn-pdf:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
-        }
-
-        .btn-download {
-            background: #10b981;
-            color: #fff;
-        }
-
-        .btn-download:hover {
-            background: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
-        }
-
-        .btn-print {
-            background: #3b82f6;
-            color: #fff;
-        }
-
-        .btn-print:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
-        }
-
-        .btn-delete {
-            background: #f97316;
-            color: #fff;
-        }
-
-        .btn-delete:hover {
-            background: #ea580c;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
-        }
-
-        .btn-pdf i,
-        .btn-download i,
-        .btn-print i,
-        .btn-delete i {
-            font-size: .9rem;
-        }
-
-        /* ===== CARDS ===== */
-        .card {
-            background: #fff;
-            border-radius: 1rem;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
-            padding: 1.8rem;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1e293b;
-        }
-
-        .card-subtitle {
-            font-size: .85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #9ab5ed;
-            margin-top: 1rem;
-            margin-bottom: .4rem;
-        }
-
-        .section-list {
-            list-style: disc;
-            padding-left: 1.3rem;
-            margin: 0 0 .8rem 0;
-            line-height: 1.55;
-            font-size: .88rem;
-            color: #68b691;
-        }
-
-        /* ===== TABLES ===== */
-        .table-wrapper {
-            border-radius: .75rem;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            background: #fff;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: .85rem;
-            color: #334155;
-        }
-
-        th,
-        td {
-            padding: .55rem .85rem;
-            vertical-align: middle;
-        }
-
-        thead {
-            background: #f8fafc;
-        }
-
-        th {
-            color: #64748b;
-            font-weight: 500;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        tbody tr:hover {
-            background: #f0f9ff;
-        }
-
-        tr {
-            height: 48px;
-        }
-
-        /* ===== TAGS ===== */
-        .tag {
-            padding: .2rem .6rem;
-            border-radius: 999px;
-            font-size: .7rem;
-            background: #e5e7eb;
-            color: #334155;
-        }
-
-        .tag-green {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .tag-red {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        /* ===== ACTIONS ===== */
-        .actions {
-            display: inline-flex;
-            gap: .4rem;
-            align-items: center;
-            white-space: nowrap;
-        }
-
-        .actions form {
-            display: inline-block;
-            margin: 0;
-        }
-
-        /* ===== USER PILL ===== */
-        .user-name-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            padding: .25rem .7rem;
-            border-radius: 999px;
-            background: #e0f2fe;
-            color: #0f172a;
-            font-size: .8rem;
-            font-weight: 600;
-        }
-
-        /* ===== PROFILE GRID ===== */
-        .profile-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.2rem;
-        }
-
-        .profile-box {
-            background: rgba(241, 245, 249, 0.6);
-            border-radius: .9rem;
-            padding: 1.2rem;
-        }
-
-        .profile-title {
-            font-size: .8rem;
-            text-transform: uppercase;
-            letter-spacing: .12em;
-            color: #64748b;
-            margin-bottom: 1rem;
-        }
-
-        .profile-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: .45rem 0;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-
-        .profile-item:last-child {
-            border-bottom: none;
-        }
-
-        .profile-item span {
-            font-size: .75rem;
-            color: #64748b;
-        }
-
-        .profile-item strong {
-            font-size: .85rem;
-            color: #0f172a;
-        }
-
-        /* ===== LOADER ===== */
-        #globalLoader {
-            transition: opacity .3s ease;
-        }
-
-        /* ===== DARK MODE ===== */
-        body.dark {
-            background: radial-gradient(circle at top, #020617, #020617);
-            color: #e5e7eb;
-        }
-
-        body.dark .sidebar {
-            background: linear-gradient(180deg, #020617, #020617cc);
-            border-right: 1px solid rgba(56, 189, 248, .18);
-        }
-
-        body.dark .sidebar-title,
-        body.dark .top-title {
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        body.dark .nav-title {
-            color: #64748b;
-        }
-
-        body.dark .nav-link {
-            color: #c7d2fe;
-        }
-
-        body.dark .nav-link:hover {
-            background: rgba(59, 130, 246, .18);
-            color: #e0f2fe;
-            box-shadow: inset 3px 0 0 #22c55e;
-        }
-
-        body.dark .main {
-            background: linear-gradient(180deg, #020617, #020617cc);
-        }
-
-        body.dark .user-info {
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
             color: #94a3b8;
-        }
-
-        body.dark .btn-tour {
-            background: linear-gradient(90deg, #3b82f6, #22c55e);
-        }
-
-        body.dark .logout-btn {
-            background: linear-gradient(90deg, #fb7185, #f43f5e);
-        }
-
-        body.dark .theme-btn {
-            background: rgba(255, 255, 255, .06);
-            border: 1px solid rgba(255, 255, 255, .12);
-            color: #e5e7eb;
-        }
-
-        body.dark .card {
-            background: linear-gradient(180deg, rgba(15, 23, 42, .92), rgba(2, 6, 23, .88));
-            border: 1px solid rgba(59, 130, 246, .22);
-            box-shadow: 0 25px 50px rgba(2, 6, 23, .9), inset 0 0 0 1px rgba(34, 197, 94, .08);
-        }
-
-        body.dark .card-title {
-            color: #e0f2fe;
-        }
-
-        body.dark thead {
-            background: rgba(15, 23, 42, .8);
-        }
-
-        body.dark th {
-            color: #93c5fd;
-            border-bottom: 1px solid rgba(59, 130, 246, .18);
-        }
-
-        body.dark td {
-            color: #c7d2fe;
-            border-bottom: 1px solid rgba(255, 255, 255, .08);
-        }
-
-        body.dark tbody tr:hover {
-            background: rgba(59, 130, 246, .12);
-        }
-
-        body.dark .tag {
-            background: rgba(148, 163, 184, .15);
-            color: #c7d2fe;
-        }
-
-        body.dark .tag-green {
-            background: rgba(34, 197, 94, .18);
-            color: #86efac;
-        }
-
-        body.dark .tag-red {
-            background: rgba(248, 113, 113, .18);
-            color: #fecaca;
-        }
-
-        body.dark .user-name-pill {
-            background: rgba(37, 99, 235, .22);
-            color: #e0f2fe;
-            box-shadow: 0 0 0 1px rgba(59, 130, 246, .4);
-        }
-
-        body.dark .profile-box {
-            background: rgba(15, 23, 42, .55);
-        }
-
-        body.dark .profile-title {
-            color: #93c5fd;
-        }
-
-        body.dark .profile-item span {
-            color: #94a3b8;
-        }
-
-        body.dark .profile-item strong {
-            color: #e0f2fe;
-        }
-
-        body.dark .profile-item {
-            border-bottom: 1px dashed rgba(255, 255, 255, .12);
-        }
-
-        body.dark .table-wrapper {
-            background: linear-gradient(180deg, rgba(15, 23, 42, .85), rgba(2, 6, 23, .8));
-            border: 1px solid rgba(59, 130, 246, .25);
-        }
-
-        @media (min-width: 768px) {
-            .md\:hidden {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar-overlay {
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.4);
-                z-index: 40;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.3s ease;
-            }
-
-            .sidebar-overlay.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-        }
-
-        .filter-pill {
-            border-radius: 999px;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
-            transition: all .2s ease;
+            margin-bottom: 0.25rem;
+        }
+        .nav-link:hover { color: white; background: rgba(255,255,255,0.05); }
+        .nav-link.active { background-color: var(--primary); color: white; }
+
+        .user-profile-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(148, 163, 184, 0.05);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: inherit;
         }
 
-        .filter-pill--active {
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
-        }
     </style>
 
     @stack('styles')
 </head>
 
 <body>
-    <div id="globalLoader"
-         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden opacity-0"
-         style="z-index:99999">
+    <div id="globalLoader" class="fixed inset-0 items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden opacity-0" style="z-index:99999">
+        <div class="animate-spin rounded-full h-8 w-8 border-4 border-white border-t-transparent"></div>
     </div>
 
-    <div class="layout">
-        <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
+    <div class="app-container">
         <aside class="sidebar">
-            <div class="sidebar-title" id="tour-logo">
-                <div
-                    style="
-                        display:flex;
-                        flex-direction:column;
-                        align-items:center;
-                        gap:0.35rem;
-                    ">
-                    <img src="{{ asset('images/imagen.png') }}" alt="Logo inventario"
-                         style="
-                            width:100px;
-                            height:100px;
-                            object-fit:cover;
-                            border-radius:1rem;
-                            box-shadow:0 0 0 1px rgba(15,23,42,0.5),
-                                       0 8px 16px rgba(15,23,42,0.55);
-                        ">
-                    <span
-                        style="
-                            font-size:0.9rem;
-                            font-weight:600;
-                            letter-spacing:0.03em;
-                            text-transform:uppercase;
-                            color:#e5e7eb;
-                            white-space:nowrap;
-                        ">
-                        Inventario · Panel
-                    </span>
-                </div>
+            <div class="text-center" style="margin-bottom: 2.5rem;">
+                <img src="{{ asset('images/imagen.png') }}" alt="Logo" style="width: 70px; height: 70px; border-radius: 1rem; margin-bottom: 1rem;">
+                <div style="font-weight: 800; font-size: 1.1rem; letter-spacing: 0.05em; color: white;">GESTIÓN PRO</div>
+                <div style="font-size: 0.6rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">Sistema Enterprise</div>
             </div>
 
-            <div class="nav-section" id="tour-modulos">
-                <div class="nav-title">Módulos</div>
-
-                <a href="{{ route('principal') }}" class="nav-link" id="tour-principal"
-                   @click.prevent="loadView('{{ route('principal') }}')">
-                    Ventana principal
-                </a>
-
-                <a href="{{ route('productos.index') }}" class="nav-link" id="tour-productos"
-                   @click.prevent="loadView('{{ route('productos.index') }}')">
-                    Productos
-                </a>
-
-                <a href="{{ route('proveedores.index') }}" class="nav-link" id="tour-proveedores"
-                   @click.prevent="loadView('{{ route('proveedores.index') }}')">
-                    Proveedores o persona Natural
-                </a>
-
-                <a href="{{ route('movimientos.index') }}" class="nav-link" id="tour-movimientos"
-                   @click.prevent="loadView('{{ route('movimientos.index') }}')">
-                    Movimientos
-                </a>
-
-                <a href="{{ route('cotizacion.index') }}" class="nav-link" id="tour-cotizaciones"
-                   @click.prevent="loadView('{{ route('cotizacion.index') }}')">
-                    Cotizaciones
-                </a>
-
-                <a href="{{ route('historial.index') }}" class="nav-link" id="tour-historial"
-                   @click.prevent="loadView('{{ route('historial.index') }}')">
-                    Historial de ventas
-                </a>
-            </div>
+            <nav>
+                <a href="{{ route('principal') }}" class="nav-link {{ request()->routeIs('principal') ? 'active' : '' }}">🏠 Inicio</a>
+                <a href="{{ route('productos.index') }}" class="nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}">📦 Productos</a>
+                <a href="{{ route('proveedores.index') }}" class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Proveedores</a>
+                <a href="{{ route('movimientos.index') }}" class="nav-link {{ request()->routeIs('movimientos.*') ? 'active' : '' }}">📊 Movimientos</a>
+                <a href="{{ route('cotizaciones.index') }}" class="nav-link {{ request()->routeIs('cotizaciones.*') ? 'active' : '' }}">📝 Cotizaciones</a>
+                <a href="{{ route('historial.index') }}" class="nav-link {{ request()->routeIs('historial.*') ? 'active' : '' }}">🕒 Historial</a>
+                <a href="{{ route('perfil') }}" class="nav-link {{ request()->routeIs('perfil') ? 'active' : '' }}">👤 Perfil</a>
+            </nav>
         </aside>
 
-        <main class="main" id="tour-main">
-            <div class="top-bar">
-                <button id="menuToggle" class="theme-btn md:hidden">
-                    ☰
-                </button>
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-title">@yield('page_title', 'Dashboard')</div>
+                
+                <div style="display: flex; align-items: center; gap: 1.2rem;">
+                    <button id="themeToggle" style="border:none; background:none; font-size:1.3rem; cursor:pointer;" title="Cambiar tema">🌙</button>
 
-                <div class="top-title">
-                    @yield('page_title', 'Bienvenido al panel principal')
-                </div>
-
-                <div class="user-info">
-                    <a href="{{ route('perfil') }}" class="user-name-pill"
-                       @click.prevent="loadView('{{ route('perfil') }}')">
-                        👤 {{ auth()->user()->email ?? 'Usuario' }}
+                    <a href="{{ route('perfil') }}" class="user-profile-link">
+                        <div style="width: 30px; height: 30px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">
+                            {{ substr(auth()->user()->name ?? auth()->user()->email, 0, 1) }}
+                        </div>
+                        <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">{{ auth()->user()->name ?? auth()->user()->email }}</span>
                     </a>
-
-                    <button type="button" onclick="window.startTour()" class="btn-tour">
-                        INICIAR TOUR
-                    </button>
-
-                    <button id="themeToggle" class="theme-btn">
-                        🌙
-                    </button>
-
+                    
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="logout-btn">
-                            Cerrar sesión
-                        </button>
+                        <button type="submit" class="logout-btn" style="background:#ef4444;">Salir</button>
                     </form>
                 </div>
-            </div>
+            </header>
 
-            <!-- CONTENIDO DINÁMICO -->
-            <div id="dynamic-content">
+            <div id="dynamic-content" style="width: 100%;">
+                @if (session('success'))
+                    <div style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 1rem 2rem; border-radius: 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1.5rem; font-weight: 700; font-size: 0.9rem;">
+                        ✅ {{ session('success') }}
+                    </div>
+                @endif
+                
                 @yield('content')
             </div>
         </main>
     </div>
 
     <script>
-        window.loadView = async function (url, push = true) {
-            const loader = document.getElementById('globalLoader');
-            const content = document.getElementById('dynamic-content');
-
-            loader.classList.remove('hidden', 'opacity-0');
-
-            try {
-                const res = await fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const html = await res.text();
-                await new Promise(r => setTimeout(r, 1200));
-
-                content.innerHTML = html;
-
-                if (push) history.pushState({url}, '', url);
-            } catch (e) {
-                console.error(e);
-                content.innerHTML = '<div class="card p-4 text-red-500">Error cargando vista</div>';
-            } finally {
-                loader.classList.add('opacity-0');
-                setTimeout(() => loader.classList.add('hidden'), 300);
-            }
-        };
-    </script>
-
-    <script>
-        const toggleBtn = document.getElementById('themeToggle');
+        const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
 
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark');
-            toggleBtn.textContent = '☀️';
+            themeToggle.textContent = '☀️';
         }
 
-        toggleBtn.addEventListener('click', () => {
+        themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark');
-
             const isDark = body.classList.contains('dark');
-            toggleBtn.textContent = isDark ? '☀️' : '🌙';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
         });
     </script>
-
-    <script>
-        window.addEventListener('popstate', (e) => {
-            if (e.state?.url) {
-                window.loadView(e.state.url, false);
-            }
-        });
-    </script>
-
-    <!-- DRIVER.JS CONFIG CORREGIDA -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Para el bundle IIFE del CDN, la ruta correcta es esta
-            const driverFactory = window.driver && window.driver.js && window.driver.js.driver;
-            if (!driverFactory) {
-                console.error('Driver.js no está disponible en window.driver.js.driver');
-                return;
-            }
-
-            const driverObj = driverFactory({
-                showProgress: true,
-                nextBtnText: 'Siguiente',
-                prevBtnText: 'Atrás',
-                doneBtnText: 'Terminar',
-                steps: [
-                    {
-                        element: '#tour-logo',
-                        popover: {
-                            title: 'Bienvenido al panel',
-                            description: 'Este es el panel principal de tu sistema de inventario.',
-                            position: 'right'
-                        }
-                    },
-                    {
-                        element: '#tour-principal',
-                        popover: {
-                            title: 'Ventana principal',
-                            description: 'Desde aquí podrás regresar a la ventana principal.',
-                            position: 'right'
-                        }
-                    },
-                    {
-                        element: '#tour-productos',
-                        popover: {
-                            title: 'Productos',
-                            description: 'Aquí gestionarás el catálogo de productos y sus stocks.',
-                            position: 'right'
-                        }
-                    },
-                    {
-                        element: '#tour-proveedores',
-                        popover: {
-                            title: 'Proveedores',
-                            description: 'Accede al listado y la información de tus proveedores.',
-                            position: 'right'
-                        }
-                    },
-                    {
-                        element: '#tour-movimientos',
-                        popover: {
-                            title: 'Movimientos',
-                            description: 'Desde aquí registrarás entradas y salidas de inventario.',
-                            position: 'right'
-                        }
-                    },
-                    {
-                        element: '#tour-cotizaciones',
-                        popover: {
-                            title: 'Cotizaciones',
-                            description: 'Crea y administra cotizaciones para tus clientes.',
-                            position: 'right'
-                        }
-                    },
-                    {
-                        element: '#tour-main',
-                        popover: {
-                            title: 'Zona de trabajo',
-                            description: 'Aquí verás tablas de productos, movimientos y más.',
-                            position: 'top'
-                        }
-                    },
-                    {
-                        element: '#themeToggle',
-                        popover: {
-                            title: 'Modo oscuro',
-                            description: 'Cambia entre modo claro y oscuro para mayor comodidad.',
-                            position: 'left'
-                        }
-                    },
-                    {
-                        element: '#tour-historial',
-                        popover: {
-                            title: 'Historial de ventas',
-                            description: 'Aquí verás el historial de ventas registrados, podrás buscar por fechas.',
-                            position: 'left'
-                        }
-                    }
-                ]
-            });
-
-            // Exponemos la función para el botón
-            window.startTour = function () {
-                driverObj.drive();
-            };
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            if (!menuToggle || !sidebar) return;
-
-            const isMobile = () => window.innerWidth <= 768;
-
-            const openSidebar = () => {
-                if (!isMobile()) return;
-                sidebar.classList.add('active');
-                if (overlay) overlay.classList.add('active');
-            };
-
-            const closeSidebar = () => {
-                sidebar.classList.remove('active');
-                if (overlay) overlay.classList.remove('active');
-            };
-
-            menuToggle.addEventListener('click', () => {
-                if (sidebar.classList.contains('active')) {
-                    closeSidebar();
-                } else {
-                    openSidebar();
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (isMobile()) closeSidebar();
-                });
-            });
-
-            if (overlay) {
-                overlay.addEventListener('click', closeSidebar);
-            }
-
-            window.addEventListener('resize', () => {
-                if (!isMobile()) {
-                    closeSidebar();
-                }
-            });
-        });
-    </script>
-
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    @stack('scripts')
 </body>
 </html>

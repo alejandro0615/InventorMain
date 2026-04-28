@@ -22,9 +22,9 @@
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label class="card-subtitle" for="buscador_proveedor">Buscar proveedor o persona natural</label>
             <input type="text" id="buscador_proveedor" placeholder="Escribe el NIT del proveedor o persona natural"
-                   style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
+                   style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
             <div id="resultado_proveedores"
-                 style="max-height:200px; overflow-y:auto; margin-top:0.4rem; border:1px solid #e5e7eb; border-radius:0.5rem; padding:0.2rem; display:none;">
+                 style="max-height:200px; overflow-y:auto; margin-top:0.4rem; border:1px solid var(--border-color); border-radius:0.5rem; padding:0.2rem; display:none; background: var(--bg-card); color: var(--text-main);">
             </div>
         </div>
 
@@ -32,7 +32,7 @@
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label for="proveedor_id" class="card-subtitle">Proveedor o persona</label>
             <select id="proveedor_id" name="proveedor_id" required
-                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
+                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
                 <option value="">-- Selecciona --</option>
                 @foreach ($proveedores as $proveedor)
                     <option value="{{ $proveedor->id }}" {{ old('proveedor_id') == $proveedor->id ? 'selected' : '' }}>
@@ -46,7 +46,7 @@
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label for="tipo_movimiento" class="card-subtitle">Tipo de movimiento</label>
             <select id="tipo_movimiento" name="tipo_movimiento" required
-                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
+                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
                 <option value="">-- Selecciona tipo --</option>
                 <option value="entrada" {{ old('tipo_movimiento') == 'entrada' ? 'selected' : '' }}>Entrada</option>
                 <option value="salida" {{ old('tipo_movimiento') == 'salida' ? 'selected' : '' }}>Salida</option>
@@ -57,7 +57,7 @@
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label for="fecha" class="card-subtitle">Fecha</label>
             <input type="date" id="fecha" name="fecha" value="{{ old('fecha', now()->format('Y-m-d')) }}"
-                   required style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
+                   required style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
         </div>
 
         <hr style="margin:1rem 0;">
@@ -68,9 +68,9 @@
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label class="card-subtitle" for="buscador_producto">Buscar producto</label>
             <input type="text" id="buscador_producto" placeholder="Escribe código o nombre"
-                   style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
+                   style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
             <div id="resultados_productos"
-                 style="max-height:200px; overflow-y:auto; margin-top:0.4rem; border:1px solid #e5e7eb; border-radius:0.5rem; padding:0.2rem; display:none;">
+                 style="max-height:200px; overflow-y:auto; margin-top:0.4rem; border:1px solid var(--border-color); border-radius:0.5rem; padding:0.2rem; display:none; background: var(--bg-card); color: var(--text-main);">
             </div>
         </div>
 
@@ -107,11 +107,11 @@
 
         <div id="mov_resumen_iva" style="margin-top:0.5rem;"></div>
 
-        <button type="submit" class="btn-tour" style="background:#16a34a; margin-top:0.5rem;">
+        <button type="submit" class="btn-tour" style="background:#16a34a; margin-top:0.5rem; color:white; border:none; padding:0.5rem 1rem; border-radius:0.4rem; cursor:pointer;">
             Registrar movimiento
         </button>
         <a href="{{ route('movimientos.index') }}" class="btn-tour"
-           style="background:#cb0f0f; text-decoration:none; padding:0.4rem 0.8rem;">
+           style="background:#cb0f0f; text-decoration:none; padding:0.4rem 0.8rem; color:white; border-radius:0.4rem; display:inline-block; margin-top:0.5rem;">
             Cancelar Movimiento
         </a>
     </form>
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
                            value="${item.cantidad}"
                            data-index="${index}"
                            class="input-cantidad"
-                           style="width:70px; padding:0.15rem 0.25rem; border-radius:0.3rem; border:1px solid #d1d5db;">
+                           style="width:70px; padding:0.15rem 0.25rem; border-radius:0.3rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
                 </td>
                 <td>
                     <input type="number"
@@ -266,7 +266,8 @@ document.addEventListener('DOMContentLoaded', function() {
                            value="${item.precio}"
                            data-index="${index}"
                            class="input-precio"
-                           style="width:90px; padding:0.15rem 0.25rem; border-radius:0.3rem; border:1px solid #d1d5db;">
+                           readonly
+                           style="width:90px; padding:0.15rem 0.25rem; border-radius:0.3rem; border:1px solid var(--border-color); background-color: rgba(148, 163, 184, 0.1); color: var(--text-main); cursor: not-allowed;">
                 </td>
                 <td>
                     <input type="number"
@@ -275,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
                            data-index="${index}"
                            min="0" max="100" step="1"
                            value="${item.iva}"
-                           style="width:60px; padding:0.15rem 0.25rem; border-radius:0.3rem; border:1px solid #d1d5db;">
+                           style="width:60px; padding:0.15rem 0.25rem; border-radius:0.3rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
                 </td>
                 <td>${formatear(base)}</td>
                 <td>
@@ -368,22 +369,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     tbody.addEventListener('input', function(e) {
+        const index = parseInt(e.target.dataset.index);
         if (e.target.classList.contains('input-cantidad')) {
-            const index = parseInt(e.target.dataset.index);
-            items[index].cantidad = e.target.value;
+            let val = parseFloat(e.target.value) || 1;
+            if (val < 1) val = 1;
+            items[index].cantidad = val;
             renderTabla();
         }
 
         if (e.target.classList.contains('input-precio')) {
-            const index = parseInt(e.target.dataset.index);
-            items[index].precio = parseFloat(e.target.value) || 0;
+            let val = parseFloat(e.target.value) || 0;
+            if (val < 0) val = 0;
+            items[index].precio = val;
             renderTabla();
         }
 
         if (e.target.classList.contains('input-iva-linea')) {
-            const index = parseInt(e.target.dataset.index);
-            let val = parseFloat(e.target.value);
-            if (isNaN(val) || val < 0) val = 0;
+            let val = parseFloat(e.target.value) || 0;
+            if (val < 0) val = 0;
             if (val > 100) val = 100;
             items[index].iva = val;
             recalcularTotales();

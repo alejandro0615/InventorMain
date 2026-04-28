@@ -6,23 +6,40 @@ use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\Salida;
 use App\Models\SalidaDetalle;
-use Illuminate\Support\Facades\DB;
+use App\Services\FactusService;
+use App\Services\MovementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Controlador para gestionar los movimientos de inventario y facturación.
+ */
 class MovimientoController extends Controller
 {
+    protected FactusService $factusService;
+    protected MovementService $movementService;
+
+    public function __construct(FactusService $factusService, MovementService $movementService)
+    {
+        $this->factusService = $factusService;
+        $this->movementService = $movementService;
+    }
+
+    /**
+     * Muestra el historial de movimientos (Facturas de salida).
+     */
     public function index(Request $request)
     {
         $localId = Auth::user()->local_id;
         $proveedorId = $request->input('proveedor_id');
         $fecha = $request->input('fecha');
 
+        // Proveedores disponibles para el local actual
         $proveedores = Proveedor::where('local_id', $localId)
             ->orderBy('nombre')
             ->get();
-
-        // Volvemos a Salida (solo salidas, no entradas)
+            
+        // Consulta de movimientos filtrados
         $movimientos = Salida::with(['detalles.producto', 'cliente'])
             ->whereHas('cliente', function ($q) use ($localId) {
                 $q->where('local_id', $localId);
@@ -35,6 +52,9 @@ class MovimientoController extends Controller
         return view('movimientos.index', compact('movimientos', 'proveedores', 'proveedorId', 'fecha'));
     }
 
+    /**
+     * Muestra el formulario para registrar una Entrada o Salida.
+     */
     public function create()
     {
         $localId = Auth::user()->local_id;
@@ -44,99 +64,34 @@ class MovimientoController extends Controller
         return view('movimientos.create', compact('productos', 'proveedores'));
     }
 
+    /**
+     * Procesa y almacena un movimiento de inventario.
+     */
     public function store(Request $request)
     {
-        $tipo_movimiento = ['entrada', 'salida'];
+        $data = $request->validate([
+            'proveedor_id'    => ['required', 'exists:proveedores,id'],
+            'fecha'           => ['required', 'date'],
+            'tipo_movimiento' => ['required', 'in:entrada,salida'],
+            'producto_id'     => ['required', 'array'],
+            'producto_id.*'   => ['required', 'exists:productos,id'],
+            'cantidad'        => ['required', 'array'],
+            'cantidad.*'      => ['required', 'integer', 'min:1'],
+            'precio'          => ['required', 'array'],
+            'precio.*'        => ['required', 'numeric', 'min:0'],
+            'iva_porcentaje'  => ['nullable', 'array'],
+            'iva_porcentaje.*'=> ['nullable', 'numeric', 'min:0', 'max:100'],
+            'notas'           => ['nullable', 'string'],
+        ]);
 
-        $data = $request->validate(
-            [
-                'proveedor_id' => ['required', 'exists:proveedores,id'],
-                'fecha' => ['required', 'date'],
-                'tipo_movimiento' => ['required', 'in:' . implode(',', $tipo_movimiento)],
-                'producto_id' => ['required', 'array'],
-                'producto_id.*' => ['required', 'exists:productos,id'],
-                'cantidad' => ['required', 'array'],
-                'cantidad.*' => ['required', 'integer', 'min:1'],
-                'precio' => ['required', 'array'],
-                'precio.*' => ['required', 'numeric', 'min:0'],
-                'iva_porcentaje' => ['nullable', 'array'],
-                'iva_porcentaje.*' => ['nullable', 'numeric', 'min:0', 'max:100'],
-                'notas' => ['nullable', 'string'],
-            ]
-        );
+        // Registrar movimiento mediante el servicio
+        $salida = $this->movementService->register($data);
 
-        $salida = null;
-
-        DB::transaction(function () use ($data, $request, &$salida) {
-            $localId = Auth::user()->local_id;
-
-            if ($data['tipo_movimiento'] === 'salida') {
-                $salida = Salida::create([
-                    'cliente_id' => $data['proveedor_id'],
-                    'user_id' => Auth::id(),
-                    'fecha' => $data['fecha'],
-                    'notas' => $request->input('notas'),
-                    'iva_porcentaje' => 0,
-                    'total' => 0,
-                ]);
-            }
-
-            $subtotalGeneral = 0;
-            $ivaGeneral = 0;
-
-            foreach ($data['producto_id'] as $index => $productoId) {
-                $cantidad = (int) $data['cantidad'][$index];
-
-                $producto = Producto::where('local_id', $localId)->findOrFail($productoId);
-
-                if ($data['tipo_movimiento'] === 'salida' && $producto->stock_actual < $cantidad) {
-                    throw \Illuminate\Validation\ValidationException::withMessages([
-                        'cantidad.' . $index => 'No hay suficiente stock para ' .
-                            $producto->nombre . '. Stock actual: ' . $producto->stock_actual,
-                    ]);
-                }
-
-                $precioUnitario = (float) $data['precio'][$index];
-                $ivaPorcentaje = isset($data['iva_porcentaje'][$index])
-                    ? (float) $data['iva_porcentaje'][$index]
-                    : 0;
-
-                if ($data['tipo_movimiento'] === 'entrada') {
-                    $producto->increment('stock_actual', $cantidad);
-                } else {
-                    $producto->decrement('stock_actual', $cantidad);
-
-                    if ($salida) {
-                        $subtotalLinea = $cantidad * $precioUnitario;
-                        $ivaLinea = $subtotalLinea * ($ivaPorcentaje / 100);
-
-                        $subtotalGeneral += $subtotalLinea;
-                        $ivaGeneral += $ivaLinea;
-
-                        SalidaDetalle::create([
-                            'salida_id' => $salida->id,
-                            'producto_id' => $productoId,
-                            'cantidad' => $cantidad,
-                            'precio_unitario' => $precioUnitario,
-                            'iva_porcentaje' => $ivaPorcentaje,
-                            'subtotal' => $subtotalLinea,
-                        ]);
-                    }
-                }
-            }
-
-            if ($salida) {
-                $salida->total = $subtotalGeneral + $ivaGeneral;
-                $salida->numero_factura = 'F' . str_pad($salida->id, 6, '0', STR_PAD_LEFT);
-                $salida->save();
-            }
-        });
-
+        // Si fue una salida, intentamos enviar a Factus
         if ($data['tipo_movimiento'] === 'salida' && $salida) {
-            return redirect()
-                ->route('movimientos.index')
-                ->with('success', 'Movimiento de salida registrado y factura generada correctamente.')
-                ->with('open_pdf', route('salidas.factura', $salida->id));
+            $respuestaFactus = $this->factusService->procesarFactura($salida);
+
+            return $this->handleFactusResponse($respuestaFactus, $salida);
         }
 
         return redirect()
@@ -144,37 +99,21 @@ class MovimientoController extends Controller
             ->with('success', 'Movimiento registrado exitosamente y stock actualizado.');
     }
 
-    public function update()
-    {
-        abort(403, 'No se pueden editar movimientos.');
-    }
-
+    /**
+     * Anula un movimiento y restaura el stock.
+     */
     public function destroy($id)
     {
-        // Aquí seguimos borrando la Salida (factura) y sus detalles,
-        // como en tu versión inicial
-        $salida = Salida::with('detalles.producto')
-            ->whereHas(
-                'cliente',
-                fn($q) =>
-                $q->where('local_id', Auth::user()->local_id)
-            )
-            ->findOrFail($id);
-
-        DB::transaction(function () use ($salida) {
-            foreach ($salida->detalles as $detalle) {
-                // Devolver stock
-                $detalle->producto->increment('stock_actual', $detalle->cantidad);
-                $detalle->delete();
-            }
-
-            $salida->delete();
-        });
+        $this->movementService->cancelSalida($id);
 
         return redirect()
             ->route('movimientos.index')
             ->with('success', 'Factura anulada y stock restaurado correctamente.');
     }
+
+    /**
+     * Muestra el historial consolidado de ventas.
+     */
     public function historial(Request $request)
     {
         $localId = Auth::user()->local_id;
@@ -191,21 +130,46 @@ class MovimientoController extends Controller
 
         $historial = $query
             ->selectRaw('
-            productos.id AS producto_id,
-            productos.nombre AS producto,
-            SUM(salida_detalles.cantidad) AS total_cantidad,
-            SUM(salida_detalles.subtotal) AS total_vendido
-        ')
+                productos.id AS producto_id,
+                productos.nombre AS producto,
+                SUM(salida_detalles.cantidad) AS total_cantidad,
+                SUM(salida_detalles.subtotal) AS total_vendido
+            ')
             ->groupBy('productos.id', 'productos.nombre')
             ->orderBy('producto')
             ->get();
 
         $totalDia = $historial->sum('total_vendido');
 
-        return view('historial.index', compact(
-            'historial',
-            'fecha',
-            'totalDia'
-        ));
+        return view('historial.index', compact('historial', 'fecha', 'totalDia'));
+    }
+
+    /**
+     * Gestiona la respuesta del API de Factus para el usuario final.
+     */
+    protected function handleFactusResponse(array $respuesta, Salida $salida)
+    {
+        if (($respuesta['status'] ?? null) === 'skipped') {
+            return redirect()
+                ->route('movimientos.index')
+                ->with('warning', $respuesta['message'] ?? 'La factura ya fue procesada.');
+        }
+
+        if (isset($respuesta['error'])) {
+            return redirect()
+                ->route('movimientos.index')
+                ->with('error', $respuesta['message'] ?? 'Error al conectar con Factus.');
+        }
+
+        if (!($respuesta['data']['is_validated'] ?? false)) {
+            return redirect()
+                ->route('movimientos.index')
+                ->with('warning', 'Factura enviada. Queda pendiente de validación por la DIAN.');
+        }
+
+        return redirect()
+            ->route('movimientos.index')
+            ->with('success', 'Factura enviada correctamente.')
+            ->with('open_pdf', route('salidas.factura', $salida->id));
     }
 }

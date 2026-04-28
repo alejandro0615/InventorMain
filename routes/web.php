@@ -5,79 +5,61 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\SalidaController;
 use App\Http\Controllers\PerfilController;
-
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+| Aquí se registran las rutas para la aplicación. Todas estas rutas son 
+| cargadas por el RouteServiceProvider.
+*/
 
+// Rutas Públicas (Login y Registro)
 Route::get('/', function () {
     return view('login.login');
 })->name('login');
-;
 
+Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 
-Route::post('/login', [LoginController::class, 'login'])
-    ->name('login.store');
-;
+Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
+Route::post('/register', [LoginController::class, 'register'])->name('register.store');
 
-Route::get('/principal', function (Request $request) {
-    if ($request->ajax()) {
-        // Para loadView (SPA) devolvemos solo el contenido interno
-        return view('principal._content');
-    }
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Para carga normal del navegador devolvemos la vista con layout
-    return view('principal.principal');
-})->name('principal')->middleware('auth');
-;
-
-
-Route::get('register', function () {
-    return view('login.register');
-})->name('register');
-
-Route::post('register', [LoginController::class, 'register'])
-    ->name('register.store');
-
-
-Route::post('/logout', [LoginController::class, 'logout'])
-    ->name('logout');
-
-
-Route::resource('productos', App\Http\Controllers\ProductoController::class)
-    ->middleware('auth');
-
-Route::resource('proveedores', App\Http\Controllers\ProveedorController::class)
-    ->parameters(['proveedores' => 'proveedor'])
-    ->middleware('auth');
-
-
-Route::resource('movimientos', App\Http\Controllers\MovimientoController::class)
-    ->middleware('auth');
-
-Route::resource('cotizacion', App\Http\Controllers\CotizacionController::class)
-    ->middleware('auth');
-
-Route::resource('facturas', App\Http\Controllers\FacturaController::class)->middleware('auth');
-
-
-Route::get('/salidas/{salida}/factura', [SalidaController::class, 'facturaPdf'])
-    ->name('salidas.factura')
-    ->middleware('auth');
-
-Route::get('/salidas/{salida}/factura/download', [SalidaController::class, 'facturaDownload'])
-    ->name('salidas.factura.download')
-    ->middleware('auth');
-
-
+// Rutas Protegidas (Requieren autenticación)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/perfil', [PerfilController::class, 'index'])
-        ->name('perfil');
 
-    Route::delete('/salidas/{salida}', [SalidaController::class, 'destroy'])
-        ->name('salidas.destroy')
-        ->middleware('auth');
+    // Dashboard / Página Principal (Ahora usa DashboardController)
+    Route::get('/principal', [DashboardController::class, 'index'])->name('principal');
 
-    // routes/web.php
-    Route::get('/historial-ventas', [MovimientoController::class, 'historial'])
-        ->name('historial.index');
+    // Módulos Principales (CRUDs)
+    Route::resource('productos', ProductoController::class);
+    Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor']);
+    Route::resource('movimientos', MovimientoController::class);
+    
+    // Cotizaciones con PDF
+    Route::get('/cotizaciones/{cotizacion}/pdf', [CotizacionController::class, 'descargarPdf'])->name('cotizaciones.pdf');
+    Route::resource('cotizaciones', CotizacionController::class);
+    
+    Route::resource('facturas', FacturaController::class);
+
+    // Gestión de Facturas (Salidas)
+    Route::prefix('salidas/{salida}')->group(function () {
+        Route::get('/factura', [SalidaController::class, 'facturaPdf'])->name('salidas.factura');
+        Route::get('/factura/download', [SalidaController::class, 'facturaDownload'])->name('salidas.factura.download');
+        Route::post('/factura/enviar', [SalidaController::class, 'reenviarAFactus'])->name('salidas.factura.enviar');
+        Route::delete('/', [SalidaController::class, 'destroy'])->name('salidas.destroy');
+    });
+
+    // Perfil de Usuario
+    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
+
+    // Reportes e Historial
+    Route::get('/historial-ventas', [MovimientoController::class, 'historial'])->name('historial.index');
 });

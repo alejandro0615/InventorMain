@@ -34,5 +34,23 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'factus' => [
+        'url' => env('FACTUS_URL'),
+        'api_version' => env('FACTUS_API_VERSION', 'v1'),
+        'client_id' => env('FACTUS_CLIENT_ID'),
+        'client_secret' => env('FACTUS_CLIENT_SECRET'),
+        'username' => env('FACTUS_USERNAME'),
+        'password' => env('FACTUS_PASSWORD'),
+        'numbering_range_id' => env('FACTUS_NUMBERING_RANGE_ID'),
+        'reference_ids' => [
+            'customer_identification_document_id' => env('FACTUS_CUSTOMER_IDENTIFICATION_DOCUMENT_ID', 6),
+            'customer_legal_organization_id_company' => env('FACTUS_CUSTOMER_LEGAL_ORGANIZATION_ID_COMPANY', 1),
+            'customer_legal_organization_id_person' => env('FACTUS_CUSTOMER_LEGAL_ORGANIZATION_ID_PERSON', 2),
+            'customer_tribute_id' => env('FACTUS_CUSTOMER_TRIBUTE_ID', 18),
+            'item_tribute_id' => env('FACTUS_ITEM_TRIBUTE_ID', 1),
+            'item_unit_measure_id' => env('FACTUS_ITEM_UNIT_MEASURE_ID', 70),
+            'item_standard_code_id' => env('FACTUS_ITEM_STANDARD_CODE_ID', 1),
+        ],
+    ],
 
 ];

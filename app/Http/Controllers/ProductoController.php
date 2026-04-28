@@ -6,30 +6,30 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Controlador para la gestión del catálogo de productos.
+ */
 class ProductoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Lista los productos del local actual con filtros de búsqueda y stock.
      */
     public function index(Request $request)
     {
         $localId = Auth::user()->local_id;
+        $search = $request->get('q');
 
-        $query = Producto::where('local_id', $localId);
+        // Construir la consulta usando scopes del modelo
+        $query = Producto::delLocal($localId)
+            ->buscar($search);
 
         if ($request->get('filtro') === 'stock_bajo') {
-            $query->where('stock_actual', '<=', 5);
-        }
-        // Búsqueda por código o nombre
-        if ($search = $request->get('q')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('codigo', 'like', "%{$search}%")
-                    ->orWhere('nombre', 'like', "%{$search}%");
-            });
+            $query->stockBajo();
         }
 
         $productos = $query->paginate(10)->withQueryString();
 
+        // Soporte para carga vía AJAX (SPA-like)
         if ($request->ajax()) {
             return view('productos._content', compact('productos', 'search'));
         }
@@ -38,27 +38,33 @@ class ProductoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo producto.
      */
     public function create()
     {
-        $productos = Producto::all();
-        return view('productos.create', compact('productos'));
+        return view('productos.create');
     }
 
-
+    /**
+     * Almacena un nuevo producto en la base de datos.
+     */
     public function store(Request $request)
     {
+        $localId = Auth::user()->local_id;
 
-        $Data = $request->validate([
-            'codigo' => ['required', 'string', 'max:20', 'unique:productos,codigo'],
-            'nombre' => ['required', 'string', 'max:100'],
-            'stock_actual' => ['required', 'integer', 'min:0'],
-            'precio_compra' => ['required', 'numeric', 'min:0'],
-            'precio_venta' => ['required', 'numeric', 'min:0'],
+        $data = $request->validate([
+            'codigo'         => [
+                'required', 'string', 'max:20', 
+                'unique:productos,codigo,NULL,id,local_id,' . $localId
+            ],
+            'nombre'         => ['required', 'string', 'max:100'],
+            'stock_actual'   => ['required', 'integer', 'min:0'],
+            'precio_compra'  => ['required', 'numeric', 'min:0'],
+            'precio_venta'   => ['required', 'numeric', 'min:0'],
         ]);
-        $Data['local_id'] = Auth::user()->local_id;
-        Producto::create($Data);
+
+        $data['local_id'] = $localId;
+        Producto::create($data);
 
         return redirect()
             ->route('productos.index')
@@ -66,34 +72,46 @@ class ProductoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Muestra el detalle de un producto específico.
      */
     public function show(Producto $producto)
     {
-        return view('productos.show', compact('producto', 'productos'));
+        // Asegurar que el producto pertenece al local del usuario
+        if ($producto->local_id !== Auth::user()->local_id) {
+            abort(403);
+        }
 
+        return view('productos.show', compact('producto'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario de edición de un producto.
      */
     public function edit(Producto $producto)
     {
-        return view('productos.edit', compact('producto'));
+        if ($producto->local_id !== Auth::user()->local_id) {
+            abort(403);
+        }
 
+        return view('productos.edit', compact('producto'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la información de un producto.
      */
     public function update(Request $request, Producto $producto)
     {
+        if ($producto->local_id !== Auth::user()->local_id) {
+            abort(403);
+        }
+
         $validatedData = $request->validate([
-            'nombre' => ['required', 'string', 'max:100'],
-            'stock_actual' => ['required', 'integer', 'min:0'],
+            'nombre'        => ['required', 'string', 'max:100'],
+            'stock_actual'  => ['required', 'integer', 'min:0'],
             'precio_compra' => ['required', 'numeric', 'min:0'],
-            'precio_venta' => ['required', 'numeric', 'min:0'],
+            'precio_venta'  => ['required', 'numeric', 'min:0'],
         ]);
+
         $producto->update($validatedData);
 
         return redirect()
@@ -102,11 +120,18 @@ class ProductoController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un producto del inventario.
      */
     public function destroy(Producto $producto)
     {
+        if ($producto->local_id !== Auth::user()->local_id) {
+            abort(403);
+        }
+
         $producto->delete();
-        return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente.');
+
+        return redirect()
+            ->route('productos.index')
+            ->with('success', 'Producto eliminado exitosamente.');
     }
 }

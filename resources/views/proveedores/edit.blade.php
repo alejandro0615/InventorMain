@@ -26,6 +26,13 @@
             </div>
 
             <div class="form-group" style="margin-bottom:0.75rem;">
+                <label for="razon_social" class="card-subtitle">Razón social / nombre RUT</label>
+                <input type="text" id="razon_social" name="razon_social"
+                    value="{{ old('razon_social', $proveedor->razon_social) }}"
+                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.75rem;">
                 <label for="direccion" class="card-subtitle">Dirección</label>
                 <input type="text" id="direccion" name="direccion" value="{{ old('direccion', $proveedor->direccion) }}"
                     required style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">

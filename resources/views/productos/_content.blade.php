@@ -1,128 +1,152 @@
 <div class="card">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="card-title">Productos</h2>
-        {{-- Botón NUEVO PRODUCTO --}}
-        <a href="{{ route('productos.create') }}"
-            class="inline-flex items-center px-4 py-2 rounded-md shadow text-sm font-medium"
-            style="background:#2563eb; color:#ffffff; border:none;">
-            Nuevo producto
+    <style>
+        .page-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .search-container {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 0.75rem;
+            background: var(--bg-body);
+            border: 2px solid var(--border-color);
+            transition: border-color 0.2s;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .filter-section {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .action-section {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .filter-pill {
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-decoration: none;
+            background: rgba(148, 163, 184, 0.05);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .crud-actions {
+            display: inline-flex;
+            gap: 0.4rem;
+        }
+
+        .crud-action-btn {
+            padding: 0.35rem 0.7rem;
+            border-radius: 0.4rem;
+            font-weight: 800;
+            font-size: 0.7rem;
+            color: white;
+            text-decoration: none;
+            background: var(--primary);
+            text-transform: uppercase;
+        }
+    </style>
+
+    {{-- 1. TÍTULO --}}
+    <div class="page-header">
+        <h2 class="card-title" style="font-size: 1.5rem; margin: 0; text-transform: uppercase;">Inventario de Productos</h2>
+        <p class="text-muted" style="font-size: 0.8rem;">Administración de existencias y precios.</p>
+    </div>
+
+    {{-- 2. BARRA DE BÚSQUEDA GRANDE --}}
+    <div class="search-container">
+        <form method="GET" action="{{ route('productos.index') }}">
+            <input type="text" name="q" placeholder="Escribe el nombre o código del producto para buscar..." value="{{ $search ?? '' }}">
+            @if(request('filtro'))
+                <input type="hidden" name="filtro" value="{{ request('filtro') }}">
+            @endif
+        </form>
+    </div>
+
+    {{-- 3. STOCK BAJO (FILTROS) --}}
+    <div class="filter-section">
+        <a href="{{ route('productos.index', array_filter(['q' => $search ?? null])) }}" 
+           class="filter-pill {{ !request('filtro') ? 'active' : '' }}">Todos los productos</a>
+        <a href="{{ route('productos.index', array_filter(['filtro' => 'stock_bajo', 'q' => $search ?? null])) }}" 
+           class="filter-pill {{ request('filtro') === 'stock_bajo' ? 'active' : '' }}">⚠️ Stock Bajo</a>
+    </div>
+
+    {{-- 4. BOTONES DE ACCIÓN (DEBAJO DE TODO) --}}
+    <div class="action-section">
+        <a href="{{ route('productos.create') }}" class="btn-primary-action">
+            Nuevo Producto
         </a>
     </div>
 
-    {{-- Barra de búsqueda + filtros --}}
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-        <form method="GET" action="{{ route('productos.index') }}" class="flex gap-2 w-full md:w-auto">
-            <input type="text" name="q" placeholder="Buscar por código o nombre" value="{{ $search ?? '' }}"
-                class="flex-1 px-3 py-1.5 rounded-md text-sm border border-gray-300" />
-
-            {{-- mantener el filtro actual en la búsqueda --}}
-            @if (request('filtro'))
-                <input type="hidden" name="filtro" value="{{ request('filtro') }}">
-            @endif
-
-            <button type="submit" class="btn-tour" style="background:#2563eb;">
-                Buscar
-            </button>
-
-            @if (!empty($search))
-                <a href="{{ route('productos.index', array_filter(['filtro' => request('filtro')])) }}" class="btn-tour"
-                    style="background:#1645a4; text-decoration:none;">
-                    Limpiar
-                </a>
-            @endif
-        </form>
-
-        {{-- Grupo de filtros --}}
-        <div class="flex items-center gap-2">
-            <div class="inline-flex items-center gap-1 bg-slate-100 rounded-full px-1 py-1">
-                <a href="{{ route('productos.index', array_filter(['q' => $search ?? null])) }}"
-                    class="filter-pill {{ request('filtro') ? 'bg-transparent text-slate-700' : 'bg-blue-600 text-white filter-pill--active' }}">
-                    Todos
-                </a>
-
-                <a href="{{ route('productos.index', array_filter(['filtro' => 'stock_bajo', 'q' => $search ?? null])) }}"
-                    class="filter-pill {{ request('filtro') === 'stock_bajo' ? 'bg-red-600 text-white filter-pill--active' : 'bg-transparent text-slate-700' }}">
-                    Stock bajo (≤ 5)
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{{-- … resto de la tabla igual … --}}
-
-
-{{-- session('success') --}}
-@if (session('success'))
-    <div class="mb-4 px-4 py-2 text-sm text-green-800 bg-green-100 border border-green-200 rounded-md">
-        {{ session('success') }}
-    </div>
-@endif
-
-{{-- Tabla --}}
-<div class="overflow-x-auto table-wrapper">
-    <table class="min-w-full table-auto text-sm">
-        <thead class="border-b border-gray-200">
-            <tr>
-                <th class="text-left font-semibold">CODIGO</th>
-                <th class="text-left font-semibold">Nombre</th>
-                <th class="text-left font-semibold">Precio</th>
-                <th class="text-left font-semibold">Cantidad actual</th>
-                <th class="text-right font-semibold">Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @forelse ($productos as $producto)
-                @php
-                    $stock = $producto->stock_actual;
-                    $esBajo = $stock <= 5; // umbral de alerta
-                @endphp
-
-                <tr class="border-t border-gray-200 hover:bg-gray-50">
-                    <td>{{ $producto->codigo }}</td>
-                    <td>{{ $producto->nombre }}</td>
-
-                    {{-- Precio --}}
-                    <td class="text-left">
-                        {{ '$ ' . number_format($producto->precio_venta, 0, ',', '.') }}
-                    </td>
-
-
-                    <td class="text-left">
-                        <span class="@if ($esBajo) stock-bajo @else stock-normal @endif">
-                            {{ $stock }}
-                        </span>
-                    </td>
-
-                    <td class="align-middle text-right">
-                        <div class="actions">
-                            <a href="{{ route('productos.edit', $producto) }}" class="text-xs px-3 py-1 rounded-md"
-                                style="background:#eab308; color:#ffffff;">
-                                Editar
-                            </a>
-
-                            <form action="{{ route('productos.destroy', $producto) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-xs px-3 py-1 rounded-md"
-                                    style="background:#dc2626; color:#ffffff;"
-                                    onclick="return confirm('¿Eliminar este producto?')">
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            @empty
+    {{-- TABLA --}}
+    <div class="table-wrapper">
+        <table>
+            <thead>
                 <tr>
-                    <td colspan="5" class="py-4 text-center text-gray-500">
-                        No hay productos registrados.
-                    </td>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Precio Venta</th>
+                    <th>Existencias</th>
+                    <th class="text-right">Acciones</th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
-    <div class="mt-4">
+            </thead>
+            <tbody>
+                @forelse ($productos as $producto)
+                    @php $esBajo = $producto->stock_actual <= 5; @endphp
+                    <tr>
+                        <td class="bold">{{ $producto->codigo }}</td>
+                        <td>{{ $producto->nombre }}</td>
+                        <td class="bold" style="color: var(--primary);">$ {{ number_format($producto->precio_venta, 0, ',', '.') }}</td>
+                        <td>
+                            <span style="font-weight: 800; color: {{ $esBajo ? '#ef4444' : '#10b981' }};">
+                                {{ $producto->stock_actual }} UND
+                            </span>
+                        </td>
+                        <td class="text-right">
+                            <div class="crud-actions">
+                                <a href="{{ route('productos.edit', $producto) }}" class="crud-action-btn">Editar</a>
+                                <form action="{{ route('productos.destroy', $producto) }}" method="POST" style="display:inline;">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="crud-action-btn" style="background:#ef4444;" onclick="return confirm('¿Confirmar?')">Borrar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="5" class="text-center text-muted">No se encontraron resultados para tu búsqueda.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
         {{ $productos->links() }}
     </div>
 </div>
