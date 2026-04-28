@@ -35,22 +35,23 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 
 COPY . .
+
+RUN cp .env.example .env || true
 
 # 🔥 Forzar autoload actualizado (CLAVE)
 RUN composer dump-autoload
 
-# Install Node dependencies and build assets
-RUN npm install && npm run build
+RUN php artisan package:discover
 
 # Permisos
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage \
     && chmod -R 775 bootstrap/cache
 
-    # 🔥 7. Limpiar caches Laravel
+# 🔥 7. Limpiar caches Laravel
 RUN php artisan optimize:clear
 
 # Configure Apache DocumentRoot to point to public directory
