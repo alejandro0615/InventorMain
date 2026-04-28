@@ -1,4 +1,4 @@
-@extends('layouts.panel')
+@extends($layout)
 
 @section('title', 'informacion de usuario')
 @section('page_title', 'Bienvenido al Sistema de Gestion')

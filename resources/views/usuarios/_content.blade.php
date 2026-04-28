@@ -115,6 +115,56 @@
             </div>
         </div>
     </div>
+
+    {{-- Cambio de Contraseña --}}
+    <div class="card" style="margin-top: 2rem; max-width: 600px;">
+        <h3 class="card-title" style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--primary);">
+            🔒 Cambiar Contraseña
+        </h3>
+
+        @if ($errors->any())
+            <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(239, 68, 68, 0.2); margin-bottom: 1.5rem; font-size: 0.8rem;">
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('perfil.password') }}" method="POST">
+            @csrf
+            <div style="margin-bottom: 1rem; position: relative;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Contraseña Actual</label>
+                <input type="password" id="current_password" name="current_password" required style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); padding-right: 2.5rem;">
+                <button type="button" onclick="togglePassword('current_password')" style="position: absolute; right: 0.75rem; top: 2.2rem; background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="position: relative;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password" required minlength="8" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); padding-right: 2.5rem;">
+                    <button type="button" onclick="togglePassword('password')" style="position: absolute; right: 0.75rem; top: 2.2rem; background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                </div>
+                <div style="position: relative;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Confirmar Nueva Contraseña</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" required minlength="8" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); padding-right: 2.5rem;">
+                    <button type="button" onclick="togglePassword('password_confirmation')" style="position: absolute; right: 0.75rem; top: 2.2rem; background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary-action" style="width: 100%; justify-content: center;">
+                Actualizar Credenciales
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
     
     <div style="margin-top: 2rem; text-align: left;">
         <p class="text-muted" style="font-size: 0.75rem; font-style: italic;">

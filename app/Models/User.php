@@ -26,6 +26,7 @@ class User extends Authenticatable
         'telefono',
         'local_id',
         'estado',
+        'role',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'estado'            => 'string',
+            'role'              => 'string',
         ];
     }
 
@@ -78,5 +80,13 @@ class User extends Authenticatable
     public function getIsActivoAttribute()
     {
         return $this->estado === 'activo';
+    }
+
+    /**
+     * Verifica si el usuario es administrador.
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }

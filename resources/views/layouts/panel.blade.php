@@ -191,13 +191,18 @@
             </div>
 
             <nav>
-                <a href="{{ route('principal') }}" class="nav-link {{ request()->routeIs('principal') ? 'active' : '' }}">🏠 Inicio</a>
-                <a href="{{ route('productos.index') }}" class="nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}">📦 Productos</a>
-                <a href="{{ route('proveedores.index') }}" class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Proveedores</a>
-                <a href="{{ route('movimientos.index') }}" class="nav-link {{ request()->routeIs('movimientos.*') ? 'active' : '' }}">📊 Movimientos</a>
-                <a href="{{ route('cotizaciones.index') }}" class="nav-link {{ request()->routeIs('cotizaciones.*') ? 'active' : '' }}">📝 Cotizaciones</a>
-                <a href="{{ route('historial.index') }}" class="nav-link {{ request()->routeIs('historial.*') ? 'active' : '' }}">🕒 Historial</a>
-                <a href="{{ route('perfil') }}" class="nav-link {{ request()->routeIs('perfil') ? 'active' : '' }}">👤 Perfil</a>
+                @if(auth()->user()->email === 'torresgiraldojhon1224@outlook.es')
+                    <div style="margin: 1rem 1rem 0.5rem; font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em;">ADMINISTRACIÓN</div>
+                    <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">🛡️ Usuarios</a>
+                @else
+                    <a href="{{ route('principal') }}" class="nav-link {{ request()->routeIs('principal') ? 'active' : '' }}">🏠 Inicio</a>
+                    <a href="{{ route('productos.index') }}" class="nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}">📦 Productos</a>
+                    <a href="{{ route('proveedores.index') }}" class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Proveedores</a>
+                    <a href="{{ route('movimientos.index') }}" class="nav-link {{ request()->routeIs('movimientos.*') ? 'active' : '' }}">📊 Movimientos</a>
+                    <a href="{{ route('cotizaciones.index') }}" class="nav-link {{ request()->routeIs('cotizaciones.*') ? 'active' : '' }}">📝 Cotizaciones</a>
+                    <a href="{{ route('historial.index') }}" class="nav-link {{ request()->routeIs('historial.*') ? 'active' : '' }}">🕒 Historial</a>
+                    <a href="{{ route('perfil') }}" class="nav-link {{ request()->routeIs('perfil') ? 'active' : '' }}">👤 Perfil</a>
+                @endif
             </nav>
         </aside>
 

@@ -61,6 +61,7 @@ class LoginController extends Controller
                 'telefono'     => $request->telefono,
                 'local_id'     => $local->id,
                 'estado'       => 'activo',
+                'role'         => 'user',
                 'password'     => Hash::make($request->password),
             ]);
         });
@@ -80,7 +81,21 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            
+            if ($user->estado !== 'activo') {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Tu cuenta está bloqueada o inactiva. Contacta al administrador.',
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
+
+            if ($user->email === 'torresgiraldojhon1224@outlook.es') {
+                return redirect()->route('admin.users.index');
+            }
+
             return redirect()->intended('principal');
         }
 

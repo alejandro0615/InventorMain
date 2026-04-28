@@ -27,9 +27,6 @@ Route::get('/', function () {
 
 Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 
-Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
-Route::post('/register', [LoginController::class, 'register'])->name('register.store');
-
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Rutas Protegidas (Requieren autenticación)
@@ -59,7 +56,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Perfil de Usuario
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
+    Route::post('/perfil/password', [PerfilController::class, 'updatePassword'])->name('perfil.password');
 
     // Reportes e Historial
     Route::get('/historial-ventas', [MovimientoController::class, 'historial'])->name('historial.index');
+
+    // Panel de Administración (Super Admin)
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/usuarios', [\App\Http\Controllers\Admin\AdminUserController::class, 'index'])->name('users.index');
+        Route::post('/usuarios', [\App\Http\Controllers\Admin\AdminUserController::class, 'store'])->name('users.store');
+        Route::patch('/usuarios/{user}/toggle', [\App\Http\Controllers\Admin\AdminUserController::class, 'toggleStatus'])->name('users.toggle');
+        Route::delete('/usuarios/{user}', [\App\Http\Controllers\Admin\AdminUserController::class, 'destroy'])->name('users.destroy');
+    });
 });

@@ -14,6 +14,11 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
+        if ($user->email === 'torresgiraldojhon1224@outlook.es') {
+            return redirect()->route('admin.users.index');
+        }
+
         $localId = $user->local_id;
         $now = Carbon::now();
 
