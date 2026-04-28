@@ -31,19 +31,27 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy existing application directory contents
-COPY . /var/www/html
+# 🔥 Copiar solo composer primero (para evitar problemas de cache)
+COPY composer.json composer.lock ./
 
-# Set permissions for storage and bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Install PHP dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
+
+COPY . .
+
+# 🔥 Forzar autoload actualizado (CLAVE)
+RUN composer dump-autoload
 
 # Install Node dependencies and build assets
 RUN npm install && npm run build
+
+# Permisos
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage \
+    && chmod -R 775 bootstrap/cache
+
+    # 🔥 7. Limpiar caches Laravel
+RUN php artisan optimize:clear
 
 # Configure Apache DocumentRoot to point to public directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
