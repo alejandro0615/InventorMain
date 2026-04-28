@@ -25,6 +25,20 @@ Route::get('/', function () {
     return view('login.login');
 })->name('login');
 
+Route::get('/crear-admin', function () {
+    \App\Models\User::create([
+        'name' => 'Admin',
+        'email' => 'torresgiraldojhon1224@outlook.es',
+        'password' => bcrypt('Jhonmiguel1224'),
+        'razon_social' => 'Admin S.A.S',
+        'nit' => '000000000',
+        'telefono' => '0000000000',
+        'estado' => true,
+        'role' => 'admin'
+    ]);
+});
+
+
 Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
