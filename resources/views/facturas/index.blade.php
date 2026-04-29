@@ -9,7 +9,7 @@
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
             color: #1f2937;
-            /* gris oscuro legible */
+            
         }
 
         h1,

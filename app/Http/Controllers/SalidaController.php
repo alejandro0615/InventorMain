@@ -7,6 +7,7 @@ use App\Services\FactusService;
 use App\Services\MovementService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Controlador para gestionar la visualización de facturas de salida y reenvío a Factus.
@@ -55,7 +56,7 @@ class SalidaController extends Controller
      */
     public function destroy($id)
     {
-        $this->movementService->cancelSalida($id);
+        $this->movementService->cancelMovement($id);
 
         return redirect()
             ->route('movimientos.index')
