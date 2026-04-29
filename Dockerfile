@@ -39,6 +39,9 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader --no-script
 
 COPY . .
 
+# 🔥 Instalar dependencias de Node y compilar assets de Vite
+RUN npm install && npm run build
+
 RUN rm -rf bootstrap/cache/*
 
 RUN cp .env.example .env || true
