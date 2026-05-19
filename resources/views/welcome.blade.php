@@ -269,7 +269,7 @@
 
             <div class="card">
                 <div class="card-pill">Relaciones</div>
-                <h2 class="card-title">Proveedores</h2>
+                <h2 class="card-title">Catálogo de terceros</h2>
                 <p class="card-text">
                     Administra tus proveedores y contactos, y asocia cada movimiento a su origen correspondiente.
                 </p>

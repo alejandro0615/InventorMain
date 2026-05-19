@@ -31,15 +31,7 @@
         {{-- Proveedor (cabecera) --}}
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label for="proveedor_id" class="card-subtitle">Proveedor o persona</label>
-            <select id="proveedor_id" name="proveedor_id" required
-                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
-                <option value="">-- Selecciona --</option>
-                @foreach ($proveedores as $proveedor)
-                    <option value="{{ $proveedor->id }}" {{ old('proveedor_id') == $proveedor->id ? 'selected' : '' }}>
-                        {{ $proveedor->nit }} - {{ $proveedor->nombre }}
-                    </option>
-                @endforeach
-            </select>
+            <input type="hidden" id="proveedor_id" name="proveedor_id" required>
         </div>
 
         {{-- Tipo --}}
@@ -189,6 +181,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalIvaSpan  = document.getElementById('mov_total_iva');
     const totalSpan     = document.getElementById('mov_total');
     const resumenIvaDiv = document.getElementById('mov_resumen_iva');
+    // Movement type handling
+    const selectTipo = document.getElementById('tipo_movimiento');
+    let movimientoTipo = selectTipo.value;
+    selectTipo.addEventListener('change', () => {
+        movimientoTipo = selectTipo.value;
+        // Update existing items price based on new movement type
+        items = items.map(item => {
+            const prod = PRODUCTOS.find(p => p.id === item.id);
+            if (!prod) return item;
+            return {
+                ...item,
+                precio: movimientoTipo === 'entrada' ? (prod.precio_compra ?? 0) : (prod.precio_venta ?? 0)
+            };
+        });
+        renderTabla();
+    });
 
     let items = []; // {id, codigo, nombre, precio, cantidad, iva}
 
@@ -355,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: prod.id,
                 codigo: prod.codigo,
                 nombre: prod.nombre,
-                precio: prod.precio_venta ?? 0,
+                precio: movimientoTipo === 'entrada' ? (prod.precio_compra ?? 0) : (prod.precio_venta ?? 0),
                 cantidad: 1,
                 iva: prod.iva_porcentaje ?? 0,
             });
