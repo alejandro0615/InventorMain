@@ -83,13 +83,14 @@ class MovimientoController extends Controller
             'iva_porcentaje'  => ['nullable', 'array'],
             'iva_porcentaje.*'=> ['nullable', 'numeric', 'min:0', 'max:100'],
             'notas'           => ['nullable', 'string'],
+            'generar_factura' => ['nullable', 'string', 'in:0,1'],
         ]);
 
         // Registrar movimiento mediante el servicio
         $salida = $this->movementService->register($data);
 
-        // Si fue una salida, intentamos enviar a Factus
-        if ($data['tipo_movimiento'] === 'salida' && $salida) {
+        // Si fue una salida y el usuario indicó generar factura, intentamos enviar a Factus
+        if ($data['tipo_movimiento'] === 'salida' && $salida && $request->input('generar_factura') === '1') {
             $respuestaFactus = $this->factusService->procesarFactura($salida);
 
             return $this->handleFactusResponse($respuestaFactus, $salida);

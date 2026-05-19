@@ -15,8 +15,9 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('movimientos.store') }}">
+    <form method="POST" action="{{ route('movimientos.store') }}" id="movimientoForm">
         @csrf
+        <input type="hidden" name="generar_factura" id="generar_factura_flag" value="">
 
         {{-- Buscador de proveedor --}}
         <div class="form-group" style="margin-bottom:0.75rem;">
@@ -401,6 +402,76 @@ document.addEventListener('DOMContentLoaded', function() {
             items.splice(index, 1);
             renderTabla();
         }
+    });
+});
+</script>
+
+{{-- Modal de Confirmación de Factura Electrónica (Ventana Emergente Premium) --}}
+<div id="confirmInvoiceModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem; transition: all 0.3s ease;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); max-width: 460px; width: 100%; border-radius: 1rem; padding: 2rem; box-shadow: var(--card-shadow); text-align: center; transform: scale(0.95); transition: transform 0.3s ease;">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem; animation: bounce 2s infinite;">📄</div>
+        <h3 style="margin: 0 0 0.75rem; color: var(--text-main); font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em;">¿Generar Factura Electrónica?</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.75rem; line-height: 1.5;">
+            Estás registrando un movimiento de <strong>Salida</strong>. ¿Deseas reportar este movimiento a la DIAN para generar la factura electrónica en Factus?
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button type="button" id="btnConfirmYes" style="background: var(--primary); color: white; border: none; padding: 0.8rem 1.2rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; box-shadow: 0 4px 12px var(--primary-glow);">
+                Sí, Generar Factura Electrónica
+            </button>
+            <button type="button" id="btnConfirmNo" style="background: rgba(148, 163, 184, 0.15); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.8rem 1.2rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s;">
+                No, Solo Registrar Movimiento
+            </button>
+            <button type="button" id="btnConfirmCancel" style="background: transparent; color: #ef4444; border: none; padding: 0.5rem; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; text-decoration: underline;">
+                Cancelar Registro
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('movimientoForm');
+    const flag = document.getElementById('generar_factura_flag');
+    const selectTipo = document.getElementById('tipo_movimiento');
+    const modal = document.getElementById('confirmInvoiceModal');
+    const modalContent = modal.querySelector('div');
+
+    form.addEventListener('submit', function(e) {
+        if (selectTipo.value === 'salida' && flag.value === '') {
+            e.preventDefault();
+            // Show modal with animation
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modalContent.style.transform = 'scale(1)';
+            }, 10);
+        }
+    });
+
+    document.getElementById('btnConfirmYes').addEventListener('click', function() {
+        flag.value = '1';
+        modalContent.style.transform = 'scale(0.95)';
+        modal.style.display = 'none';
+        form.submit();
+    });
+
+    document.getElementById('btnConfirmNo').addEventListener('click', function() {
+        flag.value = '0';
+        modalContent.style.transform = 'scale(0.95)';
+        modal.style.display = 'none';
+        form.submit();
+    });
+
+    document.getElementById('btnConfirmCancel').addEventListener('click', function() {
+        flag.value = '';
+        modalContent.style.transform = 'scale(0.95)';
+        modal.style.display = 'none';
     });
 });
 </script>
