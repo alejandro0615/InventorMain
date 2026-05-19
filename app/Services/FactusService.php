@@ -126,7 +126,7 @@ class FactusService
             'payment_method_code' => '10', // Efectivo por defecto
             'customer' => [
                 'identification' => (string) $cliente->nit,
-                'names' => (string) ($cliente->razon_social ?? $cliente->nombre),
+                'names' => (string) ($cliente->nombre ?? 'N/A'),
                 'address' => (string) ($cliente->direccion ?? 'N/A'),
                 'email' => (string) ($cliente->email ?? 'test@test.com'),
                 'phone' => (string) ($cliente->telefono ?? '000000000'),

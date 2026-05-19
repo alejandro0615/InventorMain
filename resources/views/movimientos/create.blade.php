@@ -6,7 +6,7 @@
 @section('content')
 <section class="card">
     <h2 class="card-title">Registrar movimiento con varios productos</h2>
-
+    <br><br><br>
     @if ($errors->any())
         <div style="color:#b91c1c; font-size:0.9rem; margin-bottom:0.75rem;">
             @foreach ($errors->all() as $error)
@@ -28,18 +28,12 @@
             </div>
         </div>
 
-        {{-- Proveedor (cabecera) --}}
-        <div class="form-group" style="margin-bottom:0.75rem;">
-            <label for="proveedor_id" class="card-subtitle">Proveedor o persona</label>
-            <input type="hidden" id="proveedor_id" name="proveedor_id" required>
-        </div>
-
         {{-- Tipo --}}
         <div class="form-group" style="margin-bottom:0.75rem;">
             <label for="tipo_movimiento" class="card-subtitle">Tipo de movimiento</label>
             <select id="tipo_movimiento" name="tipo_movimiento" required
                     style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
-                <option value="">-- Selecciona tipo --</option>
+                <option value="">-- Selecciona tipo de movimiento --</option>
                 <option value="entrada" {{ old('tipo_movimiento') == 'entrada' ? 'selected' : '' }}>Entrada</option>
                 <option value="salida" {{ old('tipo_movimiento') == 'salida' ? 'selected' : '' }}>Salida</option>
             </select>
@@ -198,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderTabla();
     });
 
-    let items = []; // {id, codigo, nombre, precio, cantidad, iva}
+    let items = []; 
 
     function formatear(valor) {
         return new Intl.NumberFormat('es-CO', {

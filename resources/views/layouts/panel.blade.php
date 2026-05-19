@@ -252,7 +252,7 @@
                     <a href="{{ route('productos.index') }}"
                         class="nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}">📦 Productos</a>
                     <a href="{{ route('proveedores.index') }}"
-                        class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Proveedores</a>
+                        class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Clientes o proveedores</a>
                     <a href="{{ route('movimientos.index') }}"
                         class="nav-link {{ request()->routeIs('movimientos.*') ? 'active' : '' }}">📊 Movimientos</a>
                     <a href="{{ route('cotizaciones.index') }}"
