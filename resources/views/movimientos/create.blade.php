@@ -23,6 +23,7 @@
             <label class="card-subtitle" for="buscador_proveedor">Buscar proveedor o persona natural</label>
             <input type="text" id="buscador_proveedor" placeholder="Escribe el NIT del proveedor o persona natural"
                    style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
+            <input type="hidden" name="proveedor_id" id="proveedor_id">
             <div id="resultado_proveedores"
                  style="max-height:200px; overflow-y:auto; margin-top:0.4rem; border:1px solid var(--border-color); border-radius:0.5rem; padding:0.2rem; display:none; background: var(--bg-card); color: var(--text-main);">
             </div>
