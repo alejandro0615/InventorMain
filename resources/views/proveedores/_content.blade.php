@@ -31,7 +31,7 @@
 
     {{-- Encabezado estándar --}}
     <div id= "tourt-directorio"class="page-header">
-        <h2 class="card-title" style="font-size: 1.5rem; margin: 0; text-transform: uppercase;">Directorio de Proveedores</h2>
+        <h2 class="card-title" style="font-size: 1.5rem; margin: 0; text-transform: uppercase;">Catálogo de terceros</h2>
         <p class="text-muted" style="font-size: 0.8rem;">Administración de contactos y entidades comerciales.</p>
     </div>
 
@@ -46,7 +46,7 @@
     <div class="page-actions" style="margin-bottom: 1.5rem; margin-top: 0;">
         <div id="tour-nuevo-proveedor">
             <a href="{{ route('proveedores.create') }}" class="btn-primary-action">
-                Nuevo Proveedor
+                Registrar nuevo tercero
             </a>
         </div>
     </div>
@@ -79,7 +79,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center text-muted">No se encontraron proveedores registrados.</td>
+                        <td colspan="4" class="text-center text-muted">No se encontraron terceros registrados.</td>
                     </tr>
                 @endforelse
             </tbody>

@@ -152,16 +152,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     resultadosProv.addEventListener('click', function(e) {
-        const item = e.target.closest('[data-id]');
-        if (!item) return;
+    // Ensure we get the element that carries data-id, even if the click lands on a text node
+    const item = e.target.closest('[data-id]') || (e.target.parentElement && e.target.parentElement.closest('[data-id]'));
+    if (!item) return;
 
-        const id = item.dataset.id;
-        selectProv.value = id;
-        inputProv.value  = item.textContent;
+    const id = item.dataset.id;
+    selectProv.value = id;
+    inputProv.value  = item.textContent.trim();
 
-        resultadosProv.innerHTML = '';
-        resultadosProv.style.display = 'none';
-    });
+    resultadosProv.innerHTML = '';
+    resultadosProv.style.display = 'none';
+});
 });
 </script>
 

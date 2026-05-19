@@ -1,11 +1,11 @@
 @extends('layouts.panel')
 
-@section('title', 'Proveedores')
-@section('page_title', 'Crear proveedores')
+@section('title', 'Catálogo de terceros')
+@section('page_title', 'Crear cliente o proveedor')
 
 @section('content')
     <section class="card">
-        <h2 class="card-title">Crear proveedor</h2>
+        <h2 class="card-title">Crear cliente o proveedor</h2>
 
         @if ($errors->any())
             <div style="color:#b91c1c; font-size:0.9rem; margin-bottom:0.75rem;">
@@ -53,8 +53,18 @@
                     style="width:100%; padding:0.4rem 0.6rem; border-radius:0.5rem; border:1px solid #d1d5db;">
             </div>
 
-            <button type="submit" class="btn-tour" style="background:#16a34a; margin-top:0.5rem;">
-                Guardar
+            <button type="submit" class="btn-tour" style="background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;">
+                Registrar tercero
             </button>
         </form>
 

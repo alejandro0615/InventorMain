@@ -1,11 +1,11 @@
 @extends('layouts.panel')
 
-@section('title', 'Proveedores')
-@section('page_title', 'Editar proveedor')
+@section('title', 'Catálogo de terceros')
+@section('page_title', 'Editar cliente o proveedor')
 
 @section('content')
     <section class="card">
-        <h2 class="card-title">Editar proveedor</h2>
+        <h2 class="card-title">Editar cliente o proveedor</h2>
 
         @if ($errors->any())
             <div style="color:#b91c1c; font-size:0.9rem; margin-bottom:0.75rem;">

@@ -247,20 +247,22 @@
                     <a href="{{ route('admin.users.index') }}"
                         class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">🛡️ Usuarios</a>
                 @else
+                    <a href="{{ route('perfil') }}" class="nav-link {{ request()->routeIs('perfil') ? 'active' : '' }}">👤
+                        Perfil</a>
+
                     <a href="{{ route('principal') }}"
                         class="nav-link {{ request()->routeIs('principal') ? 'active' : '' }}">🏠 Inicio</a>
                     <a href="{{ route('productos.index') }}"
                         class="nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}">📦 Productos</a>
                     <a href="{{ route('proveedores.index') }}"
-                        class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Clientes o proveedores</a>
+                        class="nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">🤝 Clientes o
+                        proveedores</a>
                     <a href="{{ route('movimientos.index') }}"
                         class="nav-link {{ request()->routeIs('movimientos.*') ? 'active' : '' }}">📊 Movimientos</a>
                     <a href="{{ route('cotizaciones.index') }}"
                         class="nav-link {{ request()->routeIs('cotizaciones.*') ? 'active' : '' }}">📝 Cotizaciones</a>
                     <a href="{{ route('historial.index') }}"
                         class="nav-link {{ request()->routeIs('historial.*') ? 'active' : '' }}">🕒 Historial</a>
-                    <a href="{{ route('perfil') }}" class="nav-link {{ request()->routeIs('perfil') ? 'active' : '' }}">👤
-                        Perfil</a>
                 @endif
             </nav>
         </aside>
@@ -392,7 +394,7 @@
                 { element: '#tourt-historial', popover: { title: 'Historial de ventas', description: 'Aca veras el historial de ventas realizadas.', side: "bottom", align: 'start' } },
                 { element: '#tourt-filtros', popover: { title: 'filtros', description: 'Aca podras filtrar las ventas por fecha.', side: "bottom", align: 'start' } },
                 { element: '#tourt-tablaH', popover: { title: 'tabla', description: 'Aca veras el historial de ventas realizadas.', side: "bottom", align: 'start' } },
-                
+
             ].filter(step => document.querySelector(step.element) !== null);
 
             if (activeSteps.length > 0) {
