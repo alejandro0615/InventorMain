@@ -163,7 +163,7 @@
     <div class="info">
         <p><span class="bold">CLIENTE :</span> {{ $salida->cliente->nombre ?? 'Consumidor Final' }}</p>
         <p><span class="bold">NIT/CC :</span> {{ $salida->cliente->nit ?? '222222222222' }}</p>
-        <p><span class="bold">CIUDAD :</span> {{ $salida->cliente->ciudad ?? 'N/A' }}</p>
+        <p><span class="bold">DIRECCIÓN :</span> {{ $salida->cliente->direccion ?? 'N/A' }}</p>
         <p><span class="bold">VENDEDOR:</span> {{ $salida->user->name }}</p>
         <p><span class="bold">PAGO:</span> {{ $salida->metodo_pago ?? 'EFECTIVO' }}</p>
     </div>
