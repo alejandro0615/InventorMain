@@ -90,10 +90,13 @@ class MovimientoController extends Controller
         $salida = $this->movementService->register($data);
 
         // Si fue una salida y el usuario indicó generar factura, intentamos enviar a Factus
-        if ($data['tipo_movimiento'] === 'salida' && $salida && $request->input('generar_factura') === '1') {
-            $respuestaFactus = $this->factusService->procesarFactura($salida);
-
-            return $this->handleFactusResponse($respuestaFactus, $salida);
+        if ($data['tipo_movimiento'] === 'salida' && $salida) {
+            if ($request->input('generar_factura') === '1') {
+                $respuestaFactus = $this->factusService->procesarFactura($salida);
+                return $this->handleFactusResponse($respuestaFactus, $salida);
+            } else {
+                $salida->update(['estado_dian' => 'cancelada']);
+            }
         }
 
         return redirect()

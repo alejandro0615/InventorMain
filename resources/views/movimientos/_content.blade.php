@@ -154,6 +154,8 @@
                                     <span class="movimientos-status-pill" style="background:rgba(16, 185, 129, 0.15); color:#10b981;">VALIDADA</span>
                                 @elseif ($salida->estado_dian === 'pendiente')
                                     <span class="movimientos-status-pill" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;">PROCESO</span>
+                                @elseif ($salida->estado_dian === 'cancelada')
+                                    <span class="movimientos-status-pill" style="background:rgba(148, 163, 184, 0.15); color:#64748b;">CANCELADA</span>
                                 @else
                                     <span class="movimientos-status-pill" style="background:rgba(239, 68, 68, 0.15); color:#ef4444;">ERROR</span>
                                 @endif
