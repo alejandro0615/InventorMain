@@ -117,23 +117,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectProv     = document.getElementById('proveedor_id');
 
     function renderResultadosProveedor(lista) {
-        resultadosProv.innerHTML = '';
-        if (!lista.length) {
-            resultadosProv.style.display = 'none';
-            return;
-        }
-
-        lista.forEach(p => {
-            const item = document.createElement('div');
-            item.style.padding = '0.3rem 0.4rem';
-            item.style.cursor  = 'pointer';
-            item.textContent   = `${p.nit} - ${p.nombre}`;
-            item.dataset.id    = p.id;
-            resultadosProv.appendChild(item);
-        });
-
-        resultadosProv.style.display = 'block';
+    resultadosProv.innerHTML = '';
+    if (!lista.length) {
+        resultadosProv.style.display = 'none';
+        return;
     }
+    lista.forEach(p => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.id = p.id;
+        btn.style = 'width:100%; text-align:left; padding:0.3rem 0.4rem; border:none; background:none; cursor:pointer;';
+        btn.innerHTML = `${p.nit} - ${p.nombre}`;
+        resultadosProv.appendChild(btn);
+    });
+    resultadosProv.style.display = 'block';
+}
 
     inputProv.addEventListener('input', function() {
         const q = this.value.toLowerCase().trim();
