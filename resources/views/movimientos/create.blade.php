@@ -163,6 +163,14 @@ document.addEventListener('DOMContentLoaded', function() {
     resultadosProv.innerHTML = '';
     resultadosProv.style.display = 'none';
 });
+    // Restaurar valor de old() si existe
+    const oldId = selectProv.value;
+    if (oldId) {
+        const selected = PROVEEDORES.find(p => p.id == oldId);
+        if (selected) {
+            inputProv.value = `${selected.nit} - ${selected.nombre}`;
+        }
+    }
 });
 </script>
 
@@ -444,6 +452,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalContent = modal.querySelector('div');
 
     form.addEventListener('submit', function(e) {
+        const proveedorId = document.getElementById('proveedor_id').value;
+        if (!proveedorId) {
+            e.preventDefault();
+            alert('Por favor, busca y selecciona un cliente o proveedor de la lista de resultados antes de registrar el movimiento.');
+            document.getElementById('buscador_proveedor').focus();
+            return;
+        }
+
         if (selectTipo.value === 'salida' && flag.value === '') {
             e.preventDefault();
             // Show modal with animation
