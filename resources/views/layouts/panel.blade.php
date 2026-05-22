@@ -58,6 +58,53 @@
             min-height: 100vh;
         }
 
+        .sidebar-backdrop {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            background: var(--bg-card);
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            flex-shrink: 0;
+        }
+
+        .sidebar-toggle span {
+            display: block;
+            width: 18px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 999px;
+            position: relative;
+        }
+
+        .sidebar-toggle span::before,
+        .sidebar-toggle span::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 18px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 999px;
+        }
+
+        .sidebar-toggle span::before {
+            top: -6px;
+        }
+
+        .sidebar-toggle span::after {
+            top: 6px;
+        }
+
         /* SIDEBAR */
         .sidebar {
             background-color: var(--bg-sidebar);
@@ -216,6 +263,95 @@
             text-decoration: none;
             color: inherit;
         }
+
+        @media (max-width: 768px) {
+            .app-container {
+                display: block;
+            }
+
+            .sidebar-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-backdrop {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.5);
+                backdrop-filter: blur(2px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s ease;
+                z-index: 120;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                max-width: 86vw;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                z-index: 130;
+                overflow-y: auto;
+            }
+
+            body.sidebar-open .sidebar {
+                transform: translateX(0);
+            }
+
+            body.sidebar-open .sidebar-backdrop {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .main-content {
+                width: 100%;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .top-bar {
+                padding: 0.85rem 1rem;
+                gap: 0.85rem;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .top-title {
+                font-size: 1rem;
+                flex: 1 1 auto;
+            }
+
+            .top-bar > div:last-child {
+                width: 100%;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .user-profile-link span {
+                display: none;
+            }
+
+            .logout-btn,
+            .btn-primary-action,
+            .btn-print,
+            .btn-download,
+            .btn-delete {
+                padding: 0.55rem 1rem;
+                font-size: 0.72rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            table {
+                min-width: 640px;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -227,6 +363,8 @@
         style="z-index:99999">
         <div class="animate-spin rounded-full h-8 w-8 border-4 border-white border-t-transparent"></div>
     </div>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <div class="app-container">
         <aside class="sidebar">
@@ -269,7 +407,12 @@
 
         <main class="main-content">
             <header class="top-bar">
-                <div class="top-title">@yield('page_title', 'Dashboard')</div>
+                <div style="display:flex; align-items:center; gap:0.75rem; min-width:0;">
+                    <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Abrir menú">
+                        <span></span>
+                    </button>
+                    <div class="top-title">@yield('page_title', 'Dashboard')</div>
+                </div>
 
                 <div style="display: flex; align-items: center; gap: 1.2rem;">
                     <button id="startTour" style="border:none; background:none; font-size:1.3rem; cursor:pointer;"
@@ -309,17 +452,50 @@
     <script>
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+
+        function closeSidebar() {
+            body.classList.remove('sidebar-open');
+        }
+
+        function toggleSidebar() {
+            body.classList.toggle('sidebar-open');
+        }
 
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark');
             themeToggle.textContent = '☀️';
         }
 
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+        }
+
+        if (sidebarBackdrop) {
+            sidebarBackdrop.addEventListener('click', closeSidebar);
+        }
+
+        sidebarLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    closeSidebar();
+                }
+            });
+        });
+
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark');
             const isDark = body.classList.contains('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             themeToggle.textContent = isDark ? '☀️' : '🌙';
+        });
+
+        window.addEventListener('resize', () => {
+            if (!window.matchMedia('(max-width: 768px)').matches) {
+                closeSidebar();
+            }
         });
 
         // --- CONFIGURACIÓN DE DRIVER.JS ---
