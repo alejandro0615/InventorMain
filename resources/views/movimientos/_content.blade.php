@@ -78,6 +78,171 @@
             border-color: var(--primary) !important;
             outline: none;
         }
+
+        .movimientos-table-wrapper {
+            border-radius: 0.9rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+            box-shadow: var(--card-shadow);
+        }
+
+        .movimientos-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .movimientos-table thead th {
+            background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
+            backdrop-filter: blur(6px);
+            white-space: nowrap;
+        }
+
+        .movimientos-table tbody tr:nth-child(even) td {
+            background: rgba(148, 163, 184, 0.04);
+        }
+
+        .movimientos-table tbody tr:hover td {
+            background: rgba(37, 99, 235, 0.06);
+        }
+
+        .movimientos-table th,
+        .movimientos-table td {
+            white-space: nowrap;
+        }
+
+        .movimientos-actions {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem;
+            justify-content: flex-end;
+        }
+        
+        .movimientos-mobile-card {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .filter-container {
+                padding: 1rem;
+                gap: 0.85rem;
+            }
+
+            .filter-group {
+                flex: 1 1 100% !important;
+                min-width: 0 !important;
+            }
+
+            .filter-container > div:last-child {
+                width: 100%;
+                justify-content: stretch;
+                flex-wrap: wrap;
+            }
+
+            .filter-container > div:last-child .btn-download,
+            .filter-container > div:last-child .btn-delete {
+                flex: 1 1 140px;
+                text-align: center;
+            }
+
+            .movimientos-table-wrapper {
+                overflow: visible;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .movimientos-table {
+                min-width: 0;
+            }
+
+            .movimientos-table thead {
+                display: none;
+            }
+
+            .movimientos-table tbody,
+            .movimientos-table tr,
+            .movimientos-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .movimientos-table tbody tr {
+                margin-bottom: 0.9rem;
+                border: 1px solid var(--border-color);
+                border-radius: 0.9rem;
+                overflow: hidden;
+                box-shadow: var(--card-shadow);
+                background: var(--bg-card);
+            }
+
+            .movimientos-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 0.8rem 0.95rem;
+                font-size: 0.82rem;
+                border-bottom: 1px solid var(--border-color);
+                white-space: normal;
+            }
+
+            .movimientos-table td:last-child {
+                border-bottom: none;
+            }
+
+            .movimientos-table td::before {
+                content: attr(data-label);
+                flex: 0 0 42%;
+                font-size: 0.68rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-muted);
+                padding-top: 0.12rem;
+            }
+
+            .movimientos-table td > * {
+                text-align: right;
+            }
+
+            .movimientos-table td[data-label="Acciones"] {
+                align-items: center;
+            }
+
+            .movimientos-table td[data-label="Acciones"]::before {
+                align-self: center;
+            }
+
+            .movimientos-actions {
+                justify-content: flex-end;
+                width: 100%;
+            }
+
+            .btn-compact {
+                padding: 0.34rem 0.56rem !important;
+                font-size: 0.66rem !important;
+            }
+
+            .movimientos-status-pill {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .movimientos-table td[data-label="Producto / Resumen"] > div {
+                text-align: right;
+            }
+
+            .movimientos-table td[data-label="Fecha"] {
+                white-space: nowrap;
+            }
+        }
     </style>
     
     <div id="tourt-M"class="page-header">
@@ -114,8 +279,8 @@
         </div>
     </form>
 
-    <div id="tour-tablaM" class="table-wrapper">
-        <table class="min-w-full">
+    <div id="tour-tablaM" class="table-wrapper movimientos-table-wrapper">
+        <table class="movimientos-table">
             <thead>
                 <tr>
                     <th>Tipo</th>
@@ -134,21 +299,21 @@
                         $salida = $mov->salida;
                     @endphp
                     <tr>
-                        <td>
+                        <td data-label="Tipo">
                             @if($esSalida)
                                 <span class="movimientos-status-pill" style="background:rgba(245, 158, 11, 0.15); color:#f59e0b;">SALIDA</span>
                             @else
                                 <span class="movimientos-status-pill" style="background:rgba(59, 130, 246, 0.15); color:#3b82f6;">ENTRADA</span>
                             @endif
                         </td>
-                        <td class="bold">
+                        <td class="bold" data-label="Producto / Resumen">
                             {{ $mov->producto->nombre }}
                             <div style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">
                                 Cantidad: {{ $mov->cantidad }} UND
                             </div>
                         </td>
-                        <td>{{ $mov->proveedor->nombre }}</td>
-                        <td>
+                        <td data-label="Cliente / Proveedor">{{ $mov->proveedor->nombre }}</td>
+                        <td data-label="Estado DIAN">
                             @if ($esSalida && $salida)
                                 @if ($salida->estado_dian === 'validada')
                                     <span class="movimientos-status-pill" style="background:rgba(16, 185, 129, 0.15); color:#10b981;">VALIDADA</span>
@@ -157,7 +322,7 @@
                                 @elseif ($salida->estado_dian === 'cancelada')
                                     <span class="movimientos-status-pill" style="background:rgba(148, 163, 184, 0.15); color:#64748b;">CANCELADA</span>
                                 @else
-                                    <span class="movimientos-status-pill" style="background:rgba(239, 68, 68, 0.15); color:#ef4444;">ERROR</span>
+                                <td class="text-right bold" style="color: var(--primary); font-size: 1rem;" data-label="Total">
                                 @endif
                             @else
                                 <span class="text-muted" style="font-size: 0.75rem;">—</span>
@@ -166,9 +331,9 @@
                         <td class="text-right bold" style="color: var(--primary); font-size: 1rem;">
                             @if($esSalida && $salida)
                                 $ {{ number_format($salida->total, 0, ',', '.') }}
-                            @else
+                                <td data-label="Fecha">{{ 
                                 {{-- Para entrada podríamos mostrar el valor de compra si lo tuviéramos, 
-                                     por ahora mostramos el subtotal calculado o N/A --}}
+                                <td style="width: 1%;" data-label="Acciones">
                                 <span class="text-muted" style="font-size: 0.8rem;">Stock: +{{ $mov->cantidad }}</span>
                             @endif
                         </td>

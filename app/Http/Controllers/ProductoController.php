@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductosExport;
 
 /**
  * Controlador para la gestión del catálogo de productos.
@@ -35,6 +38,20 @@ class ProductoController extends Controller
         }
 
         return view('productos.index', compact('productos', 'search'));
+    }
+
+    /**
+     * Exporta todos los productos del local del usuario como XLSX.
+     */
+    public function exportCsv(Request $request)
+    {
+        // Nota: este método usa maatwebsite/excel. Instala con:
+        // composer require maatwebsite/excel
+
+        $localId = Auth::user()->local_id;
+        $fileName = 'productos_' . date('Ymd_His') . '.xlsx';
+
+        return Excel::download(new ProductosExport($localId), $fileName);
     }
 
     /**

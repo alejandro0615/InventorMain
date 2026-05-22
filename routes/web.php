@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Módulos Principales (CRUDs)
     Route::resource('productos', ProductoController::class);
+    // Exportar productos a CSV (abrir en Excel)
+    Route::get('productos-export', [ProductoController::class, 'exportCsv'])->name('productos.export');
     Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor']);
     Route::resource('movimientos', MovimientoController::class);
     

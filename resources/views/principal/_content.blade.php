@@ -4,8 +4,8 @@
         <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.25rem;">Resumen operativo del negocio para hoy {{ now()->format('d/m/Y') }}</p>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
-        <div id="tour-productos" class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid var(--primary);">
+    <div class="dashboard-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div id="tour-productos" class="card dashboard-stat-card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid var(--primary);">
             <div style="font-size: 1.5rem;">📦</div>
             <div>
                 <div class="text-muted" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Productos</div>
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <div id="tour-stock-bajo" class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #ef4444;">
+        <div id="tour-stock-bajo" class="card dashboard-stat-card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #ef4444;">
             <div style="font-size: 1.5rem;">⚠️</div>
             <div>
                 <div class="text-muted" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Bajo Stock</div>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div id="tour-ventas" class="card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #10b981;">
+        <div id="tour-ventas" class="card dashboard-stat-card" style="display:flex; align-items:center; gap:1rem; border-left: 4px solid #10b981;">
             <div style="font-size: 1.5rem;">💰</div>
             <div>
                 <div class="text-muted" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Ventas Mes</div>
@@ -30,13 +30,13 @@
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div id="tour-movimientos" class="card">
-            <h3 class="card-title" style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1.25rem; display:flex; align-items:center; gap:0.5rem;">
+    <div class="dashboard-tables-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div id="tour-movimientos" class="card dashboard-table-card">
+            <h3 class="card-title dashboard-table-title" style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1.25rem; display:flex; align-items:center; gap:0.5rem;">
                 <span>📊</span> Últimos Movimientos
             </h3>
-            <div class="table-wrapper">
-                <table style="font-size: 0.8rem;">
+            <div class="table-wrapper dashboard-table-wrapper">
+                <table class="dashboard-table" style="font-size: 0.8rem;">
                     <thead>
                         <tr>
                             <th>Cliente</th>
@@ -61,12 +61,12 @@
             </div>
         </div>
 
-        <div id="tour-cotizaciones" class="card">
-            <h3 class="card-title" style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1.25rem; display:flex; align-items:center; gap:0.5rem;">
+        <div id="tour-cotizaciones" class="card dashboard-table-card">
+            <h3 class="card-title dashboard-table-title" style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1.25rem; display:flex; align-items:center; gap:0.5rem;">
                 <span>📝</span> Cotizaciones Recientes
             </h3>
-            <div class="table-wrapper">
-                <table style="font-size: 0.8rem;">
+            <div class="table-wrapper dashboard-table-wrapper">
+                <table class="dashboard-table" style="font-size: 0.8rem;">
                     <thead>
                         <tr>
                             <th>Cliente</th>
@@ -97,5 +97,68 @@
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(5px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-table-wrapper {
+        border-radius: 0.9rem;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .dashboard-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
+        backdrop-filter: blur(6px);
+    }
+
+    .dashboard-table tbody tr:nth-child(even) td {
+        background: rgba(148, 163, 184, 0.04);
+    }
+
+    .dashboard-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.06);
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+        white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-stats-grid,
+        .dashboard-tables-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .dashboard-stat-card {
+            padding: 1rem !important;
+        }
+
+        .dashboard-table-title {
+            margin-bottom: 1rem !important;
+        }
+
+        .dashboard-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .dashboard-table {
+            min-width: 420px;
+        }
+
+        .dashboard-table th,
+        .dashboard-table td {
+            padding: 0.8rem 0.85rem;
+        }
     }
 </style>

@@ -72,6 +72,123 @@
             background: var(--primary);
             text-transform: uppercase;
         }
+
+        .products-table-wrapper {
+            border-radius: 0.9rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+            box-shadow: var(--card-shadow);
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .products-table thead th {
+            background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
+            backdrop-filter: blur(6px);
+        }
+
+        .products-table tbody tr:nth-child(even) td {
+            background: rgba(148, 163, 184, 0.04);
+        }
+
+        .products-table tbody tr:hover td {
+            background: rgba(37, 99, 235, 0.06);
+        }
+
+        .products-table th,
+        .products-table td {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .search-container input {
+                padding: 0.85rem 0.95rem;
+                font-size: 0.95rem;
+            }
+
+            .filter-section {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .action-section {
+                margin-bottom: 1rem;
+            }
+
+            .products-table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .products-table {
+                min-width: 680px;
+            }
+
+            .products-table th,
+            .products-table td {
+                padding: 0.8rem 0.85rem;
+                font-size: 0.82rem;
+            }
+
+            .crud-actions {
+                gap: 0.3rem;
+            }
+
+            .crud-action-btn {
+                padding: 0.32rem 0.62rem;
+                font-size: 0.66rem;
+            }
+            /* Convertir filas en tarjetas */
+            .products-table thead { display: none; }
+            .products-table tbody,
+            .products-table tr,
+            .products-table td { display: block; width: 100%; }
+
+            .products-table tbody tr {
+                margin-bottom: 0.9rem;
+                border: 1px solid var(--border-color);
+                border-radius: 0.9rem;
+                overflow: hidden;
+                box-shadow: var(--card-shadow);
+                background: var(--bg-card);
+            }
+
+            .products-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 0.8rem 0.95rem;
+                font-size: 0.82rem;
+                border-bottom: 1px solid var(--border-color);
+                white-space: normal;
+            }
+
+            .products-table td:last-child { border-bottom: none; }
+
+            .products-table td::before {
+                content: attr(data-label);
+                flex: 0 0 42%;
+                font-size: 0.68rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-muted);
+                padding-top: 0.12rem;
+            }
+
+            .products-table td > * { text-align: right; }
+        }
     </style>
 
     {{-- 1. TÍTULO --}}
@@ -103,11 +220,12 @@
         <a href="{{ route('productos.create') }}" class="btn-primary-action">
             Nuevo Producto
         </a>
+        <a href="{{ route('productos.export') }}" class="btn-download" style="margin-left:0.6rem; font-weight:800;">Exportar Excel</a>
     </div>
 
     {{-- TABLA --}}
-    <div id ="tourt-table" class="table-wrapper">
-        <table>
+    <div id ="tourt-table" class="table-wrapper products-table-wrapper">
+        <table class="products-table">
             <thead>
                 <tr>
                     <th>Código</th>
@@ -121,15 +239,15 @@
                 @forelse ($productos as $producto)
                     @php $esBajo = $producto->stock_actual <= 5; @endphp
                     <tr>
-                        <td class="bold">{{ $producto->codigo }}</td>
-                        <td>{{ $producto->nombre }}</td>
-                        <td class="bold" style="color: var(--primary);">$ {{ number_format($producto->precio_venta, 0, ',', '.') }}</td>
-                        <td>
+                        <td class="bold" data-label="Código">{{ $producto->codigo }}</td>
+                        <td data-label="Descripción">{{ $producto->nombre }}</td>
+                        <td class="bold" data-label="Precio Venta" style="color: var(--primary);">$ {{ number_format($producto->precio_venta, 0, ',', '.') }}</td>
+                        <td data-label="Existencias">
                             <span style="font-weight: 800; color: {{ $esBajo ? '#ef4444' : '#10b981' }};">
                                 {{ $producto->stock_actual }} UND
                             </span>
                         </td>
-                        <td class="text-right">
+                        <td class="text-right" data-label="Acciones">
                             <div class="crud-actions">
                                 <a href="{{ route('productos.edit', $producto) }}" class="crud-action-btn">Editar</a>
                                 <form action="{{ route('productos.destroy', $producto) }}" method="POST" style="display:inline;">

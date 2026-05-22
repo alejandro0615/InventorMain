@@ -27,6 +27,114 @@
             background: var(--primary);
             text-transform: uppercase;
         }
+
+        .providers-table-wrapper {
+            border-radius: 0.9rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+            box-shadow: var(--card-shadow);
+        }
+
+        .providers-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .providers-table thead th {
+            background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
+            backdrop-filter: blur(6px);
+            white-space: nowrap;
+        }
+
+        .providers-table tbody tr:nth-child(even) td {
+            background: rgba(148, 163, 184, 0.04);
+        }
+
+        .providers-table tbody tr:hover td {
+            background: rgba(37, 99, 235, 0.06);
+        }
+
+        .providers-table th,
+        .providers-table td {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .page-actions {
+                margin-bottom: 1rem !important;
+            }
+
+            .providers-table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .providers-table {
+                min-width: 640px;
+            }
+
+            .providers-table th,
+            .providers-table td {
+                padding: 0.8rem 0.85rem;
+                font-size: 0.82rem;
+            }
+
+            .crud-actions {
+                gap: 0.3rem;
+            }
+
+            .crud-action-btn {
+                padding: 0.32rem 0.62rem;
+                font-size: 0.66rem;
+            }
+            /* Convertir filas en tarjetas */
+            .providers-table thead { display: none; }
+            .providers-table tbody,
+            .providers-table tr,
+            .providers-table td { display: block; width: 100%; }
+
+            .providers-table tbody tr {
+                margin-bottom: 0.9rem;
+                border: 1px solid var(--border-color);
+                border-radius: 0.9rem;
+                overflow: hidden;
+                box-shadow: var(--card-shadow);
+                background: var(--bg-card);
+            }
+
+            .providers-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 0.8rem 0.95rem;
+                font-size: 0.82rem;
+                border-bottom: 1px solid var(--border-color);
+                white-space: normal;
+            }
+
+            .providers-table td:last-child { border-bottom: none; }
+
+            .providers-table td::before {
+                content: attr(data-label);
+                flex: 0 0 46%;
+                font-size: 0.68rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-muted);
+                padding-top: 0.12rem;
+            }
+
+            .providers-table td > * { text-align: right; }
+        }
     </style>
 
     {{-- Encabezado estándar --}}
@@ -51,8 +159,8 @@
         </div>
     </div>
 
-    <div id="tourt-tableProve" class="table-wrapper">
-        <table>
+    <div id="tourt-tableProve" class="table-wrapper providers-table-wrapper">
+        <table class="providers-table">
             <thead>
                 <tr>
                     <th>Razón Social / Nombre</th>
@@ -64,10 +172,10 @@
             <tbody>
                 @forelse ($proveedores as $proveedor)
                     <tr>
-                        <td class="bold">{{ $proveedor->nombre }}</td>
-                        <td>{{ $proveedor->nit }}</td>
-                        <td>{{ $proveedor->telefono }}</td>
-                        <td class="text-right">
+                        <td class="bold" data-label="Razón Social / Nombre">{{ $proveedor->nombre }}</td>
+                        <td data-label="NIT / Identificación">{{ $proveedor->nit }}</td>
+                        <td data-label="Teléfono de Contacto">{{ $proveedor->telefono }}</td>
+                        <td class="text-right" data-label="Acciones">
                             <div class="crud-actions">
                                 <a href="{{ route('proveedores.edit', $proveedor) }}" class="crud-action-btn">Editar</a>
                                 <form action="{{ route('proveedores.destroy', $proveedor) }}" method="POST" style="display:inline;">
