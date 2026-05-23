@@ -199,6 +199,34 @@
             background-color: var(--row-hover);
         }
 
+        /* Forzar coherencia de colores en todas las tablas del layout */
+        .table-wrapper,
+        .table-wrapper table,
+        table,
+        .table-wrapper th,
+        .table-wrapper td,
+        th,
+        td {
+            background: transparent !important;
+            color: var(--text-main) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .table-wrapper {
+            background: var(--bg-card) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: var(--card-shadow) !important;
+        }
+
+        .table-wrapper thead th {
+            background: var(--th-bg) !important;
+            color: var(--text-muted) !important;
+        }
+
+        .table-wrapper tbody tr:hover td {
+            background: var(--row-hover) !important;
+        }
+
         /* BOTONES */
         .btn-primary-action,
         .btn-print,

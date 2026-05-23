@@ -18,7 +18,11 @@
             flex-wrap: nowrap;
             align-items: center;
             gap: 0.3rem;
+            justify-content: center; /* centrar por defecto */
         }
+
+        /* Evitar desplazamientos negativos heredados de otras tablas */
+        .actions-cell .movimientos-actions { margin-left: 0 !important; }
 
         .btn-compact {
             padding: 0.35rem 0.6rem !important;
@@ -115,7 +119,7 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 0.35rem;
-            justify-content: flex-end;
+            justify-content: center; /* centrar acciones en la tabla */
         }
         
         .movimientos-mobile-card {
@@ -228,7 +232,7 @@
             }
 
             .movimientos-actions {
-                justify-content: flex-end;
+                justify-content: center;
                 width: 100%;
                 gap: 0.45rem;
                 flex-wrap: wrap;
@@ -259,10 +263,13 @@
 
             .movimientos-table td[data-label="Acciones"] {
                 display: flex;
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction: row; /* mantener en línea incluso en móvil */
+                align-items: center; /* centrar verticalmente */
+                justify-content: center; /* centrar horizontalmente */
                 gap: 0.5rem;
                 min-height: 62px;
+                position: relative;
+                overflow: visible !important; /* evitar que botones queden fuera */
             }
 
             .movimientos-table td[data-label="Acciones"]::before {
@@ -274,13 +281,13 @@
             .movimientos-table td[data-label="Acciones"] .movimientos-actions {
                 order: 1;
                 width: auto;
-                justify-content: flex-end;
+                justify-content: center;
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
-                margin-top: auto;
-                flex-wrap: wrap;
-                align-self: flex-end;
+                margin-top: 0;
+                flex-wrap: nowrap; /* mantener en una sola línea */
+                align-self: center;
                 overflow: visible;
             }
 
@@ -419,7 +426,7 @@
                             @endif
                         </td>
                         <td data-label="Fecha">{{ \Carbon\Carbon::parse($mov->fecha)->format('d/m/Y') }}</td>
-                        <td style="width: 1%;" data-label="Acciones">
+                        <td class="actions-cell text-center" data-label="Acciones">
                             <div class="movimientos-actions">
                                 @if ($esSalida && $salida)
                                     @if ($salida->url_factus)
