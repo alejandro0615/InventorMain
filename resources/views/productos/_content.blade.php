@@ -231,6 +231,12 @@
                 min-width: 56px;
                 text-decoration: none;
             }
+
+            .products-table td[data-label="Acciones"] a,
+            .products-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
         }
     </style>
 

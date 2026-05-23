@@ -28,6 +28,13 @@
             text-transform: uppercase;
         }
 
+        /* Estilos base para que los botones se vean como en productos */
+        .btn-compact {
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.12);
+            min-width: 82px;
+            border-radius: 0.4rem;
+        }
+
         .btn-factus { background: #1e293b; color: #fff; }
         .btn-pdf-c { background: #ef4444; color: #fff; }
         .btn-download-c { background: #10b981; color: #fff; }
@@ -240,8 +247,8 @@
             }
 
             .movimientos-table td[data-label="Acciones"] {
-                flex-direction: row;
-                align-items: center;
+                flex-direction: column;
+                align-items: stretch;
                 gap: 0.5rem;
             }
 
@@ -288,6 +295,16 @@
                 border-radius: 999px !important;
                 box-shadow: none !important;
                 text-align: center !important;
+            }
+
+            .movimientos-table td[data-label="Acciones"] a,
+            .movimientos-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
+
+            .movimientos-table td[data-label="Acciones"] .btn-delete-c {
+                background: rgba(239,68,68,0.12) !important;
             }
         }
     </style>

@@ -162,6 +162,11 @@
             flex-wrap: wrap;
         }
 
+            .admin-table td[data-label="Acciones"] a,
+            .admin-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
         /* Botones pequeños y consistentes en el panel de usuarios */
         .admin-table td[data-label="Control"] button,
         .admin-table td[data-label="Control"] .admin-action-btn {

@@ -210,6 +210,12 @@
             text-decoration: none;
         }
 
+        .dashboard-table td[data-label] a,
+        .dashboard-table td[data-label] button {
+            position: relative;
+            z-index: 8;
+        }
+
         .dashboard-table td[data-label="Ver"],
         .dashboard-table td[data-label="PDF"] {
             display: flex;

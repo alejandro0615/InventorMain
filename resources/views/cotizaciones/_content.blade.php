@@ -212,6 +212,12 @@
                 text-decoration: none;
             }
 
+            .quote-table td[data-label="Acciones"] a,
+            .quote-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
+
             .quote-table td[data-label="Acciones"] a.btn-print { background: var(--primary); color: #fff; }
             .quote-table td[data-label="Acciones"] button.btn-delete { background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.12); }
 

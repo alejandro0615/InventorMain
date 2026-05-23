@@ -114,6 +114,12 @@
                 text-decoration: none;
             }
 
+            .historial-table td[data-label="Acciones"] a,
+            .historial-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
+
             .historial-table tfoot th {
                 font-weight: 800;
             }

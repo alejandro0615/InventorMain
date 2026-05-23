@@ -164,6 +164,28 @@
                 padding: 0.35rem 0.7rem;
             }
 
+            /* Evitar que botones queden recortados y mejorar visibilidad */
+            .providers-table td[data-label="Acciones"] a,
+            .providers-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
+
+            .providers-table td[data-label="Acciones"] .crud-action-btn[style] {
+                background: rgba(239,68,68,0.12) !important;
+            }
+
+            /* Evitar que botones queden recortados y mejorar visibilidad */
+            .providers-table td[data-label="Acciones"] a,
+            .providers-table td[data-label="Acciones"] button {
+                position: relative;
+                z-index: 8;
+            }
+
+            .providers-table td[data-label="Acciones"] .crud-action-btn[style] {
+                background: rgba(239,68,68,0.12) !important;
+            }
+
             /* Botones pequeños y consistentes (texto) */
             .providers-table td[data-label="Acciones"] a,
             .providers-table td[data-label="Acciones"] button {
