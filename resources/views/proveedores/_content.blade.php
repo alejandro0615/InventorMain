@@ -193,7 +193,7 @@
             }
 
             .providers-table td[data-label="Acciones"] .crud-action-btn[style] {
-                background: rgba(239,68,68,0.12) !important;
+                background: rgb(233, 15, 15) !important;
             }
 
             /* Evitar que botones queden recortados y mejorar visibilidad */
