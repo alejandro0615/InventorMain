@@ -120,6 +120,12 @@ class MovementService
                 
                 if ($movimiento->tipo_movimiento === 'entrada') {
                     // Si era entrada, al borrarla restamos el stock
+                    if ($producto->stock_actual < $movimiento->cantidad) {
+                        throw ValidationException::withMessages([
+                            'cantidad' => "No se puede anular la entrada de {$producto->nombre} porque dejaría el stock en negativo. Stock actual: {$producto->stock_actual}",
+                        ]);
+                    }
+
                     $producto->decrement('stock_actual', $movimiento->cantidad);
                 } else {
                     // Si era salida, al borrarla sumamos el stock

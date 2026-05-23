@@ -80,7 +80,7 @@
         }
 
         .movimientos-table-wrapper {
-            border-radius: 0.9rem;
+            border-radius: 1rem;
             overflow: hidden;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
@@ -164,12 +164,12 @@
             }
 
             .movimientos-table tbody tr {
-                margin-bottom: 0.9rem;
+                margin-bottom: 1rem;
                 border: 1px solid var(--border-color);
-                border-radius: 0.9rem;
+                border-radius: 1rem;
                 overflow: hidden;
-                box-shadow: var(--card-shadow);
-                background: var(--bg-card);
+                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+                background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
             }
 
             .movimientos-table td {
@@ -177,8 +177,8 @@
                 justify-content: space-between;
                 align-items: flex-start;
                 gap: 1rem;
-                padding: 0.8rem 0.95rem;
-                font-size: 0.82rem;
+                padding: 0.9rem 1rem;
+                font-size: 0.84rem;
                 border-bottom: 1px solid var(--border-color);
                 white-space: normal;
             }
@@ -189,13 +189,13 @@
 
             .movimientos-table td::before {
                 content: attr(data-label);
-                flex: 0 0 42%;
-                font-size: 0.68rem;
+                flex: 0 0 40%;
+                font-size: 0.69rem;
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
                 color: var(--text-muted);
-                padding-top: 0.12rem;
+                padding-top: 0.08rem;
             }
 
             .movimientos-table td > * {
@@ -213,11 +213,15 @@
             .movimientos-actions {
                 justify-content: flex-end;
                 width: 100%;
+                gap: 0.45rem;
             }
 
             .btn-compact {
-                padding: 0.34rem 0.56rem !important;
-                font-size: 0.66rem !important;
+                padding: 0.42rem 0.76rem !important;
+                font-size: 0.68rem !important;
+                white-space: nowrap;
+                border-radius: 999px !important;
+                box-shadow: 0 4px 10px rgba(37, 99, 235, 0.12);
             }
 
             .movimientos-status-pill {
@@ -232,6 +236,23 @@
 
             .movimientos-table td[data-label="Fecha"] {
                 white-space: nowrap;
+            }
+
+            .movimientos-table td[data-label="Acciones"] {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .movimientos-table td[data-label="Acciones"]::before {
+                width: 100%;
+                flex: none;
+            }
+
+            .movimientos-table td[data-label="Acciones"] .movimientos-actions {
+                width: 100%;
+                justify-content: flex-end;
+                flex-direction: column;
             }
         }
     </style>

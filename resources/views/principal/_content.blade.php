@@ -100,7 +100,7 @@
     }
 
     .dashboard-table-wrapper {
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         overflow: hidden;
         border: 1px solid var(--border-color);
         background: var(--bg-card);
@@ -141,12 +141,16 @@
         }
 
         .dashboard-table {
-            min-width: 420px;
+            min-width: 100%;
         }
 
         .dashboard-table th,
         .dashboard-table td {
-            padding: 0.8rem 0.85rem;
+            padding: 0.85rem 0.95rem;
+        }
+
+        .dashboard-table tbody tr td:first-child {
+            font-weight: 700;
         }
     }
 </style>
