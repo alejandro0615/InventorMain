@@ -185,18 +185,31 @@
             }
 
             .quote-table td[data-label="Acciones"] {
-                flex-direction: row;
-                align-items: center;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
                 gap: 0.5rem;
+                min-height: 62px;
             }
 
             .quote-table td[data-label="Acciones"]::before {
+                order: 0;
                 width: 100%;
                 flex: none;
             }
 
             .quote-table td[data-label="Acciones"] > * {
                 width: auto;
+            }
+
+            .quote-table td[data-label="Acciones"] .quote-actions {
+                order: 1;
+                margin-top: auto;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+                align-self: flex-end;
+                flex-wrap: wrap;
             }
 
             .quote-table td[data-label="Acciones"] a,

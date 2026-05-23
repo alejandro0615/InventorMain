@@ -194,22 +194,30 @@
             .products-table td > * { text-align: right; }
 
             .products-table td[data-label="Acciones"] {
+                display: flex;
                 flex-direction: column;
                 align-items: stretch;
                 gap: 0.5rem;
+                min-height: 62px;
             }
 
             .products-table td[data-label="Acciones"]::before {
                 width: 100%;
                 flex: none;
+                order: 0;
             }
 
             .products-table td[data-label="Acciones"] .crud-actions {
+                order: 1;
                 width: auto;
-                flex-direction: row;
+                display: flex;
                 justify-content: flex-end;
                 gap: 0.5rem;
                 align-items: center;
+                margin-top: auto;
+                flex-wrap: wrap;
+                overflow: visible;
+                align-self: flex-end;
             }
 
             .products-table td[data-label="Acciones"] .crud-action-btn {

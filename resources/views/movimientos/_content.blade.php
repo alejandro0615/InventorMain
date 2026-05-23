@@ -258,22 +258,30 @@
             }
 
             .movimientos-table td[data-label="Acciones"] {
+                display: flex;
                 flex-direction: column;
                 align-items: stretch;
                 gap: 0.5rem;
+                min-height: 62px;
             }
 
             .movimientos-table td[data-label="Acciones"]::before {
                 width: 100%;
                 flex: none;
+                order: 0;
             }
 
             .movimientos-table td[data-label="Acciones"] .movimientos-actions {
+                order: 1;
                 width: auto;
                 justify-content: flex-end;
-                flex-direction: row;
+                display: flex;
                 gap: 0.5rem;
                 align-items: center;
+                margin-top: auto;
+                flex-wrap: wrap;
+                align-self: flex-end;
+                overflow: visible;
             }
 
             /* Botones pequeños y consistentes (texto) */

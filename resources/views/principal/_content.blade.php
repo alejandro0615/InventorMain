@@ -222,6 +222,21 @@
             justify-content: flex-end;
         }
 
+        /* Mostrar etiqueta 'Ver'/'PDF' encima y centrar botones abajo si hay más acciones */
+        .dashboard-table td[data-label="Ver"],
+        .dashboard-table td[data-label="PDF"] {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.5rem;
+            min-height: 62px;
+        }
+
+        .dashboard-table td[data-label="Ver"]::before,
+        .dashboard-table td[data-label="PDF"]::before { order: 0; width: 100%; flex: none; }
+
+        .dashboard-table td[data-label="Ver"] a,
+        .dashboard-table td[data-label="PDF"] a { order: 1; margin-top: auto; align-self: flex-end; }
+
         .dashboard-table tbody tr td:first-child {
             font-weight: 700;
         }

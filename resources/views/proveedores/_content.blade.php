@@ -156,6 +156,7 @@
                 justify-content: flex-end;
                 gap: 0.5rem;
                 align-items: center;
+                margin-left: -72px;
             }
 
             .providers-table td[data-label="Acciones"] .crud-action-btn {
@@ -164,7 +165,27 @@
                 padding: 0.35rem 0.7rem;
             }
 
-            /* Evitar que botones queden recortados y mejorar visibilidad */
+            /* Acciones: etiqueta arriba, botones abajo (móvil) */
+            .providers-table td[data-label="Acciones"] {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                min-height: 62px;
+            }
+
+            .providers-table td[data-label="Acciones"]::before { order: 0; width: 100%; flex: none; }
+
+            .providers-table td[data-label="Acciones"] .crud-actions {
+                order: 1;
+                margin-top: auto;
+                justify-content: flex-end;
+                display: flex;
+                gap: 0.5rem;
+                align-self: flex-end;
+                flex-wrap: wrap;
+            }
+
             .providers-table td[data-label="Acciones"] a,
             .providers-table td[data-label="Acciones"] button {
                 position: relative;

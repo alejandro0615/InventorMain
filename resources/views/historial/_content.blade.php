@@ -120,6 +120,26 @@
                 z-index: 8;
             }
 
+            .historial-table td[data-label="Acciones"] {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                min-height: 62px;
+            }
+
+            .historial-table td[data-label="Acciones"]::before { order: 0; width: 100%; flex: none; }
+
+            .historial-table td[data-label="Acciones"] .hist-actions {
+                order: 1;
+                margin-top: auto;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+                align-self: flex-end;
+                flex-wrap: wrap;
+            }
+
             .historial-table tfoot th {
                 font-weight: 800;
             }
