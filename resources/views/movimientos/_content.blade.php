@@ -155,6 +155,15 @@
                 -webkit-overflow-scrolling: touch;
             }
 
+            /* Forzar visibilidad en contenedores ancestros para evitar recorte de botones */
+            .movimientos-table-wrapper,
+            .movimientos-table tbody tr,
+            .movimientos-table td[data-label="Acciones"],
+            .movimientos-actions,
+            .card {
+                overflow: visible !important;
+            }
+
             .movimientos-table {
                 min-width: 0;
             }
@@ -222,6 +231,8 @@
                 justify-content: flex-end;
                 width: 100%;
                 gap: 0.45rem;
+                flex-wrap: wrap;
+                overflow: visible;
             }
 
             .btn-compact {
