@@ -70,8 +70,8 @@
                             <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('¿Eliminar esta cuenta permanentemente?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.5rem; border-radius: 8px; cursor: pointer;">
-                                    🗑️
+                                <button type="submit" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);" class="admin-action-btn">
+                                    Borrar
                                 </button>
                             </form>
                         </div>
@@ -160,6 +160,21 @@
             width: 100%;
             justify-content: flex-end;
             flex-wrap: wrap;
+        }
+
+        /* Botones pequeños y consistentes en el panel de usuarios */
+        .admin-table td[data-label="Control"] button,
+        .admin-table td[data-label="Control"] .admin-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border-radius: 999px;
+            min-width: 56px;
+            cursor: pointer;
+            text-transform: uppercase;
         }
     }
 </style>

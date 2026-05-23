@@ -196,6 +196,26 @@
             color: #f8fafc;
         }
 
+        /* Botones pequeños y consistentes (texto) en dashboard */
+        .dashboard-table td[data-label] a,
+        .dashboard-table td[data-label] button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border-radius: 999px;
+            min-width: 56px;
+            text-decoration: none;
+        }
+
+        .dashboard-table td[data-label="Ver"],
+        .dashboard-table td[data-label="PDF"] {
+            display: flex;
+            justify-content: flex-end;
+        }
+
         .dashboard-table tbody tr td:first-child {
             font-weight: 700;
         }

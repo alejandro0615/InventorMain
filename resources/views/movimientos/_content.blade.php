@@ -271,6 +271,24 @@
                 min-width: 56px;
                 text-decoration: none;
             }
+
+            /* Forzar estilos específicos de botones compactos dentro de la celda acciones */
+            .movimientos-table td[data-label="Acciones"] a.btn-compact,
+            .movimientos-table td[data-label="Acciones"] button.btn-compact,
+            .movimientos-table td[data-label="Acciones"] a.btn-pdf-c,
+            .movimientos-table td[data-label="Acciones"] a.btn-download-c,
+            .movimientos-table td[data-label="Acciones"] a.btn-print-c,
+            .movimientos-table td[data-label="Acciones"] a.btn-factus,
+            .movimientos-table td[data-label="Acciones"] .btn-delete-c {
+                display: inline-flex !important;
+                width: auto !important;
+                padding: 0.35rem 0.7rem !important;
+                min-width: 56px !important;
+                height: auto !important;
+                border-radius: 999px !important;
+                box-shadow: none !important;
+                text-align: center !important;
+            }
         }
     </style>
     
