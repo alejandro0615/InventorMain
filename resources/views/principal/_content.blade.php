@@ -48,9 +48,9 @@
                         @forelse($ultimasVentas as $venta)
                         <tr>
                             <td style="font-weight: 600;">{{ $venta->cliente->nombre }}</td>
-                            <td class="text-right bold" style="color: var(--primary);">$ {{ number_format($venta->total, 0, ',', '.') }}</td>
+                            <td class="text-right bold">$ {{ number_format($venta->total, 0, ',', '.') }}</td>
                             <td class="text-center">
-                                <a href="{{ route('movimientos.index') }}" style="color: var(--primary); text-decoration:none; font-weight: 800;">>></a>
+                                <a href="{{ route('movimientos.index') }}" style="text-decoration:none; font-weight: 800; color: inherit;">>></a>
                             </td>
                         </tr>
                         @empty
@@ -78,9 +78,9 @@
                         @forelse($ultimasCotizaciones as $cot)
                         <tr>
                             <td style="font-weight: 600;">{{ $cot->cliente->nombre }}</td>
-                            <td class="text-right bold" style="color: var(--primary);">$ {{ number_format($cot->total, 0, ',', '.') }}</td>
+                            <td class="text-right bold">$ {{ number_format($cot->total, 0, ',', '.') }}</td>
                             <td class="text-center">
-                                <a href="{{ route('cotizaciones.pdf', $cot->id) }}" target="_blank" style="color: #ef4444; text-decoration:none; font-weight: 800;">📄</a>
+                                <a href="{{ route('cotizaciones.pdf', $cot->id) }}" target="_blank" style="text-decoration:none; font-weight: 800; color: inherit;">📄</a>
                             </td>
                         </tr>
                         @empty
@@ -103,7 +103,7 @@
         border-radius: 0.9rem;
         overflow: hidden;
         border: 1px solid var(--border-color);
-        background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
+        background: var(--bg-card);
     }
 
     .dashboard-table {
@@ -113,19 +113,7 @@
     }
 
     .dashboard-table thead th {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
-        backdrop-filter: blur(6px);
-    }
-
-    .dashboard-table tbody tr:nth-child(even) td {
-        background: rgba(148, 163, 184, 0.04);
-    }
-
-    .dashboard-table tbody tr:hover td {
-        background: rgba(37, 99, 235, 0.06);
+        background: transparent;
     }
 
     .dashboard-table th,
