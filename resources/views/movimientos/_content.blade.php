@@ -83,7 +83,7 @@
             border-radius: 0.9rem;
             overflow: hidden;
             border: 1px solid var(--border-color);
-            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+            background: var(--bg-card);
             box-shadow: var(--card-shadow);
         }
 
@@ -94,17 +94,8 @@
         }
 
         .movimientos-table thead th {
-            background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
-            backdrop-filter: blur(6px);
+            background: transparent;
             white-space: nowrap;
-        }
-
-        .movimientos-table tbody tr:nth-child(even) td {
-            background: rgba(148, 163, 184, 0.04);
-        }
-
-        .movimientos-table tbody tr:hover td {
-            background: rgba(37, 99, 235, 0.06);
         }
 
         .movimientos-table th,
@@ -322,23 +313,21 @@
                                 @elseif ($salida->estado_dian === 'cancelada')
                                     <span class="movimientos-status-pill" style="background:rgba(148, 163, 184, 0.15); color:#64748b;">CANCELADA</span>
                                 @else
-                                <td class="text-right bold" style="color: var(--primary); font-size: 1rem;" data-label="Total">
+                                    <span class="movimientos-status-pill" style="background:rgba(239, 68, 68, 0.15); color:#ef4444;">ERROR</span>
                                 @endif
                             @else
                                 <span class="text-muted" style="font-size: 0.75rem;">—</span>
                             @endif
                         </td>
-                        <td class="text-right bold" style="color: var(--primary); font-size: 1rem;">
+                        <td class="text-right bold" style="color: var(--primary); font-size: 1rem;" data-label="Total">
                             @if($esSalida && $salida)
                                 $ {{ number_format($salida->total, 0, ',', '.') }}
-                                <td data-label="Fecha">{{ 
-                                {{-- Para entrada podríamos mostrar el valor de compra si lo tuviéramos, 
-                                <td style="width: 1%;" data-label="Acciones">
+                            @else
                                 <span class="text-muted" style="font-size: 0.8rem;">Stock: +{{ $mov->cantidad }}</span>
                             @endif
                         </td>
-                        <td>{{ \Carbon\Carbon::parse($mov->fecha)->format('d/m/Y') }}</td>
-                        <td style="width: 1%;">
+                        <td data-label="Fecha">{{ \Carbon\Carbon::parse($mov->fecha)->format('d/m/Y') }}</td>
+                        <td style="width: 1%;" data-label="Acciones">
                             <div class="movimientos-actions">
                                 @if ($esSalida && $salida)
                                     @if ($salida->url_factus)

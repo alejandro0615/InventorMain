@@ -32,7 +32,7 @@
             border-radius: 0.9rem;
             overflow: hidden;
             border: 1px solid var(--border-color);
-            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+            background: var(--bg-card);
             box-shadow: var(--card-shadow);
         }
 
@@ -43,17 +43,8 @@
         }
 
         .providers-table thead th {
-            background: color-mix(in srgb, var(--bg-card) 92%, var(--primary) 8%);
-            backdrop-filter: blur(6px);
+            background: transparent;
             white-space: nowrap;
-        }
-
-        .providers-table tbody tr:nth-child(even) td {
-            background: rgba(148, 163, 184, 0.04);
-        }
-
-        .providers-table tbody tr:hover td {
-            background: rgba(37, 99, 235, 0.06);
         }
 
         .providers-table th,
