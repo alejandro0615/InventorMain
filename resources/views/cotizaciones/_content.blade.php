@@ -185,7 +185,7 @@
             }
 
             .quote-table td[data-label="Acciones"] {
-                flex-direction: column;
+                flex-direction: row;
                 align-items: center;
                 gap: 0.5rem;
             }

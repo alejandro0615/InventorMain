@@ -240,8 +240,8 @@
             }
 
             .movimientos-table td[data-label="Acciones"] {
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction: row;
+                align-items: center;
                 gap: 0.5rem;
             }
 
@@ -251,9 +251,11 @@
             }
 
             .movimientos-table td[data-label="Acciones"] .movimientos-actions {
-                width: 100%;
+                width: auto;
                 justify-content: flex-end;
-                flex-direction: column;
+                flex-direction: row;
+                gap: 0.5rem;
+                align-items: center;
             }
 
             /* Botones pequeños y consistentes (texto) */

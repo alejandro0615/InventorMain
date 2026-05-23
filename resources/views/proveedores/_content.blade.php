@@ -140,8 +140,8 @@
             .providers-table td > * { text-align: right; }
 
             .providers-table td[data-label="Acciones"] {
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction: row;
+                align-items: center;
                 gap: 0.5rem;
             }
 
@@ -151,12 +151,17 @@
             }
 
             .providers-table td[data-label="Acciones"] .crud-actions {
-                width: 100%;
-                flex-direction: column;
+                width: auto;
+                flex-direction: row;
+                justify-content: flex-end;
+                gap: 0.5rem;
+                align-items: center;
             }
 
             .providers-table td[data-label="Acciones"] .crud-action-btn {
                 box-shadow: none;
+                min-width: 56px;
+                padding: 0.35rem 0.7rem;
             }
 
             /* Botones pequeños y consistentes (texto) */

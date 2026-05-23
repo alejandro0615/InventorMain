@@ -205,12 +205,17 @@
             }
 
             .products-table td[data-label="Acciones"] .crud-actions {
-                width: 100%;
-                flex-direction: column;
+                width: auto;
+                flex-direction: row;
+                justify-content: flex-end;
+                gap: 0.5rem;
+                align-items: center;
             }
 
             .products-table td[data-label="Acciones"] .crud-action-btn {
                 box-shadow: none;
+                min-width: 56px;
+                padding: 0.35rem 0.7rem;
             }
 
             /* Botones pequeños y consistentes (texto) */
