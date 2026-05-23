@@ -21,6 +21,13 @@
             --bg-sidebar: #0f172a;
             --text-main: #1e293b;
             --text-muted: #64748b;
+            --th-bg: rgba(148, 163, 184, 0.05);
+            --row-hover: rgba(148, 163, 184, 0.03);
+            --btn-danger-bg: #ef4444;
+            --btn-success-bg: #10b981;
+            --btn-warning-bg: #f59e0b;
+            --btn-secondary-bg: #1e293b;
+            --btn-text-contrast: #ffffff;
             --border-color: #e2e8f0;
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
@@ -31,10 +38,14 @@
             --bg-sidebar: #000000;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
+            --th-bg: rgba(255,255,255,0.02);
+            --row-hover: rgba(255,255,255,0.03);
             --border-color: rgba(51, 65, 85, 0.5);
             --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
             --primary: #3b82f6;
             --primary-glow: rgba(59, 130, 246, 0.3);
+            --btn-secondary-bg: #0b1220;
+            --btn-text-contrast: #ffffff;
         }
 
         * {
@@ -167,10 +178,9 @@
         }
 
         th {
-            background-color: rgba(148, 163, 184, 0.05);
+            background-color: var(--th-bg);
             color: var(--text-muted);
             font-size: 0.75rem;
-            /* Subido de 0.65rem */
             font-weight: 800;
             text-transform: uppercase;
             padding: 1rem;
@@ -186,7 +196,7 @@
         }
 
         tr:hover td {
-            background-color: rgba(148, 163, 184, 0.03);
+            background-color: var(--row-hover);
         }
 
         /* BOTONES */
@@ -221,13 +231,8 @@
             filter: brightness(1.1);
         }
 
-        .btn-download {
-            background: #10b981;
-        }
-
-        .btn-delete {
-            background: #ef4444;
-        }
+        .btn-download { background: var(--btn-success-bg); color: var(--btn-text-contrast); }
+        .btn-delete { background: var(--btn-danger-bg); color: var(--btn-text-contrast); }
 
         .nav-link {
             display: flex;

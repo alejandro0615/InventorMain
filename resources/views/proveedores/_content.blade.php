@@ -204,7 +204,7 @@
             }
 
             .providers-table td[data-label="Acciones"] .crud-action-btn[style] {
-                background: rgba(239,68,68,0.12) !important;
+                background: rgb(237, 11, 11) !important;
             }
 
             /* Botones pequeños y consistentes (texto) */

@@ -35,11 +35,11 @@
             border-radius: 0.4rem;
         }
 
-        .btn-factus { background: #1e293b; color: #fff; }
-        .btn-pdf-c { background: #ef4444; color: #fff; }
-        .btn-download-c { background: #10b981; color: #fff; }
-        .btn-print-c { background: #3b82f6; color: #fff; }
-        .btn-delete-c { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); }
+        .btn-factus { background: var(--btn-secondary-bg); color: var(--btn-text-contrast); }
+        .btn-pdf-c { background: var(--btn-danger-bg); color: var(--btn-text-contrast); }
+        .btn-download-c { background: var(--btn-success-bg); color: var(--btn-text-contrast); }
+        .btn-print-c { background: var(--primary); color: var(--btn-text-contrast); }
+        .btn-delete-c { background: transparent; color: var(--btn-danger-bg); border: 1px solid var(--border-color); }
 
         .movimientos-status-pill {
             font-size: 0.7rem;
@@ -323,7 +323,7 @@
             }
 
             .movimientos-table td[data-label="Acciones"] .btn-delete-c {
-                background: rgba(239,68,68,0.12) !important;
+                background: rgb(227, 13, 13) !important;
             }
         }
     </style>
@@ -358,7 +358,7 @@
         </div>
         <div style="display:flex; align-items:flex-end; gap:.5rem;">
             <button class="btn-download" style="padding: 0.7rem 1.5rem;">Filtrar</button>
-            <a href="{{ route('movimientos.index') }}" class="btn-delete" style="background: var(--text-muted); color: #fff; padding: 0.7rem 1.5rem;">Resetear</a>
+            <a href="{{ route('movimientos.index') }}" class="btn-delete" style="padding: 0.7rem 1.5rem;">Resetear</a>
         </div>
     </form>
 
