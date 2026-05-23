@@ -97,6 +97,107 @@
             border: 1px solid var(--border-color);
         }
 
+        .quote-table-wrapper {
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            box-shadow: var(--card-shadow);
+        }
+
+        .quote-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .quote-table thead th {
+            background: transparent;
+        }
+
+        .quote-table th,
+        .quote-table td {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .quote-config-box,
+            #tourt-finC {
+                grid-template-columns: 1fr !important;
+            }
+
+            .quote-table-wrapper {
+                overflow: visible;
+            }
+
+            .quote-table thead {
+                display: none;
+            }
+
+            .quote-table tbody,
+            .quote-table tr,
+            .quote-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .quote-table tbody tr {
+                margin-bottom: 1rem;
+                border: 1px solid var(--border-color);
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+                background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            }
+
+            .quote-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 0.9rem 1rem;
+                border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+                white-space: normal;
+                color: #f8fafc;
+                font-size: 0.84rem;
+            }
+
+            .quote-table td:last-child {
+                border-bottom: none;
+            }
+
+            .quote-table td::before {
+                content: attr(data-label);
+                flex: 0 0 40%;
+                font-size: 0.69rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #cbd5e1;
+                padding-top: 0.08rem;
+            }
+
+            .quote-table td > * {
+                color: #f8fafc;
+                text-align: right;
+            }
+
+            .quote-table td[data-label="Acciones"] {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .quote-table td[data-label="Acciones"]::before {
+                width: 100%;
+                flex: none;
+            }
+
+            .quote-table td[data-label="Acciones"] > * {
+                width: 100%;
+            }
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -145,8 +246,8 @@
         </div>
 
         {{-- TABLA DE ÍTEMS --}}
-        <div id="tourt-tablaC" class="table-wrapper" style="margin-bottom: 2rem;">
-            <table>
+        <div id="tourt-tablaC" class="table-wrapper quote-table-wrapper" style="margin-bottom: 2rem;">
+            <table class="quote-table">
                 <thead>
                     <tr>
                         <th>Descripción</th>
@@ -185,8 +286,8 @@
 
 <section class="card" style="margin-top: 2rem;">
     <h3 class="card-title" style="font-size: 0.9rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem;">Historial Reciente</h3>
-    <div id="tablaHistorial" class="table-wrapper">
-        <table>
+    <div id="tablaHistorial" class="table-wrapper quote-table-wrapper">
+        <table class="quote-table">
             <thead>
                 <tr>
                     <th>Ref.</th>
@@ -199,11 +300,11 @@
             <tbody>
                 @forelse ($ultimasCotizaciones as $cot)
                     <tr>
-                        <td class="bold">#{{ str_pad($cot->id, 5, '0', STR_PAD_LEFT) }}</td>
-                        <td>{{ $cot->cliente->nombre }}</td>
-                        <td>{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
-                        <td class="text-right bold" style="color: var(--primary);">$ {{ number_format($cot->total, 0, ',', '.') }}</td>
-                        <td class="text-center">
+                        <td class="bold" data-label="Ref.">#{{ str_pad($cot->id, 5, '0', STR_PAD_LEFT) }}</td>
+                        <td data-label="Cliente">{{ $cot->cliente->nombre }}</td>
+                        <td data-label="Fecha">{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
+                        <td class="text-right bold" data-label="Total">$ {{ number_format($cot->total, 0, ',', '.') }}</td>
+                        <td class="text-center" data-label="Acciones">
                             <a href="{{ route('cotizaciones.pdf', $cot->id) }}" target="_blank" class="btn-print" style="padding: 0.4rem 0.8rem;">PDF</a>
                             <form action="{{ route('cotizaciones.destroy', $cot->id) }}" method="POST" style="display:inline;">
                                 @csrf @method('DELETE')
@@ -247,11 +348,11 @@
             items.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="bold">${item.nombre}<input type="hidden" name="producto_id[]" value="${item.id}"></td>
-                    <td class="text-center"><input type="number" name="cantidad[]" min="1" value="${item.cantidad}" data-index="${index}" class="input-cantidad" style="width:80px; text-align:center; padding: 0.5rem; background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px;"></td>
-                    <td class="text-right">${formatear(item.precio)}</td>
-                    <td class="text-right bold" style="color:var(--primary); font-size: 1rem;">${formatear((item.cantidad || 0) * item.precio)}</td>
-                    <td class="text-center"><button type="button" data-index="${index}" class="btn-quitar" style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:800; font-size: 0.8rem;">QUITAR</button></td>
+                    <td class="bold" data-label="Descripción">${item.nombre}<input type="hidden" name="producto_id[]" value="${item.id}"></td>
+                    <td class="text-center" data-label="Cantidad"><input type="number" name="cantidad[]" min="1" value="${item.cantidad}" data-index="${index}" class="input-cantidad" style="width:80px; text-align:center; padding: 0.5rem; background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px;"></td>
+                    <td class="text-right" data-label="Precio Unitario">${formatear(item.precio)}</td>
+                    <td class="text-right bold" data-label="Subtotal" style="color:var(--primary); font-size: 1rem;">${formatear((item.cantidad || 0) * item.precio)}</td>
+                    <td class="text-center" data-label="Acciones"><button type="button" data-index="${index}" class="btn-quitar" style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:800; font-size: 0.8rem;">QUITAR</button></td>
                 `;
                 tbody.appendChild(tr);
             });

@@ -43,21 +43,21 @@
             <tbody>
                 @foreach($users as $user)
                 <tr>
-                    <td>
+                    <td data-label="Empresa / Negocio">
                         <div style="font-weight: 800; color: #fff;">{{ $user->razon_social }}</div>
                         <div style="font-size: 0.75rem; color: var(--admin-accent);">{{ $user->negocio->nombre ?? 'Sin Local' }}</div>
                     </td>
-                    <td style="font-weight: 600;">{{ $user->name }}</td>
-                    <td>
+                    <td data-label="Responsable" style="font-weight: 600;">{{ $user->name }}</td>
+                    <td data-label="Acceso">
                         <div style="font-size: 0.85rem;">{{ $user->email }}</div>
                     </td>
-                    <td style="font-size: 0.85rem; color: var(--admin-text-muted);">{{ $user->telefono }}</td>
-                    <td>
+                    <td data-label="Contacto" style="font-size: 0.85rem; color: var(--admin-text-muted);">{{ $user->telefono }}</td>
+                    <td data-label="Estado">
                         <span class="status-badge {{ $user->estado === 'activo' ? 'status-active' : 'status-blocked' }}">
                             {{ $user->estado }}
                         </span>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" data-label="Control">
                         <div style="display: flex; gap: 0.75rem; justify-content: center;">
                             <form action="{{ route('admin.users.toggle', $user) }}" method="POST">
                                 @csrf
@@ -86,6 +86,83 @@
         {{ $users->links() }}
     </div>
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        .admin-table-container {
+            overflow: visible;
+        }
+
+        .admin-table thead {
+            display: none;
+        }
+
+        .admin-table tbody,
+        .admin-table tr,
+        .admin-table td {
+            display: block;
+            width: 100%;
+        }
+
+        .admin-table tbody tr {
+            margin-bottom: 1rem;
+            border: 1px solid var(--admin-border);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+        }
+
+        .admin-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+            white-space: normal;
+            color: #f8fafc;
+            font-size: 0.84rem;
+        }
+
+        .admin-table td:last-child {
+            border-bottom: none;
+        }
+
+        .admin-table td::before {
+            content: attr(data-label);
+            flex: 0 0 40%;
+            font-size: 0.69rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #cbd5e1;
+            padding-top: 0.08rem;
+        }
+
+        .admin-table td > * {
+            color: #f8fafc;
+            text-align: right;
+        }
+
+        .admin-table td[data-label="Control"] {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+        }
+
+        .admin-table td[data-label="Control"]::before {
+            width: 100%;
+            flex: none;
+        }
+
+        .admin-table td[data-label="Control"] > div {
+            width: 100%;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+    }
+</style>
 
 <!-- Modal Registro Nuevo Usuario -->
 <div id="modalNuevoUsuario" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center;">
