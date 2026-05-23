@@ -168,8 +168,8 @@
                 border: 1px solid var(--border-color);
                 border-radius: 1rem;
                 overflow: hidden;
-                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-                background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+                background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
             }
 
             .movimientos-table td {
@@ -194,12 +194,13 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: var(--text-muted);
+                color: #cbd5e1;
                 padding-top: 0.08rem;
             }
 
             .movimientos-table td > * {
                 text-align: right;
+                color: #f8fafc;
             }
 
             .movimientos-table td[data-label="Acciones"] {
@@ -253,6 +254,20 @@
                 width: 100%;
                 justify-content: flex-end;
                 flex-direction: column;
+            }
+
+            /* Botones pequeños y consistentes (texto) */
+            .movimientos-table td[data-label="Acciones"] a,
+            .movimientos-table td[data-label="Acciones"] button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.35rem 0.7rem;
+                font-size: 0.75rem;
+                font-weight: 800;
+                border-radius: 999px;
+                min-width: 56px;
+                text-decoration: none;
             }
         }
     </style>

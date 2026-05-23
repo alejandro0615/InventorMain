@@ -158,6 +158,20 @@
             .providers-table td[data-label="Acciones"] .crud-action-btn {
                 box-shadow: none;
             }
+
+            /* Botones pequeños y consistentes (texto) */
+            .providers-table td[data-label="Acciones"] a,
+            .providers-table td[data-label="Acciones"] button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.35rem 0.7rem;
+                font-size: 0.75rem;
+                font-weight: 800;
+                border-radius: 999px;
+                min-width: 56px;
+                text-decoration: none;
+            }
         }
     </style>
 

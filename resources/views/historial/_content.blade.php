@@ -16,6 +16,8 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            min-width: 0;
+            background: transparent;
         }
 
         .historial-table thead th {
@@ -72,6 +74,9 @@
                 font-size: 0.84rem;
             }
 
+            .historial-table tr,
+            .historial-table td { background: transparent; }
+
             .historial-table td:last-child,
             .historial-table tfoot th:last-child {
                 border-bottom: none;
@@ -93,6 +98,20 @@
             .historial-table tfoot th > * {
                 color: #f8fafc;
                 text-align: right;
+            }
+
+            /* Botones pequeños y consistentes (texto) */
+            .historial-table td[data-label="Acciones"] a,
+            .historial-table td[data-label="Acciones"] button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.35rem 0.7rem;
+                font-size: 0.75rem;
+                font-weight: 800;
+                border-radius: 999px;
+                min-width: 56px;
+                text-decoration: none;
             }
 
             .historial-table tfoot th {

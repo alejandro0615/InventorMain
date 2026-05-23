@@ -109,6 +109,8 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            min-width: 0;
+            background: transparent;
         }
 
         .quote-table thead th {
@@ -184,7 +186,7 @@
 
             .quote-table td[data-label="Acciones"] {
                 flex-direction: column;
-                align-items: stretch;
+                align-items: center;
                 gap: 0.5rem;
             }
 
@@ -194,8 +196,27 @@
             }
 
             .quote-table td[data-label="Acciones"] > * {
-                width: 100%;
+                width: auto;
             }
+
+            .quote-table td[data-label="Acciones"] a,
+            .quote-table td[data-label="Acciones"] button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.35rem 0.7rem;
+                font-size: 0.75rem;
+                font-weight: 800;
+                border-radius: 999px;
+                min-width: 56px;
+                text-decoration: none;
+            }
+
+            .quote-table td[data-label="Acciones"] a.btn-print { background: var(--primary); color: #fff; }
+            .quote-table td[data-label="Acciones"] button.btn-delete { background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.12); }
+
+            .quote-table tr,
+            .quote-table td { background: transparent; }
         }
 
         @keyframes fadeIn {
