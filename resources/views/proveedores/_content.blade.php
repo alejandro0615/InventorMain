@@ -63,13 +63,17 @@
             }
 
             .providers-table-wrapper {
-                overflow-x: auto;
+                overflow: visible;
                 -webkit-overflow-scrolling: touch;
             }
 
             .providers-table {
-                min-width: 640px;
+                min-width: 0;
+                background: transparent;
             }
+
+            .providers-table tr,
+            .providers-table td { background: transparent; }
 
             .providers-table th,
             .providers-table td {

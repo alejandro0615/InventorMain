@@ -117,13 +117,17 @@
             }
 
             .products-table-wrapper {
-                overflow-x: auto;
+                overflow: visible;
                 -webkit-overflow-scrolling: touch;
             }
 
             .products-table {
-                min-width: 680px;
+                min-width: 0;
+                background: transparent;
             }
+
+            .products-table tr,
+            .products-table td { background: transparent; }
 
             .products-table th,
             .products-table td {
