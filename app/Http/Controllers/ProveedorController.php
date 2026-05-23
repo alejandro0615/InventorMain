@@ -18,6 +18,7 @@ class ProveedorController extends Controller
     {
         $localId = Auth::user()->local_id;
         $search = $request->input('q');
+        $perPage = $this->getPerPage($request);
 
         $proveedores = Proveedor::where('local_id', $localId)
             ->when($search, function ($query) use ($search) {
@@ -27,13 +28,24 @@ class ProveedorController extends Controller
                       ->orWhere('razon_social', 'like', "%{$search}%");
                 });
             })
-            ->get();
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate($perPage)
+            ->withQueryString();
 
         if ($request->ajax()) {
             return view('proveedores._content', compact('proveedores', 'search'));
         }
 
         return view('proveedores.index', compact('proveedores', 'search'));
+    }
+
+    /**
+     * Define el tamaño de página según el dispositivo.
+     */
+    protected function getPerPage(Request $request): int
+    {
+        return preg_match('/Mobile|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i', (string) $request->userAgent()) ? 5 : 15;
     }
 
     /**

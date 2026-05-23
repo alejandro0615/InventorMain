@@ -156,8 +156,8 @@
                 border: 1px solid var(--border-color);
                 border-radius: 1rem;
                 overflow: hidden;
-                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-                background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+                background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
             }
 
             .products-table td {
@@ -167,7 +167,7 @@
                 gap: 1rem;
                 padding: 0.9rem 1rem;
                 font-size: 0.84rem;
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid rgba(148, 163, 184, 0.16);
                 white-space: normal;
             }
 
@@ -180,9 +180,12 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: var(--text-muted);
+                color: #cbd5e1;
                 padding-top: 0.08rem;
             }
+
+            .products-table td,
+            .products-table td > * { color: #f8fafc; }
 
             .products-table td > * { text-align: right; }
 
@@ -200,6 +203,10 @@
             .products-table td[data-label="Acciones"] .crud-actions {
                 width: 100%;
                 flex-direction: column;
+            }
+
+            .products-table td[data-label="Acciones"] .crud-action-btn {
+                box-shadow: none;
             }
         }
     </style>

@@ -123,30 +123,42 @@ class MovimientoController extends Controller
     {
         $localId = Auth::user()->local_id;
         $fecha = $request->input('fecha');
+        $perPage = $this->getPerPage($request);
 
-        $query = SalidaDetalle::query()
+        $baseQuery = SalidaDetalle::query()
             ->join('salidas', 'salida_detalles.salida_id', '=', 'salidas.id')
             ->join('productos', 'salida_detalles.producto_id', '=', 'productos.id')
             ->where('productos.local_id', $localId);
 
         if ($fecha) {
-            $query->whereDate('salidas.fecha', $fecha);
+            $baseQuery->whereDate('salidas.fecha', $fecha);
         }
 
-        $historial = $query
+        $totalDia = (clone $baseQuery)->sum('salida_detalles.subtotal');
+
+        $historial = $baseQuery
             ->selectRaw('
                 productos.id AS producto_id,
                 productos.nombre AS producto,
                 SUM(salida_detalles.cantidad) AS total_cantidad,
-                SUM(salida_detalles.subtotal) AS total_vendido
+                SUM(salida_detalles.subtotal) AS total_vendido,
+                MAX(salidas.created_at) AS ultima_venta_at
             ')
             ->groupBy('productos.id', 'productos.nombre')
-            ->orderBy('producto')
-            ->get();
-
-        $totalDia = $historial->sum('total_vendido');
+            ->orderByDesc('ultima_venta_at')
+            ->orderByDesc('producto')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return view('historial.index', compact('historial', 'fecha', 'totalDia'));
+    }
+
+    /**
+     * Define el tamaño de página según el dispositivo.
+     */
+    protected function getPerPage(Request $request): int
+    {
+        return preg_match('/Mobile|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i', (string) $request->userAgent()) ? 5 : 15;
     }
 
     /**

@@ -21,6 +21,7 @@ class ProductoController extends Controller
     {
         $localId = Auth::user()->local_id;
         $search = $request->get('q');
+        $perPage = $this->getPerPage($request);
 
         // Construir la consulta usando scopes del modelo
         $query = Producto::delLocal($localId)
@@ -30,7 +31,10 @@ class ProductoController extends Controller
             $query->stockBajo();
         }
 
-        $productos = $query->paginate(10)->withQueryString();
+        $productos = $query->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate($perPage)
+            ->withQueryString();
 
         // Soporte para carga vía AJAX (SPA-like)
         if ($request->ajax()) {
@@ -38,6 +42,14 @@ class ProductoController extends Controller
         }
 
         return view('productos.index', compact('productos', 'search'));
+    }
+
+    /**
+     * Define el tamaño de página según el dispositivo.
+     */
+    protected function getPerPage(Request $request): int
+    {
+        return preg_match('/Mobile|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i', (string) $request->userAgent()) ? 5 : 15;
     }
 
     /**

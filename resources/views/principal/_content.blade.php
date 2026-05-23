@@ -47,9 +47,9 @@
                     <tbody>
                         @forelse($ultimasVentas as $venta)
                         <tr>
-                            <td style="font-weight: 600;">{{ $venta->cliente->nombre }}</td>
-                            <td class="text-right bold">$ {{ number_format($venta->total, 0, ',', '.') }}</td>
-                            <td class="text-center">
+                            <td data-label="Cliente" style="font-weight: 600;">{{ $venta->cliente->nombre }}</td>
+                            <td data-label="Total" class="text-right bold">$ {{ number_format($venta->total, 0, ',', '.') }}</td>
+                            <td data-label="Ver" class="text-center">
                                 <a href="{{ route('movimientos.index') }}" style="text-decoration:none; font-weight: 800; color: inherit;">>></a>
                             </td>
                         </tr>
@@ -77,9 +77,9 @@
                     <tbody>
                         @forelse($ultimasCotizaciones as $cot)
                         <tr>
-                            <td style="font-weight: 600;">{{ $cot->cliente->nombre }}</td>
-                            <td class="text-right bold">$ {{ number_format($cot->total, 0, ',', '.') }}</td>
-                            <td class="text-center">
+                            <td data-label="Cliente" style="font-weight: 600;">{{ $cot->cliente->nombre }}</td>
+                            <td data-label="Total" class="text-right bold">$ {{ number_format($cot->total, 0, ',', '.') }}</td>
+                            <td data-label="PDF" class="text-center">
                                 <a href="{{ route('cotizaciones.pdf', $cot->id) }}" target="_blank" style="text-decoration:none; font-weight: 800; color: inherit;">📄</a>
                             </td>
                         </tr>
@@ -136,17 +136,64 @@
         }
 
         .dashboard-table-wrapper {
-            overflow-x: auto;
+            overflow: visible;
             -webkit-overflow-scrolling: touch;
         }
 
         .dashboard-table {
-            min-width: 100%;
+            min-width: 0;
         }
 
-        .dashboard-table th,
+        .dashboard-table thead {
+            display: none;
+        }
+
+        .dashboard-table tbody,
+        .dashboard-table tr,
         .dashboard-table td {
-            padding: 0.85rem 0.95rem;
+            display: block;
+            width: 100%;
+        }
+
+        .dashboard-table tbody tr {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+        }
+
+        .dashboard-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+            white-space: normal;
+            color: #f8fafc;
+            font-size: 0.84rem;
+        }
+
+        .dashboard-table td:last-child {
+            border-bottom: none;
+        }
+
+        .dashboard-table td::before {
+            content: attr(data-label);
+            flex: 0 0 40%;
+            font-size: 0.69rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #cbd5e1;
+            padding-top: 0.08rem;
+        }
+
+        .dashboard-table td > * {
+            text-align: right;
+            color: #f8fafc;
         }
 
         .dashboard-table tbody tr td:first-child {
