@@ -260,10 +260,19 @@
                 padding-top: 0.25rem;
             }
 
-            /* Limitar tamaño de botones y permitir 2 por fila para que queden dentro de la card */
+            /* Limitar tamaño de botones y forzar 2 por fila (hasta 3 filas si hay muchos) */
             .movimientos-actions > * {
-                flex: 0 1 48%;
-                max-width: 48%;
+                flex: 0 1 calc(50% - 0.45rem);
+                max-width: calc(50% - 0.45rem);
+                box-sizing: border-box;
+            }
+
+            /* Hacer que los botones llenen su celda para tener dos botones por fila */
+            .movimientos-table td[data-label="Acciones"] a,
+            .movimientos-table td[data-label="Acciones"] button,
+            .movimientos-table td[data-label="Acciones"] .btn-compact {
+                width: 100% !important;
+                min-width: 0 !important;
                 box-sizing: border-box;
             }
 
