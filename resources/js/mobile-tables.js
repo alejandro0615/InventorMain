@@ -69,12 +69,48 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             createPaginator(pages.length, pageIndex + 1, pagerContainer, (p) => renderPage(p - 1));
+            // After rendering page, ensure action buttons wrap nicely
+            requestAnimationFrame(() => {
+                listContainer.querySelectorAll('.mobile-card').forEach(card => {
+                    const actionButtons = card.querySelectorAll('button, a.btn, .btn');
+                    if (actionButtons.length > 0) {
+                        // allow wrapping and consistent sizing via CSS classes
+                        actionButtons.forEach(b => b.classList.add('mobile-action-btn'));
+                    }
+                });
+            });
         }
 
         renderPage(0);
 
         // Insert after the table
         table.parentNode.insertBefore(wrapper, table.nextSibling);
+
+        // If table has tfoot totals, render a persistent totals card below pager
+        const tfoot = table.querySelector('tfoot');
+        if (tfoot) {
+            const totalsWrapper = document.createElement('div');
+            totalsWrapper.className = 'mobile-totals card';
+            totalsWrapper.style.marginTop = '0.6rem';
+            // iterate over tfoot rows and cells
+            Array.from(tfoot.querySelectorAll('tr')).forEach(tr => {
+                const cells = Array.from(tr.children);
+                const row = document.createElement('div');
+                row.className = 'mobile-row mobile-total-row';
+                cells.forEach((cell, idx) => {
+                    const label = document.createElement('div');
+                    label.className = 'mobile-label';
+                    label.textContent = cell.tagName.toLowerCase() === 'th' ? (cell.textContent || '').trim() : '';
+                    const value = document.createElement('div');
+                    value.className = 'mobile-value';
+                    value.innerHTML = cell.innerHTML;
+                    row.appendChild(label);
+                    row.appendChild(value);
+                });
+                totalsWrapper.appendChild(row);
+            });
+            wrapper.parentNode.insertBefore(totalsWrapper, wrapper.nextSibling);
+        }
 
         return wrapper;
     }
