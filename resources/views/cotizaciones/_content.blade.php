@@ -152,7 +152,7 @@
                 background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
             }
 
-            .quote-table td {
+                .quote-table td {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
@@ -160,7 +160,7 @@
                 padding: 0.9rem 1rem;
                 border-bottom: 1px solid rgba(148, 163, 184, 0.16);
                 white-space: normal;
-                color: #f8fafc;
+                color: var(--text-main);
                 font-size: 0.84rem;
             }
 
@@ -168,19 +168,19 @@
                 border-bottom: none;
             }
 
-            .quote-table td::before {
+                .quote-table td::before {
                 content: attr(data-label);
                 flex: 0 0 40%;
                 font-size: 0.69rem;
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: #cbd5e1;
+                color: var(--text-muted);
                 padding-top: 0.08rem;
             }
 
             .quote-table td > * {
-                color: #f8fafc;
+                color: var(--text-main);
                 text-align: right;
             }
 

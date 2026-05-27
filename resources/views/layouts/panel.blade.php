@@ -626,6 +626,7 @@
             }, 1000);
         }
     </script>
+    @vite('resources/js/app.js')
 </body>
 
 </html>

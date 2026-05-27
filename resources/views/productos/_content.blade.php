@@ -184,12 +184,12 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: #cbd5e1;
+                color: var(--text-muted);
                 padding-top: 0.08rem;
             }
 
             .products-table td,
-            .products-table td > * { color: #f8fafc; }
+            .products-table td > * { color: var(--text-main); }
 
             .products-table td > * { text-align: right; }
 

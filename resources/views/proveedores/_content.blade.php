@@ -130,12 +130,12 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: #cbd5e1;
+                color: var(--text-muted);
                 padding-top: 0.08rem;
             }
 
             .providers-table td,
-            .providers-table td > * { color: #f8fafc; }
+            .providers-table td > * { color: var(--text-main); }
 
             .providers-table td > * { text-align: right; }
 

@@ -70,7 +70,7 @@
                 padding: 0.9rem 1rem;
                 border-bottom: 1px solid rgba(148, 163, 184, 0.16);
                 white-space: normal;
-                color: #f8fafc;
+                color: var(--text-main);
                 font-size: 0.84rem;
             }
 
@@ -90,13 +90,13 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: #cbd5e1;
+                color: var(--text-muted);
                 padding-top: 0.08rem;
             }
 
             .historial-table td > *,
             .historial-table tfoot th > * {
-                color: #f8fafc;
+                color: var(--text-main);
                 text-align: right;
             }
 

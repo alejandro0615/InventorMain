@@ -60,9 +60,9 @@
             margin-bottom: 1.5rem;
             background: var(--bg-body); /* Usar fondo de cuerpo para contraste */
             padding: 1.25rem;
-            border-radius: 1rem;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            .movimientos-table td > * {
+                text-align: right;
+                color: var(--text-main);
         }
 
         .filter-group label {
@@ -96,12 +96,17 @@
             border: 1px solid var(--border-color);
             background: var(--bg-card);
             box-shadow: var(--card-shadow);
+            max-width: 1100px; /* limitar ancho de la tabla */
+            margin: 0 auto; /* centrar en su contenedor */
+            padding: 0 0.75rem; /* pequeño acolchado lateral */
+            box-sizing: border-box;
         }
 
         .movimientos-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            table-layout: fixed; /* permitir anchos fijos y wrap */
         }
 
         .movimientos-table thead th {
@@ -111,8 +116,19 @@
 
         .movimientos-table th,
         .movimientos-table td {
-            white-space: nowrap;
+            white-space: normal; /* permitir wrap para mejorar legibilidad */
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
+
+        /* Asignar anchos relativos a columnas para evitar que la tabla crezca demasiado */
+        .movimientos-table th:nth-child(1), .movimientos-table td:nth-child(1) { width: 8%; }
+        .movimientos-table th:nth-child(2), .movimientos-table td:nth-child(2) { width: 40%; }
+        .movimientos-table th:nth-child(3), .movimientos-table td:nth-child(3) { width: 18%; }
+        .movimientos-table th:nth-child(4), .movimientos-table td:nth-child(4) { width: 10%; }
+        .movimientos-table th:nth-child(5), .movimientos-table td:nth-child(5) { width: 10%; }
+        .movimientos-table th:nth-child(6), .movimientos-table td:nth-child(6) { width: 9%; }
+        .movimientos-table th:nth-child(7), .movimientos-table td:nth-child(7) { width: 15%; }
 
         .movimientos-actions {
             display: inline-flex;
@@ -214,13 +230,13 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: #cbd5e1;
+                color: var(--text-muted);
                 padding-top: 0.08rem;
             }
 
             .movimientos-table td > * {
                 text-align: right;
-                color: #f8fafc;
+                color: var(--text-main);
             }
 
             .movimientos-table td[data-label="Acciones"] {
@@ -270,6 +286,24 @@
                 min-height: 62px;
                 position: relative;
                 overflow: visible !important; /* evitar que botones queden fuera */
+            }
+
+            /* Mejor centrado en escritorio: dar espacio mínimo a la columna de acciones */
+            @media (min-width: 769px) {
+                .movimientos-table td[data-label="Acciones"] {
+                    min-width: 220px; /* ajustar según necesidad */
+                    max-width: 320px;
+                    padding-left: 0.5rem;
+                    padding-right: 0.5rem;
+                    box-sizing: border-box;
+                }
+
+                .movimientos-actions { gap: 0.6rem; }
+
+                .movimientos-table td[data-label="Acciones"] a,
+                .movimientos-table td[data-label="Acciones"] button {
+                    margin: 0 !important;
+                }
             }
 
             .movimientos-table td[data-label="Acciones"]::before {
