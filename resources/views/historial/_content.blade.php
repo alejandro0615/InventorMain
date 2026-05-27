@@ -153,7 +153,7 @@
         <a href="{{ route('historial.index') }}" class="btn btn-delete">Limpiar</a>
     </form>
     <div id="tourt-tablaH" class="table-wrapper historial-table-wrapper">
-        <table class="historial-table">
+        <table class="historial-table" data-skip-mobile="true">
             <thead>
                 <tr>
                     <th>Producto</th>

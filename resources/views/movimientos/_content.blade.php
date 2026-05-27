@@ -203,9 +203,12 @@
                 margin-bottom: 1rem;
                 border: 1px solid var(--border-color);
                 border-radius: 1rem;
-                overflow: hidden;
+                overflow: hidden; /* mantener contenido dentro de la card */
                 box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
                 background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+                position: relative; /* para contener elementos relativos */
+                padding-bottom: 0.6rem; /* espacio para acciones envueltas */
+                box-sizing: border-box;
             }
 
             .movimientos-table td {
@@ -248,11 +251,20 @@
             }
 
             .movimientos-actions {
-                justify-content: center;
+                justify-content: flex-end; /* alinear a la derecha dentro de la celda */
                 width: 100%;
                 gap: 0.45rem;
-                flex-wrap: wrap;
-                overflow: visible;
+                flex-wrap: wrap; /* permitir varias filas si hay muchos botones */
+                overflow: hidden;
+                box-sizing: border-box;
+                padding-top: 0.25rem;
+            }
+
+            /* Limitar tamaño de botones y permitir 2 por fila para que queden dentro de la card */
+            .movimientos-actions > * {
+                flex: 0 1 48%;
+                max-width: 48%;
+                box-sizing: border-box;
             }
 
             .btn-compact {
@@ -279,13 +291,15 @@
 
             .movimientos-table td[data-label="Acciones"] {
                 display: flex;
-                flex-direction: row; /* mantener en línea incluso en móvil */
-                align-items: center; /* centrar verticalmente */
-                justify-content: center; /* centrar horizontalmente */
+                flex-direction: column; /* apilar internamente si hace falta */
+                align-items: stretch; /* ocupar ancho para contener botones */
+                justify-content: flex-end; /* acciones al fondo de la card */
                 gap: 0.5rem;
                 min-height: 62px;
                 position: relative;
-                overflow: visible !important; /* evitar que botones queden fuera */
+                overflow: hidden !important; /* forzar que no salgan fuera de la card */
+                padding-bottom: 0.4rem;
+                box-sizing: border-box;
             }
 
             /* Mejor centrado en escritorio: dar espacio mínimo a la columna de acciones */
@@ -312,7 +326,7 @@
                 order: 0;
             }
 
-            .movimientos-table td[data-label="Acciones"] .movimientos-actions {
+                .movimientos-table td[data-label="Acciones"] .movimientos-actions {
                 order: 1;
                 width: auto;
                 justify-content: center;
@@ -320,7 +334,7 @@
                 gap: 0.5rem;
                 align-items: center;
                 margin-top: 0;
-                flex-wrap: nowrap; /* mantener en una sola línea */
+                flex-wrap: wrap; /* permitir envolver en móvil */
                 align-self: center;
                 overflow: visible;
             }
