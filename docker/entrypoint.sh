@@ -2,11 +2,11 @@
 
 set -e
 
-echo "Clearing Laravel caches..."
-php artisan optimize:clear
-
 echo "Running migrations..."
 php artisan migrate --force
+
+echo "Clearing Laravel caches..."
+php artisan optimize:clear
 
 echo "Rebuilding caches..."
 php artisan config:cache
