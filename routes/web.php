@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 
 // Rutas Públicas (Login y Registro)
 Route::get('/', function () {
-    return 'Laravel funciona correctamente en Vercel';
+    return view('login.login');
 })->name('login');
 
 Route::post('/login', [LoginController::class, 'login'])->name('login.store');
