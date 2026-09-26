@@ -40,7 +40,7 @@
     },
     "scripts": {
         "vercel": [
-            "composer install --no-dev --optimize-autoloader",
+            "COMPOSER_IGNORE_PLATFORM_REQ=ext-gd composer install --no-dev --optimize-autoloader",
             "npm run build"
         ],
         "setup": [
