@@ -3,6 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "prebuild": "npm rebuild esbuild",
         "build": "vite",
         "dev": "vite"
     },
