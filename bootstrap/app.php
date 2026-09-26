@@ -22,4 +22,15 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
 $app->useStoragePath('/tmp/storage');
 
+foreach ([
+    '/tmp/storage/framework/views',
+    '/tmp/storage/framework/cache',
+    '/tmp/storage/framework/sessions',
+    '/tmp/storage/logs',
+] as $directory) {
+    if (!is_dir($directory)) {
+        mkdir($directory, 0755, true);
+    }
+}
+
 return $app;
